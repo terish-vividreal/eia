@@ -1,0 +1,289 @@
+"use strict";
+
+var pageTitle 	= $("#pageTitle").val();
+var pageRoute 	= $("#pageRoute").val();
+var table;
+var id;
+var postId;
+var PageForm;
+var formMethod;
+var validator;
+var projectId;
+
+
+$('#sortBy').select2({ placeholder: "Sort By", allowClear: true});
+$('#companyId').select2({ placeholder: "Please select Company", allowClear: true});
+$('#companyId').select2({ placeholder: "Please select Company", allowClear: true});
+$('#categoryId').select2({ placeholder: "Please select Category", allowClear: true});
+$('#projectTypeId').select2({ placeholder: "Please select Project Type", allowClear: true});
+
+$('input[name="dateOfCreated"]').daterangepicker({
+    singleDatePicker: true,
+    // showDropdowns: true,
+    startDate: new Date(),
+    timePicker: true,
+    locale: { format: 'DD-MM-YYYY h:mm A'},
+    autoApply: true,
+});
+
+// $('input[name="billed_date"]').daterangepicker({
+//     singleDatePicker: true,
+//     startDate: new Date(),
+//     showDropdowns: true,
+//     autoApply: true,
+//     timePicker: true,
+//     timePicker24Hour: timePicker,
+//     locale: { format: 'DD-MM-YYYY '+timeFormat+':mm A' },
+//   }, function(ev, picker) {
+//     // console.log(picker.format('DD-MM-YYYY'));
+//   });
+
+
+// Form Validation with Ajax Submit
+if ($("#" + pageTitle + "Form").length > 0) {
+  validator = $("#" + pageTitle + "Form").validate({ 
+    rules: {
+        title: { 
+            required: true, 
+        },
+        dateOfCreated: { 
+            required: true, 
+        },
+        companyId: { 
+            required: true, 
+        },
+        projectCodeId: { 
+          required: true, 
+        },
+        projectTypeId: { 
+            required: true, 
+        },
+        categoryId: { 
+            required: true, 
+        },
+        totalBudget: { 
+            required: true, 
+            digits: true, 
+        },
+    },
+    messages: { 
+        title: {
+            required: "Please enter project Title",
+        },
+        dateOfCreated: {
+            required: "Please select Date of creation",
+        },
+        companyId: {
+            required: "Please select Company",
+        },
+        projectCodeId: {
+          required: "Please enter ProjectID",
+        },
+        projectTypeId: { 
+            required: "Please select Project Type",
+        },
+        category: {
+            required: "Please enter Category",
+        },
+        totalBudget: {
+            required: "Please enter Total Budget",
+            digits: "Please enter number only",
+        }
+    },
+    submitHandler: function (form) {
+      disableBtn("formSubmitButton");
+
+      projectId     = $("#" + pageTitle + "Form input[name=projectId]").val();
+      postId        = "" == projectId ? "" : "/" + projectId;
+      formMethod    = "" == projectId ? "POST" : "PUT";
+      var forms     = $("#" + pageTitle + "Form");
+
+      $.ajax({ url:pageRoute + postId, type: formMethod, processData: false, data: forms.serialize(), 
+      }).done(function (data) {
+        enableBtn("formSubmitButton");
+        if (data.flagError == false) {
+          showSuccessToaster(data.message);
+          setTimeout(function () { 
+            window.location.href = pageRoute ;                
+          }, 2000);
+        } else {
+          showErrorToaster(data.message);
+          printErrorMsg(data.error);
+        }
+      });
+    },
+    errorPlacement: function(error, element) {
+        if (element.is("select")) {
+            error.insertAfter(element.next('.select2'));
+        }else {
+            error.insertAfter(element);
+        }
+    },
+    errorElement : 'div',
+  })
+}
+
+jQuery.validator.addMethod("emailFormat", function (value, element) {
+    return this.optional(element) || /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/igm.test(value);
+}, "Please enter a valid email address");  
+
+jQuery.validator.addMethod("mobileFormat", function (value, element) {
+    return this.optional(element) || /^([0-9\s\-\+\(\)]*)$/igm.test(value);
+}, "Please enter a valid mobile number");  
+
+function resetForm() {
+	validator.resetForm();
+    $('#' + pageTitle + 'Form').find("input[type=text]").val("");
+    $("#companyId").val('').trigger('change');
+    $("#categoryId").val('').trigger('change');
+    $("#projectTypeId").val('').trigger('change');
+}
+
+
+// DataTable Initialization
+var columns;
+var formValue;
+
+var table     = $('#data-table-projects');
+var url       = table.data('url');
+var form      = table.data('form');
+var length    = table.data('length');
+
+
+columns   = [];
+formValue = [];
+
+table.find('thead th').each(function () {
+    var column = {'data': $(this).data('column')};
+    columns.push(column);
+});
+
+table.DataTable({
+    processing: true,
+    serverSide: true,
+    searching: false,
+    bLengthChange: false,
+    pageLength: 10,
+    ajax: {
+        "type": "GET",
+        "url": url,
+        "data": function (data) {
+            data.form = formValue;
+        }
+    },
+    columns: columns,
+});
+
+$('#' + form + '-show-result-button').click(function () {
+    formValue = $('#' + form + '-form').serializeArray();
+    table.DataTable().draw();
+});
+
+$("#sortBy").change(function() {
+    formValue = $('#' + form + '-form').serializeArray();
+    table.DataTable().draw();
+});
+
+$('#' + form + '-filterFormClearButton').click(function () {
+    $('#' + form + '-form').find("input[type=text]").val("");
+    $('#' + form + '-form').find(".select2").val('').trigger("change");
+    $('#' + form + '-form').trigger("reset");
+    formValue = $('#' + form + '-form').serializeArray();
+    table.DataTable().draw();
+});
+
+// Show active and Inactive Lists
+$(".listBtn").on("click", function()  {
+    $("#status").val($(this).attr('data-type'));
+    formValue = $('#' + form + '-form').serializeArray();
+    table.DataTable().draw();
+});
+
+table.on('click', '.disable-item', function() {
+    var postUrl = $(this).attr('data-url'); 
+    var id      = $(this).attr('data-id');
+    var title   = $(this).attr('data-title');
+
+    swal({ title: "Are you sure?",icon: 'warning', dangerMode: true, buttons: { cancel: 'No, Please!', delete: 'Yes, '+ title }
+    }).then(function (willDelete) {
+      if (willDelete) {
+        $.ajax({url: postUrl + "/" + id, type: "DELETE", dataType: "html"})
+          .done(function (a) {
+              var data = JSON.parse(a);
+              if (data.flagError == false) {
+                showSuccessToaster(data.message);          
+                setTimeout(function () {
+                  table.DataTable().draw();
+                }, 2000);
+
+            } else {
+              showErrorToaster(data.message);
+              printErrorMsg(data.error);
+            }   
+        }).fail(function () {
+          showErrorToaster("Something went wrong!");
+        });
+      } 
+    });
+});
+
+table.on('click', '.restore-item', function() {
+
+    var postUrl = $(this).attr('data-url'); 
+    var id      = $(this).attr('data-id');
+    var title   = $(this).attr('data-title');
+
+    swal({ title: "Are you sure?",icon: 'warning', dangerMode: true, buttons: { cancel: 'No, Please!', delete: 'Yes, '+ title }
+    }).then(function (willDelete) {
+      if (willDelete) {
+        $.ajax({url: postUrl + "/" + id, type: "POST", dataType: "html"})
+          .done(function (a) {
+              var data = JSON.parse(a);
+              if (data.flagError == false) {
+                showSuccessToaster(data.message);          
+                setTimeout(function () {
+                  table.DataTable().draw();
+                }, 2000);
+
+            } else {
+              showErrorToaster(data.message);
+              printErrorMsg(data.error);
+            }   
+        }).fail(function () {
+          showErrorToaster("Something went wrong!");
+        });
+      } 
+    });
+
+  });
+
+// Display Project Full name;
+function showFullName(fullName) {
+  $("#projectFullName").text(fullName)
+  $("#fullNameModel").modal("open");
+}
+
+table.on('click', '.view-more-details', function() {
+  var postUrl   = $(this).attr('data-url'); 
+  var id        = $(this).attr('data-id');
+  var column    = $(this).attr('data-column');
+
+  $.ajax({url: postUrl, type: "GET"}).done(function (data) {
+      if (data.flagError == false) {
+        var details = '';
+        if (column == 'comment') {
+          details = data.document.comment;
+        } else {
+          details = data.document.brief_description;
+        }
+        
+        $("#fullTextSection").text(details);
+        $("#viewMoreDetailsModel").modal("open");
+    } else {
+      showErrorToaster(data.message);
+      printErrorMsg(data.error);
+    }   
+}).fail(function () {
+  showErrorToaster("Something went wrong!");
+});
+});
