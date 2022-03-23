@@ -88,8 +88,8 @@
                                 <label for="totalBudget" class="label-placeholder active"> Total Budget <span class="red-text">*</span></label>
                             </div>  
                             <div class="input-field col m6 s12">
-                                {!! Form::text('projectCodeId', $project->project_code_id ?? '', array('id' => 'projectCodeId')) !!}
-                                <label for="projectCodeId" class="label-placeholder active"> Project ID <span class="red-text">*</span></label>
+                                {!! Form::text('project_code_id', $project->project_code_id ?? '', array('id' => 'project_code_id')) !!}
+                                <label for="project_code_id" class="label-placeholder active"> Project ID <span class="red-text">*</span></label>
                             </div>  
                         </div>
                         <div class="row">
@@ -99,7 +99,7 @@
                             </div>  
                             <div class="input-field col m6 s12">
                                 {!! Form::text('mapLink', $project->map_link ?? '', array('id' => 'mapLink')) !!}
-                                <label for="projectCodeId" class="label-placeholder active"> Map Link </label>
+                                <label for="mapLink" class="label-placeholder active"> Map Link </label>
                             </div>  
                         </div>
                         <div class="row">

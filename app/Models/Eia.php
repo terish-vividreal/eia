@@ -22,6 +22,11 @@ class Eia extends Model
         return $this->belongsTo(Project::class);
     }
 
+    public function documents()
+    {
+        return $this->hasMany(Document::class);
+    }
+
     public function getFormattedDateOfEntryAttribute()
     {
         return FunctionHelper::dateToTimeZone($this->date_of_entry, 'd/m/Y h:i');

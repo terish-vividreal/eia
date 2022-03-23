@@ -15,5 +15,20 @@ class Document extends Model
     {
         return FunctionHelper::dateToTimeZone($this->date_of_entry, 'd/m/Y h:i');
     }
+
+    public function files()
+    {
+        return $this->hasMany(DocumentFile::class);
+    }
+
+    public function stage()
+    {
+        return $this->belongsTo(EiaStage::class);
+    }
+
+    public function latestFile()
+    {
+        return $this->hasOne(DocumentFile::class)->latestOfMany();
+    }
     
 }

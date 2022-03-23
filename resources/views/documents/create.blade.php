@@ -60,7 +60,7 @@
                     <div class="card-title">
                         <div class="row right">
                             <div class="col s12 m12 ">
-                                {!! App\Helpers\HtmlHelper::listLinkButton(url($page->route), 'Back') !!}
+                                {!! App\Helpers\HtmlHelper::listLinkButton(url($page->eiaRoute), 'Back') !!}
                             </div>
                         </div>
                         <div class="row">
@@ -80,6 +80,7 @@
                         {!! Form::hidden('eiaId', $eia->id ?? '', ['id' => 'eiaId'] ); !!}
                         {!! Form::hidden('documentId', $document->id ?? '', ['id' => 'documentId']); !!}
                         {!! Form::hidden('FileUploadRoute', route('documents.file.upload'), ['id' => 'FileUploadRoute'] ); !!}
+                        {!! Form::hidden('FileListRoute', route('documents.file.list'), ['id' => 'FileListRoute'] ); !!}
                         {!! Form::hidden('FileRemoveRoute', route('documents.file.remove'), ['id' => 'FileRemoveRoute'] ); !!}
                         {!! Form::hidden('documentFile', '', ['id' => 'documentFile'] ); !!}
                         <div class="row">
@@ -125,7 +126,6 @@
                                 <label for="comment" class="label-placeholder active"> Remarks / Comments </label>    
                             </div>
                         </div>
-                        @if(!isset($document))
                         <div class="row">  
                             <div class="input-field col m12 s12">
                                 <div class="dropzone" id="file-dropzone"></div>   
@@ -133,7 +133,6 @@
                             <label for="dropzone" class="label-placeholder active"> Maximum:10 MB | Document Format: JPEG, PNG, PDF, XL, Word </label>
                             <div id="file-error" class="error red-text"></div>
                         </div>
-                        @endif
                         <div class="row">
                             <div class="input-field col s12">
                                 {!! App\Helpers\HtmlHelper::submitButton('Submit', 'formSubmitButton') !!}

@@ -239,6 +239,50 @@ class DocumentController extends Controller
     }
 
     /**
+     * Upload Document file.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function fileList(Request $request)
+    {
+        $data = [];
+        $images            = DocumentFile::where('document_id', $request->documentId)->get()->toArray();
+
+        // foreach($images as $image){
+        //     $tableImages[] = $image['name'];
+        // }
+
+        // $storeFolder    = public_path('uploads/gallery');
+        // $file_path      = public_path('uploads/gallery/');
+
+
+        // $files = scandir($storeFolder);
+        // foreach ( $files as $file ) {
+        //     if ($file !='.' && $file !='..' && in_array($file,$tableImages)) {       
+        //         $obj['name'] = $file;
+        //         $file_path = public_path('uploads/gallery/').$file;
+        //         $obj['size'] = filesize($file_path);          
+        //         $obj['path'] = url('public/uploads/gallery/'.$file);
+        //         $data[] = $obj;
+        //     }
+            
+        // }
+
+        foreach($images as $image){
+                $obj['name']    = $image['original_name'];
+                // $file_path      = storage_path().'/app/public/'.$this->uploadPath.'/'.$image['name'];
+                // $obj['size']    = filesize($file_path);          
+                $obj['path']        = asset('storage/documents/' . $image['name']);
+                $data[] = $obj;
+        }
+
+
+
+        //dd($data);
+        return response()->json($data);
+    }
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Document  $document
@@ -294,5 +338,16 @@ class DocumentController extends Controller
             \Illuminate\Support\Facades\Storage::delete('public/documents/' . $name);
         }
         return $name;
+    }
+
+    /**
+     * Download Document file.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    function downloadFile(Request $request, $document)
+    {
+        $store_path = 'public/' . $this->uploadPath;
+        return Storage::download($store_path.'/'.$document);
     }
 }

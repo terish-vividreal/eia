@@ -176,9 +176,6 @@ class EiaController extends Controller
     public function show(Eia $eia)
     {
         if($eia) {
-            // if ($request->ajax()) {
-            //     return $this->lists($request); 
-            // }
             $page                       = collect();
             $variants                   = collect();
             $page->title                = $this->title;
@@ -187,6 +184,34 @@ class EiaController extends Controller
             $page->projectRoute         = url('projects/'.$eia->project_id); 
             $page->eiaRoute             = url('projects/'.$eia->project_id); 
             return view($this->viewPath . '.show', compact('page', 'variants', 'eia'));
+        }
+        abort(404);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\Eia  $eia
+     * @return \Illuminate\Http\Response
+     */
+    public function details(Request $request, $id)
+    {
+        $eia        = Eia::find($id);
+        if($eia) {
+            $page                       = collect();
+            $variants                   = collect();
+            $page->title                = $this->title;
+            $page->link                 = url($this->route);
+            $page->route                = $this->route; 
+            $page->projectRoute         = url('projects/'.$eia->project_id); 
+            $page->eiaRoute             = url('projects/'.$eia->project_id); 
+
+            // echo "<pre>"; print_r($eia->document); exit;
+
+            // foreach($eia->document as )
+
+
+            return view($this->viewPath . '.details', compact('page', 'variants', 'eia'));
         }
         abort(404);
     }
