@@ -141,6 +141,9 @@
         <div class="col s12">
             <div id="view-borderless-table">
               <div class="row">
+                <div class="col s12 m6 ">
+                  <h4 class="card-title">Eia Lists</h4>
+                </div>
                 <div class="col s12">
                   <table id="data-table-projects" class="display data-tables" data-url="{{ $page->route.'/'.$project->id.'/eias/lists' }}" data-form="page" data-length="10">
                     <thead>

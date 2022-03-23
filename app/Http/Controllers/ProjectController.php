@@ -243,7 +243,7 @@ class ProjectController extends Controller
         if ($validator->passes()) {
             if($project) {
                 $project->name              = $request->name;
-                $project->date_of_creation  = FunctionHelper::dateToUTC($request->dateOfCreated, 'Y-m-d H:i:s');                
+                $project->date_of_creation  = FunctionHelper::dateToUTC($request->dateOfCreated, 'Y-m-d H:i:s');
                 $project->company_id        = $request->companyId;
                 $project->category_id       = $request->categoryId;
                 $project->project_type      = $request->projectTypeId;

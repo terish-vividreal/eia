@@ -53,7 +53,7 @@
     <div class="card-content">
       <div class="row">
         <div class="col s12 m6">
-            <h6 class="mb-2 mt-2"><i class="material-icons">info_outline</i> {{ Str::plural($page->title) ?? ''}} Details <a href="{{ url($page->route.'/'.$eia->id.'/details')}}" class="btn-small indigo"><i class="material-icons">remove_red_eye</i>  View </a> </h6>
+            <h6 class="mb-2 mt-2"><i class="material-icons">info_outline</i>{{ Str::plural($page->title) ?? ''}} Details <a href="{{ url($page->route.'/'.$eia->id.'/details')}}" class="btn-small indigo"><i class="material-icons">remove_red_eye</i>  View </a> </h6>
             
             <table class="striped">
                 <tbody>
@@ -110,6 +110,9 @@
 
 
       <div class="row">
+        <div class="col s12 m6 ">
+                  <h4 class="card-title">Document Lists</h4>
+                </div>
         <div class="col s12">
             <table id="data-table-projects" class="display data-tables" data-url="{{ $page->route.'/'.$eia->id.'/documents/lists' }}" data-form="page" data-length="10">
               <thead>

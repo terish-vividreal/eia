@@ -60,7 +60,7 @@
                     <div class="card-title">
                         <div class="row right">
                             <div class="col s12 m12 ">
-                                {!! App\Helpers\HtmlHelper::listLinkButton(url($page->route), 'Back') !!}
+                                {!! App\Helpers\HtmlHelper::listLinkButton(url($page->projectRoute), 'Back') !!}
                             </div>
                         </div>
                         <div class="row">
