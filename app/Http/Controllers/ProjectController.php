@@ -75,8 +75,8 @@ class ProjectController extends Controller
     public function store(Request $request)
     {
         $validator = \Validator::make($request->all(), 
-                            [ 'name' => 'required|unique:projects', 'projectCodeId' => 'required|unique:projects'],
-                            [ 'name.required' => 'Please enter Project name', 'projectCodeId.unique' => 'Project ID is already used.']);
+                            [ 'name' => 'required|unique:projects', 'project_code_id' => 'required|unique:projects'],
+                            [ 'name.required' => 'Please enter Project Title', 'project_code_id.required' => 'Please enter Project ID', 'project_code_id.unique' => 'Project ID is already used.']);
 
         if ($validator->passes()) {
             $project                    = new Project();
@@ -86,7 +86,7 @@ class ProjectController extends Controller
             $project->category_id       = $request->categoryId;
             $project->project_type      = $request->projectTypeId;
             $project->total_budget      = $request->totalBudget;
-            $project->project_code_id   = $request->projectCodeId;
+            $project->project_code_id   = $request->project_code_id;
             $project->project_code      = FunctionHelper::projectCode();
             $project->location_name     = $request->locationName;
             $project->map_link          = $request->mapLink;
@@ -235,8 +235,8 @@ class ProjectController extends Controller
     public function update(Request $request, Project $project)
     {
         $validator = \Validator::make($request->all(), 
-                            [ 'name' => 'required|unique:projects,name,'.$project->id, 'projectCodeId' => 'required|unique:projects,project_code_id,'.$project->id,],
-                            [ 'name.required' => 'Please enter Project name', 'projectCodeId.unique' => 'Project ID is already used.']);
+                            [ 'name' => 'required|unique:projects,name,'.$project->id, 'project_code_id' => 'required|unique:projects,project_code_id,'.$project->id,],
+                            [ 'name.required' => 'Please enter Project name', 'project_code_id.unique' => 'Project ID is already used.']);
 
         if ($validator->passes()) {
             if($project) {
@@ -246,7 +246,7 @@ class ProjectController extends Controller
                 $project->category_id       = $request->categoryId;
                 $project->project_type      = $request->projectTypeId;
                 $project->total_budget      = $request->totalBudget;
-                $project->project_code_id   = $request->projectCodeId;
+                $project->project_code_id   = $request->project_code_id;
                 $project->location_name     = $request->locationName;
                 $project->map_link          = $request->mapLink;
                 $project->save();

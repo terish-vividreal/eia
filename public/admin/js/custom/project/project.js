@@ -52,7 +52,7 @@ if ($("#" + pageTitle + "Form").length > 0) {
         companyId: { 
             required: true, 
         },
-        projectCodeId: { 
+        project_code_id: { 
           required: true, 
         },
         projectTypeId: { 
@@ -76,7 +76,7 @@ if ($("#" + pageTitle + "Form").length > 0) {
         companyId: {
             required: "Please select Company",
         },
-        projectCodeId: {
+        project_code_id: {
           required: "Please enter ProjectID",
         },
         projectTypeId: { 

@@ -70,6 +70,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     // EIA Routes
     Route::resource('eias', EiaController::class);
+    Route::get('eias/{id}/details', [EiaController::class, 'details']);
     Route::get('projects/{projectId}/eias/create', [EiaController::class, 'create']);
     Route::get('projects/{projectId}/eias/lists', [EiaController::class, 'lists']);
     Route::get('projects/{projectId}/eias/{id}/edit', [EiaController::class, 'edit']);
@@ -81,6 +82,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('eias/{eiaId}/documents/{id}/edit', [DocumentController::class, 'edit']);
     Route::post('documents/file/upload', [DocumentController::class, 'uploadDocument'])->name('documents.file.upload');
     Route::post('documents/file/remove', [DocumentController::class, 'fileRemove'])->name('documents.file.remove');
+    Route::get('documents/file/list', [DocumentController::class, 'fileList'])->name('documents.file.list');
+    Route::get('document/file/download/{document}', [DocumentController::class, 'downloadFile'])->name('document.file.download');
 
 
 });

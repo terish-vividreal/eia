@@ -3,6 +3,7 @@
 let pageTitle 	  = $("#pageTitle").val();
 let pageRoute 	  = $("#pageRoute").val();
 let eiaRoute      = $("#eiaRoute").val();
+let documentId    = $("#documentId").val();
 let table;
 let id;
 let postId;
@@ -11,10 +12,10 @@ let formMethod;
 let validator;
 let projectId;
 let eiaId;
-let documentId;
-let isFileValidated   = false;
+let isFileValidated   = (documentId == '') ? false : true;
 let FileUploadRoute   = $("#FileUploadRoute").val();
 let FileRemoveRoute   = $("#FileRemoveRoute").val();
+let FileListRoute     = $("#FileListRoute").val();
 let csrfToken         = $("#" + pageTitle + "Form ").find('input[name="_token"]').val();
 
 
@@ -41,21 +42,27 @@ if ($("#" + pageTitle + "Form").length > 0) {
         documentNumber: { 
             required: true, 
         },
-        // dateOfEntry: { 
-        //     required: true, 
-        // },
-        // title: { 
-        //     required: true, 
-        // },
-        // status: { 
-        //     required: true, 
-        // },
-        // stage: { 
-        //   required: true, 
-        // },
-        // documentType: { 
-        //     required: true, 
-        // },
+        dateOfEntry: { 
+            required: true, 
+        },
+        title: { 
+            required: true, 
+        },
+        status: { 
+            required: true, 
+        },
+        stage: { 
+          required: true, 
+        },
+        documentType: { 
+            required: true, 
+        },
+        briefDescription: { 
+          required: true, 
+        },
+        comment: { 
+          required: true, 
+        },
     },
     messages: { 
         documentNumber: {
@@ -76,10 +83,15 @@ if ($("#" + pageTitle + "Form").length > 0) {
         stage: {
           required: "Please select Stage",
         },
+        briefDescription: {
+          required: "Please enter Brief Description",
+        },
+        comment: {
+          required: "Please enter Remarks / Comments",
+        },
     },
     submitHandler: function (form) {
       if(isFileValidated) {
-        alert('submit');
         disableBtn("formSubmitButton");
         $('#file-error').hide();
         projectId     = $("#" + pageTitle + "Form input[name=projectId]").val();
@@ -138,21 +150,36 @@ function resetForm() {
 }
 
 let uploadedDocumentMap = {};
+let addRemoveLink   = (documentId == '') ? true : false;
 Dropzone.autoDiscover = false;
 var myDropzone = new Dropzone(".dropzone", {
     url: FileUploadRoute,
     acceptedFiles: ".jpeg,.jpg,.png,.pdf",
     dictDefaultMessage: "Browse or Drag and Drop the File Here.",
-    addRemoveLinks: true,
-    maxFilesize: 2, //MB
+    addRemoveLinks: addRemoveLink,
+    maxFilesize: 40, //MB
     maxFiles: 3, 
     // renameFile: function (file) {
     //   let random      = Math.random().toString(36).substring(2,10);
     //   let newName     = new Date().getTime() + random + '_' + file.name;
     //   return newName;
     // },
-    // init: function() {
-    // },
+    init:function() {
+      // Get images
+      documentId    = $("#documentId").val();
+      var myDropzone = this;
+      $.ajax({ url: FileListRoute, type: 'GET', dataType: 'json', data: {documentId:documentId},
+        success: function(data){
+          console.log(data);
+          $.each(data, function (key, value) {
+            var file = {name: value.name, size: value.size};
+            myDropzone.options.addedfile.call(myDropzone, file);
+            myDropzone.options.thumbnail.call(myDropzone, file, value.path);
+            myDropzone.emit("complete", file);
+          });
+        }
+      });
+    },
     headers: { 'X-CSRF-TOKEN': csrfToken },
     removedfile: function(file) {
       var name = file.upload.filename;
@@ -171,8 +198,6 @@ var myDropzone = new Dropzone(".dropzone", {
         $("#" + pageTitle + "Form").append('<input class="document-hidden" type="hidden" name="documentOrg[]" value="' + response.name + '">')
     },
 });
-
-
 
 
 // DataTable Initialization

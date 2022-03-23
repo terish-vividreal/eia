@@ -53,22 +53,21 @@
     <div class="card-content">
       <div class="row">
         <div class="col s12 m6">
-            <h6 class="mb-2 mt-2"><i class="material-icons">info_outline</i> {{ Str::plural($page->title) ?? ''}} Details <a href="{{ url($page->route.'/'.$eia->id.'/details')}}" class="btn-small indigo"><i class="material-icons">remove_red_eye</i>  View </a> </h6>
-            
+            <h6 class="mb-2 mt-2"><i class="material-icons">info_outline</i> {{ Str::plural($page->title) ?? ''}} Details <a href="{{ url($page->route.'/'.$eia->id.'/details')}}" class="btn-small indigo"><i class="material-icons">remove_red_eye</i> View </a> </h6>
             <table class="striped">
                 <tbody>
                 <tr>
-                    <td>EIA Id:</td>
+                    <td>EIA ID:</td>
                     <td>{{ $eia->code_id ?? ''}}</td>
                 </tr>
                 <tr>
-                    <td>Project Team Leader:</td>
-                    <td>{{ $eia->project_team_leader ?? ''}}</td>
+                    <td>EIA Status:</td>
+                    <td> {!! App\Helpers\HtmlHelper::statusText($eia->stage_id, $eia->status) !!}</td>
                 </tr>
                 <tr>
-                    <td>Status:</td>
-                    <td>{!! App\Helpers\HtmlHelper::statusText($eia->stage_id, $eia->status) !!}</td>
-                </tr>
+                    <td>Project Team Leader :</td>
+                    <td>{{ $eia->project_team_leader ?? ''}}</td>
+                </tr> 
                 </tbody>
             </table>
         </div>
@@ -96,41 +95,66 @@
   <!-- users view card data ends -->
 
   <!-- users view card details start -->
-  <div class="card">
-    <div class="card-content">
-        <div class="card-title">
-            <div class="row right">
-            <div class="col s12 m12 ">
-                {!! App\Helpers\HtmlHelper::createLinkButton(url($page->route.'/'.$eia->id.'/documents/create'), 'Add New Document') !!}
+    @isset($eia->documents)
+      @foreach($eia->documents as $document)
+        <div class="row">
+          <div class="col s8">
+            <div class="card animate fadeUp">
+              <div class="card-content">
+                <div class="row" id="product-four">
+                  <div class="col m6 s12">
+                    <h5>{{$document->stage->name}} </h5>
+
+                    @isset($document->latestFile)
+                      
+                      <img src="{{$document->latestFile->file_name}}" class="responsive-img" style="max-width: 75% !important" alt="">
+                      <p>
+                      <a class="waves-effect waves-light btn gradient-45deg-purple-deep-orange z-depth-4 mt-2" href="{{ route('document.file.download', ['document' => $document->latestFile->name])}}" style="margin-top: 10px; !important">Download</a>
+                    @endisset
+                  </div>
+                  <div class="col m6 s12">
+                    
+                    <p style="text-align: right;">{!! App\Helpers\HtmlHelper::statusText($document->stage_id, $document->status) !!}</p>
+                    <!-- <hr class="mb-5"> -->
+
+                    <table class="striped">
+                      <tbody>
+                      <tr>
+                          <td>EIA ID:</td>
+                          <td>{{ $eia->code_id ?? ''}}</td>
+                      </tr>
+                      <tr>
+                          <td>Date of Entry:</td>
+                          <td> {{$document->date_of_entry ?? ''}}</td>
+                      </tr>
+                      <tr>
+                          <td>Title of Document:</td>
+                          <td>{{$document->title ?? '' }}</td>
+                      </tr> 
+                      <tr>
+                          <td>EIA Status:</td>
+                          <td>{!! App\Helpers\HtmlHelper::statusText($eia->stage_id, $eia->status) !!}</td>
+                      </tr> 
+                      <tr>
+                          <td>Project Team Leader:</td>
+                          <td>{{ $eia->project_team_leader ?? ''}}</td>
+                      </tr>
+                      <tr>
+                          <td>Cost of propose development:</td>
+                          <td>{{ number_format($eia->cost_of_develop) ?? ''}}</td>
+                      </tr> 
+                      </tbody>
+                    </table>
+                    
+                  </div>
+                </div>
+              </div>
             </div>
-            </div>
+          </div>
         </div>
+      @endforeach
+    @endisset
 
-
-
-
-      <div class="row">
-        <div class="col s12">
-            <table id="data-table-projects" class="display data-tables" data-url="{{ $page->route.'/'.$eia->id.'/documents/lists' }}" data-form="page" data-length="10">
-              <thead>
-                <tr>
-                  <th width="20px" data-orderable="false" data-column="DT_RowIndex"> No </th>
-                  <th width="150px" data-orderable="false" data-column="document_number"> Document Number </th>
-                  <th width="200px" data-orderable="true" data-column="date_of_entry"> Date of Creation</th>
-                  <th width="250px" data-orderable="false" data-column="title"> Title </th>
-                  <th width="250px" data-orderable="false" data-column="status"> Status </th>
-                  <th width="300px" data-orderable="true" data-column="brief_description"> Brief Description </th>
-                  <th width="150px" data-orderable="false" data-column="document_type"> Document Type </th>  
-                  <th width="200px" data-orderable="false" data-column="comment"> Remarks/Comments  </th>                            
-                  <th width="250px" data-orderable="false" data-column="action"> Action </th>   
-                </tr>
-              </thead>
-            </table>
-        </div>
-      </div>
-      <!-- </div> -->
-    </div>
-  </div>
   <!-- users view card details ends -->
 
 </div>
