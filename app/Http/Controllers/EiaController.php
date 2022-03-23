@@ -99,38 +99,11 @@ class EiaController extends Controller
     public function lists(Request $request, $projectId)
     {
         $detail     =  Eia::select(['code_id', 'status', 'date_of_entry', 'project_team_leader', 'cost_of_develop', 'stage_id', 'deleted_at', 'id'])->where('project_id', $projectId);
-        // if (isset($request->form)) {
-        //     foreach ($request->form as $search) {
-        //         if ($search['value'] != NULL && $search['name'] == 'searchTitle') {
-        //             $name       = strtolower($search['value']);
-
-        //             $detail     = $detail->where(function($query)use($name) {
-        //                 $query->where('name', 'LIKE', "{$name}%");
-        //                 $query->orWhere('location_name', 'LIKE', "{$name}%");
-        //             });
-
-        //             $detail     = $detail->orWhereHas('company', function ($query) use($name){
-        //                 $query->where('name', 'like', '%'.$name.'%');
-        //             });
-
-        //             $detail     = $detail->orWhereHas('projectType', function ($query) use($name){
-        //                 $query->where('name', 'like', '%'.$name.'%');
-        //             });
-
-        //             $detail     = $detail->orWhereHas('projectType', function ($query) use($name){
-        //                 $query->where('name', 'like', '%'.$name.'%');
-        //             });
-        //         }
-        //         if ($search['value'] != NULL && $search['value'] == 'inactive') {
-        //             $detail         = $detail->onlyTrashed();
-        //         }
-
-        //         if ($search['value'] != NULL && $search['name'] == 'sortBy') {
-        //             $orderBy        = $search['value'];
-        //             $detail         = $detail->orderBy($orderBy, 'ASC');
-        //         }
-        //     }
-        // }
+        if (isset($request->form)) {
+        }
+        else {
+            $detail         = $detail->orderBy('id', 'DESC');
+        }
         return Datatables::eloquent($detail)
             ->addIndexColumn()
             ->editColumn('code_id', function($detail) {
