@@ -136,6 +136,8 @@ class ProjectController extends Controller
                     $detail         = $detail->orderBy($orderBy, 'ASC');
                 }
             }
+        }else {
+            $detail         = $detail->orderBy('id', 'DESC');
         }
         return Datatables::eloquent($detail)
             ->addIndexColumn()
