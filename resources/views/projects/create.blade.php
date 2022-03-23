@@ -54,7 +54,7 @@
                     </div>
                     @include('layouts.error') 
                     @include('layouts.success') 
-                    {!! Form::open(['class'=>'ajax-submit','id'=> Str::camel($page->title).'Form']) !!}
+                    {!! Form::open(['class'=>'ajax-submit', 'id'=> Str::camel($page->title).'Form']) !!}
                         {{ csrf_field() }}
                         {!! Form::hidden('pageTitle', Str::camel($page->title), ['id' => 'pageTitle'] ); !!} 
                         {!! Form::hidden('pageRoute', url($page->route), ['id' => 'pageRoute'] ); !!}
