@@ -272,7 +272,7 @@ class UserController extends Controller
     // User update status 
     public function updateStatus(Request $request)
     {
-        $user       = User::findOrFail($request->user_id);
+        $user       = User::findOrFail($request->post_id);
         if ($user) {
             $status         = ($user->status == 0)?1:0;
             $user->status   = $status;

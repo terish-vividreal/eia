@@ -105,7 +105,7 @@ Route::prefix('admin/')->name('admin.')->group(function () {
         Route::resource($projectTypes, ProjectTypeController::class)->except(['show']);
         Route::get($projectTypes.'/lists', [ProjectTypeController::class, 'lists']);
         Route::post($projectTypes.'/update-status', [ProjectTypeController::class, 'updateStatus']);
-
+        
         // Project type Routes
         $designations = 'designations';
         Route::resource($designations, DesignationController::class)->except(['show']);

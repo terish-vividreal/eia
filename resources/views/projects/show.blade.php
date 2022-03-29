@@ -84,7 +84,7 @@
 
                 <tr>
                     <td>Total EIAs:</td>
-                    <td><span class="">0</span></td>
+                    <td><span class="">{{count($project->eias)}}</span></td>
                 </tr>
 
                 <tr>
