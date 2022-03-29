@@ -23,6 +23,7 @@ return [
     'Project Types' => 'نوع المشروع',
     'Departments' => 'الإدارات',
     'Companies' => 'شركات',
-    
+    'Permissions' => 'أذونات',
+        
 ];
 ?>

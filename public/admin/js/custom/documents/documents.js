@@ -39,56 +39,56 @@ $('input[name="dateOfEntry"]').daterangepicker({
 if ($("#" + pageTitle + "Form").length > 0) {
   validator = $("#" + pageTitle + "Form").validate({ 
     rules: {
-        documentNumber: { 
-            required: true, 
-        },
-        dateOfEntry: { 
-            required: true, 
-        },
-        title: { 
-            required: true, 
-        },
-        status: { 
-            required: true, 
-        },
-        stage: { 
-          required: true, 
-        },
-        documentType: { 
-            required: true, 
-        },
-        briefDescription: { 
-          required: true, 
-        },
-        comment: { 
-          required: true, 
-        },
+      documentNumber: { 
+        required: true, 
+      },
+      dateOfEntry: { 
+        required: true, 
+      },
+      title: { 
+        required: true, 
+      },
+      status: { 
+        required: true, 
+      },
+      stage: { 
+        required: true, 
+      },
+      documentType: { 
+        required: true, 
+      },
+      briefDescription: { 
+        required: true, 
+      },
+      comment: { 
+        required: true, 
+      },
     },
     messages: { 
-        documentNumber: {
-          required: "Please enter Document Number",
-        },
-        title: {
-          required: "Please enter Title of Document",
-        },
-        status: {
-          required: "Please select Status",
-        },
-        dateOfEntry: {
-          required: "Please enter Date Of Entry",
-        },
-        documentType: {
-          required: "Please select Document Type",
-        },
-        stage: {
-          required: "Please select Stage",
-        },
-        briefDescription: {
-          required: "Please enter Brief Description",
-        },
-        comment: {
-          required: "Please enter Remarks / Comments",
-        },
+      documentNumber: {
+        required: "Please enter Document Number",
+      },
+      title: {
+        required: "Please enter Title of Document",
+      },
+      status: {
+        required: "Please select Status",
+      },
+      dateOfEntry: {
+        required: "Please enter Date Of Entry",
+      },
+      documentType: {
+        required: "Please select Document Type",
+      },
+      stage: {
+        required: "Please select Stage",
+      },
+      briefDescription: {
+        required: "Please enter Brief Description",
+      },
+      comment: {
+        required: "Please enter Remarks / Comments",
+      },
     },
     submitHandler: function (form) {
       if(isFileValidated) {
@@ -123,11 +123,11 @@ if ($("#" + pageTitle + "Form").length > 0) {
         
     },
     errorPlacement: function(error, element) {
-        if (element.is("select")) {
-            error.insertAfter(element.next('.select2'));
-        }else {
-            error.insertAfter(element);
-        }
+      if (element.is("select")) {
+        error.insertAfter(element.next('.select2'));
+      }else {
+        error.insertAfter(element);
+      }
     },
     errorElement : 'div',
   })
@@ -184,21 +184,20 @@ var myDropzone = new Dropzone(".dropzone", {
     removedfile: function(file) {
       var name = file.upload.filename;
       $.ajax({type: "POST", url: FileRemoveRoute, data: { "_token": csrfToken, name: name}});
-        var fileRef;
-        isFileValidated = (myDropzone.files.length == 0 ) ? false : true ;
-        $("#" + pageTitle + "Form").find('input[name="documentFiles[]"][value="' + name + '"]').remove()
-        return (fileRef = file.previewElement) != null ?
-        fileRef.parentNode.removeChild(file.previewElement) : void 0;
+      var fileRef;
+      isFileValidated = (myDropzone.files.length == 0 ) ? false : true ;
+      $("#" + pageTitle + "Form").find('input[name="documentFiles[]"][value="' + name + '"]').remove()
+      return (fileRef = file.previewElement) != null ?
+      fileRef.parentNode.removeChild(file.previewElement) : void 0;
     },
     success: function (file, response) {
-        var name;
-        $("#documentFile").val(response.filename);
-        isFileValidated = true;
-        $("#" + pageTitle + "Form").append('<input class="document-hidden" type="hidden" name="documents[]" value="' + response.filename + '">')
-        $("#" + pageTitle + "Form").append('<input class="document-hidden" type="hidden" name="documentOrg[]" value="' + response.name + '">')
+      var name;
+      $("#documentFile").val(response.filename);
+      isFileValidated = true;
+      $("#" + pageTitle + "Form").append('<input class="document-hidden" type="hidden" name="documents[]" value="' + response.filename + '">')
+      $("#" + pageTitle + "Form").append('<input class="document-hidden" type="hidden" name="documentOrg[]" value="' + response.name + '">')
     },
 });
-
 
 // DataTable Initialization
 var columns;
@@ -209,13 +208,12 @@ var url       = table.data('url');
 var form      = table.data('form');
 var length    = table.data('length');
 
-
 columns   = [];
 formValue = [];
 
 table.find('thead th').each(function () {
-    var column = {'data': $(this).data('column')};
-    columns.push(column);
+  var column = {'data': $(this).data('column')};
+  columns.push(column);
 });
 
 table.DataTable({
@@ -224,12 +222,9 @@ table.DataTable({
     searching: false,
     bLengthChange: false,
     pageLength: 10,
-    ajax: {
-        "type": "GET",
-        "url": url,
-        "data": function (data) {
-            data.form = formValue;
-        }
+    ajax: { "type": "GET", "url": url, "data": function (data) {
+      data.form = formValue;
+    }
     },
     columns: columns,
 });
@@ -323,4 +318,3 @@ table.on('click', '.view-more-details', function() {
     var column    = $(this).attr('data-column');
     alert(postUrl)
 });
-

@@ -116,7 +116,6 @@
 </div><!-- START RIGHT SIDEBAR NAV -->
 @endsection
 
-
 {{-- vendor scripts --}}
 @section('vendor-script')
 

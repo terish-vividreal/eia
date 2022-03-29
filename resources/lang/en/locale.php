@@ -25,5 +25,6 @@ return [
     'Project Types' => 'Project Types',
     'Departments' => 'Departments',
     'Companies' => 'Companies',
+    'Permissions' => 'Permissions',
 ];
 ?>

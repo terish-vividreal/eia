@@ -96,7 +96,6 @@ class DocumentController extends Controller
                     $docFile->save();
                 }
             }
-            
             return ['flagError' => false, 'message' => $this->title. " added successfully"];
         }
         return ['flagError' => true, 'message' => "Errors Occurred. Please check !",  'error' => $validator->errors()->all()];
@@ -114,10 +113,18 @@ class DocumentController extends Controller
             ->editColumn('date_of_entry', function($detail) {
                 return $detail->formatted_date_of_entry; 
             })
+            ->editColumn('document_number', function($detail) {
+                $link       = '';
+                $link       .= '<a href="documents/'. $detail->id.'">'.$detail->document_number.'</a>';
+                return $link ;
+            })
             ->editColumn('title', function($detail) {
-                $title   = '';
-                $title   = Str::limit(strip_tags($detail->title), 40);
-                return $title ;
+                $title      = '';
+                $link       = '';
+                $title       = Str::limit(strip_tags($detail->title), 40);
+                            
+                $link       .= '<a href="documents/'. $detail->id.'">'.$title.'</a>';
+                return $link ;
             })
             ->editColumn('status', function($detail) {
                 $status = '';
@@ -172,12 +179,28 @@ class DocumentController extends Controller
     public function show(Request $request, Document $document)
     {
         if ($request->ajax()) {
-
             if ($document) {
                 return ['flagError' => false, 'document' => $document];
             } else {
                 return ['flagError' => true, 'message' => "Data not found, Try again!"];
             }
+        } else {
+            if ($document) {
+                if ($document) {
+                    $page                       = collect();
+                    $variants                   = collect();
+                    $user                       = auth()->user();
+                    $page->title                = $this->title;
+                    $page->route                = url($this->route);
+                    $page->projectRoute         = url('projects/'.$eia->project_id); 
+                    $page->eiaRoute             = url('eias/'.$eia->id); 
+                    $variants->documentStatuses = DocumentStatus::pluck('name','id'); 
+                    $variants->stages           = EiaStage::pluck('name','id'); 
+                    return view($this->viewPath . '.show', compact('page', 'variants', 'eia', 'document', 'user'));
+                }
+                abort(404);
+            }
+            abort(404);
         }
     }
 
@@ -190,9 +213,9 @@ class DocumentController extends Controller
     public function edit(Request $request, $eiaId, $id)
     {
         $eia        = Eia::find($eiaId);
-        if($eia) {
+        if ($eia) {
             $document            = Document::find($id);
-            if($document) {
+            if ($document) {
                 $page                       = collect();
                 $variants                   = collect();
                 $user                       = auth()->user();
@@ -245,17 +268,8 @@ class DocumentController extends Controller
      */
     public function fileList(Request $request)
     {
-        $data = [];
-        $images            = DocumentFile::where('document_id', $request->documentId)->get()->toArray();
-
-        // foreach($images as $image){
-        //     $tableImages[] = $image['name'];
-        // }
-
-        // $storeFolder    = public_path('uploads/gallery');
-        // $file_path      = public_path('uploads/gallery/');
-
-
+        $data       = [];
+        $images     = DocumentFile::where('document_id', $request->documentId)->get()->toArray();
         // $files = scandir($storeFolder);
         // foreach ( $files as $file ) {
         //     if ($file !='.' && $file !='..' && in_array($file,$tableImages)) {       
@@ -265,20 +279,12 @@ class DocumentController extends Controller
         //         $obj['path'] = url('public/uploads/gallery/'.$file);
         //         $data[] = $obj;
         //     }
-            
         // }
-
-        foreach($images as $image){
-                $obj['name']    = $image['original_name'];
-                // $file_path      = storage_path().'/app/public/'.$this->uploadPath.'/'.$image['name'];
-                // $obj['size']    = filesize($file_path);          
-                $obj['path']        = asset('storage/documents/' . $image['name']);
-                $data[] = $obj;
+        foreach ($images as $image) {
+            $obj['name']        = $image['original_name'];
+            $obj['path']        = asset('storage/documents/' . $image['name']);
+            $data[] = $obj;
         }
-
-
-
-        //dd($data);
         return response()->json($data);
     }
 
@@ -301,26 +307,20 @@ class DocumentController extends Controller
     public function uploadDocument(Request $request)
     {  
         if ($request->file('file')) {
-
             $image      = $request->file('file');
             $name       = $image->getClientOriginalName();
             $fileName   = FunctionHelper::documentName($name);
-
             if(env('APP_ENV') == 'local') {
-
                 $path = storage_path().'/app/public/'.$this->uploadPath;
-
                 if (!file_exists($path)) {
                     Storage::makeDirectory($path, 0755);
                 }
-
                 $path       = $image->storeAs($this->uploadPath, $fileName, 'public');
-
             } else {
                 // Store Image in S3
                 // $request->image->storeAs('images', $fileName, 's3');
             }
-            return response()->json([ 'filename' => $fileName, 'name' => $name ]);
+            return response()->json(['filename' => $fileName, 'name' => $name ]);
         }
     }
 

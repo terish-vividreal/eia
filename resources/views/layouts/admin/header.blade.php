@@ -93,6 +93,12 @@ $user_profile     = (Auth::user()->profile != null) ? asset('storage/store/users
                                 <li data-menu=""><a href="{{ url(ROUTE_PREFIX.'/departments') }}"><span data-i18n="eCommerce">{{__('locale.Departments')}}</span></a></li>
                             </ul>
                         </li>
+                        <li>
+                            <a class="@if (Request::is(ROUTE_PREFIX.'/roles*') ||  Request::is(ROUTE_PREFIX.'/roles/create*')) active @endif" href="javascript:"> <i class="material-icons">lock</i><span>{{__('locale.Roles')}}</span></span></a>
+                        </li>
+                        <li>
+                            <a class="@if (Request::is(ROUTE_PREFIX.'/roles*') ||  Request::is(ROUTE_PREFIX.'/roles/create*')) active @endif" href="javascript:"> <i class="material-icons">vpn_key</i><span>{{__('locale.Permissions')}}</span></span></a>
+                        </li>
                     </ul>
                 </div>
                 <!-- END: Horizontal nav start-->

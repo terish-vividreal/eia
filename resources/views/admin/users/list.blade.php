@@ -59,6 +59,7 @@
                       <div class="row">
                           <form id="page-form" name="page-form">
                             {!! Form::hidden('user_type', '', ['id' => 'user_type'] ); !!}
+                            {!! Form::hidden('status', '', ['id' => 'status'] ); !!}
                             <div class="col s12 m3">
                                 <label for="users-list-verified">User Details</label>
                                 <div class="input-field">
@@ -95,7 +96,7 @@
                                   <th width="" data-orderable="false" data-column="email"> E-mail </th>
                                   <th width="200px" data-orderable="false" data-column="mobile"> Mobile </th>
                                   <th width="" data-orderable="false" data-column="role"> Roles </th>
-                                  <th width="100px" data-orderable="false" data-column="status"> Status </th>
+                                  <!-- <th width="100px" data-orderable="false" data-column="status"> Status </th> -->
                                   <th width="200px" data-orderable="false" data-column="action"> Action </th>
                               </tr>
                               </thead>

@@ -35,11 +35,8 @@ Route::get('/', function () {
 });
 
 Auth::routes();
-
 Route::get('lang/{lang}', [LocalizationController::class, 'switchLang'])->name('lang.switch');
-
 // Route::get('lang/{lang}', ['as' => 'lang.switch', 'uses' => 'App\Http\Controllers\LanguageController@switchLang']);
-
 Route::get('forget-password', [ForgotPasswordController::class, 'showForgetPasswordForm'])->name('forget.password.get');
 Route::post('forget-password', [ForgotPasswordController::class, 'submitForgetPasswordForm'])->name('forget.password.post'); 
 Route::get('reset-password/{token}', [ForgotPasswordController::class, 'showResetPasswordForm'])->name('reset.password.get');
@@ -84,19 +81,16 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('documents/file/remove', [DocumentController::class, 'fileRemove'])->name('documents.file.remove');
     Route::get('documents/file/list', [DocumentController::class, 'fileList'])->name('documents.file.list');
     Route::get('document/file/download/{document}', [DocumentController::class, 'downloadFile'])->name('document.file.download');
-
-
 });
 
 // Super Admin Routes
 Route::prefix('admin/')->name('admin.')->group(function () {
 
     Route::group(['middleware' => ['auth', 'admin']], function () {
-        
         // Admin Dashboard Routes
         Route::get('dashboard', [AdminHome::class, 'index'])->name('dashboard');
         Route::get('profile', [AdminHome::class, 'edit'])->name('profile');
-        Route::put('profile/{id}', [AdminHome::class, 'update'])->name('profile');
+        Route::put('profile/{id}', [AdminHome::class, 'update']);
         Route::post('update-password', [AdminHome::class, 'updatePassword']);
 
         // User Routes
@@ -127,7 +121,6 @@ Route::prefix('admin/')->name('admin.')->group(function () {
         $link = 'common';
         Route::post($link . '/is-unique-email', [CommonController::class, 'isUniqueEmail']);
         Route::post($link . '/is-unique-mobile', [CommonController::class, 'isUniqueMobile']);
-        
     });
 });
 

@@ -129,6 +129,9 @@ class UserController extends Controller
                 if ($search['value'] != NULL && $search['value'] == 'disabled') {
                     $detail         = $detail->onlyTrashed();
                 }
+
+                // print_r($search);
+
             }
         }
         $detail->orderBy('id', 'desc');
@@ -250,19 +253,19 @@ class UserController extends Controller
     public function destroy(User $user, Request $request)
     {
         $user->delete();
-        return ['flagError' => false, 'message' => " Customer disabled successfully"];
+        return ['flagError' => false, 'message' => " User disabled successfully"];
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Customer  $customer
+     * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
     public function restore($id, Request $request)
     {
-        $customer   = User::where('id', $id)->withTrashed()->first();
-        $customer->restore();
+        $user   = User::where('id', $id)->withTrashed()->first();
+        $user->restore();
         return ['flagError' => false, 'message' => " User enabled successfully"];
     }
 
