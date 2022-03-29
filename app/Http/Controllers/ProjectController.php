@@ -111,6 +111,7 @@ class ProjectController extends Controller
                     $detail     = $detail->where(function($query)use($name) {
                         $query->where('name', 'LIKE', "{$name}%");
                         $query->orWhere('location_name', 'LIKE', "{$name}%");
+                        $query->orWhere('project_code_id', 'LIKE', "{$name}%");
                     });
 
                     $detail     = $detail->orWhereHas('company', function ($query) use($name){

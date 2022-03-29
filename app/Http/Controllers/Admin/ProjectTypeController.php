@@ -165,7 +165,7 @@ class ProjectTypeController extends Controller
     // User update status 
     public function updateStatus(Request $request)
     {
-        $projectType       = ProjectType::findOrFail($request->user_id);
+        $projectType       = ProjectType::findOrFail($request->post_id);
         if ($projectType) {
             $status                 = ($projectType->status == 0)?1:0;
             $projectType->status    = $status;
