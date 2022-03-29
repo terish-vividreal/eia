@@ -26,16 +26,17 @@ class EiaController extends Controller
      */
     public function index(Request $request)
     {
-        // if ($request->ajax()) {
-        //     return $this->lists($request); 
-        // }
-        // $page                   = collect();
-        // $variants               = collect();
-        // $user                   = auth()->user();
-        // $page->title            = $this->title;
-        // $page->link             = url($this->route);
-        // $page->route            = $this->route;  
-        // return view($this->viewPath . '.list', compact('page', 'variants', 'user'));
+        if ($request->ajax()) {
+            return $this->lists($request); 
+        }
+        $page                   = collect();
+        $variants               = collect();
+        $user                   = auth()->user();
+        $page->title            = $this->title;
+        $page->link             = url($this->route);
+        $page->route            = $this->route;  
+        $variants->projects     = Project::pluck('name','id'); 
+        return view($this->viewPath . '.list', compact('page', 'variants', 'user'));
     }
 
     /**
@@ -96,19 +97,48 @@ class EiaController extends Controller
      * Display a listing of the resource in datatable.
      * @throws \Exception
      */
-    public function lists(Request $request, $projectId)
+    public function lists(Request $request, $projectId = null)
     {
-        $detail     =  Eia::select(['code_id', 'status', 'date_of_entry', 'project_team_leader', 'cost_of_develop', 'stage_id', 'deleted_at', 'id'])->where('project_id', $projectId);
+        $detail     =  Eia::with('project')->select(['code_id', 'status', 'date_of_entry', 'project_team_leader', 'cost_of_develop', 'stage_id', 'deleted_at', 'project_id', 'id']);
+        
+        if ($projectId!= null) {
+            $detail     = $detail->where('project_id', $projectId);
+        }
+        
         if (isset($request->form)) {
+            
+            foreach ($request->form as $search) {
+                if ($search['value'] != NULL && $search['name'] == 'searchTitle') {
+                    
+                    $name       = strtolower($search['value']);
+                    $detail     = $detail->where(function($query)use($name) {
+                        $query->where('code_id', 'LIKE', "{$name}%");
+                    });
+
+                }
+                if ($search['value'] != NULL && $search['value'] == 'inactive') {
+                    $detail         = $detail->onlyTrashed();
+                }
+
+                if ($search['value'] != NULL && $search['name'] == 'project_id') {
+                    $project_id     = strtolower($search['value']);
+                    $detail         = $detail->where('project_id',  $project_id);
+                }
+            }
         }
         else {
             $detail         = $detail->orderBy('id', 'DESC');
         }
         return Datatables::eloquent($detail)
             ->addIndexColumn()
+            ->addColumn('project_id', function($detail) {
+                $link   = '';
+                $link   .= '<a href="projects/'. $detail->project->id.'">'.$detail->project->project_code_id.'</a>';
+                return $link ;
+            })
             ->editColumn('code_id', function($detail) {
                 $link   = '';
-                $link   .= '<a href="'.$this->route.'/'.$detail->id.'">'.$detail->code_id.'</a>';
+                $link   .= '<a href="'.$this->route .'/'. $detail->id.'">'.$detail->code_id.'</a>';
                 return $link ;
             })
             ->editColumn('gps_coordinates', function($detail) {
@@ -128,7 +158,7 @@ class EiaController extends Controller
             ->addColumn('action', function($detail) use ($projectId) {
                 $action = '';
                 if ($detail->deleted_at == null) { 
-                    $action .= HtmlHelper::editButton(url('projects/'.$projectId.'/eias/'.$detail->id.'/edit'), $detail->id);
+                    $action .= HtmlHelper::editButton(url('projects/'.$detail->project_id.'/eias/'.$detail->id.'/edit'), $detail->id);
                     $action .= HtmlHelper::disableButton(url($this->route), $detail->id, 'Inactive');
                 } else {
                     $action .= HtmlHelper::restoreButton(url($this->route.'/restore'), $detail->id);
@@ -255,6 +285,7 @@ class EiaController extends Controller
      */
     public function destroy(Eia $eia)
     {
-        //
+        $eia->delete();
+        return ['flagError' => false, 'message' =>  $this->title. " disabled successfully"];
     }
 }

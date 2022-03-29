@@ -351,10 +351,10 @@ if ($("#changePasswordForm").length > 0) {
       },
       messages: { 
         old_password: {
-          required: "Please enter password",
+          required: "Please enter old password",
         },
         new_password: {
-          required: "Please enter password",
+          required: "Please enter new password",
           minlength: "Passwords must be at least 6 characters in length",
           maxlength: "Length cannot be more than 10 characters",
         },
@@ -392,8 +392,6 @@ if ($("#changePasswordForm").length > 0) {
     $("#changePasswordForm label").removeClass("error");
     $("#changePasswordForm .label-placeholder").addClass('active');
   }
-
-
 </script>
 @endpush
 

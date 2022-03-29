@@ -255,10 +255,10 @@ if ($("#updatePasswordForm").length > 0) {
         },
         messages: { 
             old_password: {
-                required: "Please enter password",
+                required: "Please enter old password",
             },
             new_password: {
-                required: "Please enter password",
+                required: "Please enter new password",
                 minlength: "Passwords must be at least 6 characters in length",
                 maxlength: "Length cannot be more than 10 characters",
             },

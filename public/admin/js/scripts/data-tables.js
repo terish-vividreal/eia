@@ -171,9 +171,7 @@ $(document).ready(function () {
       });
 
       $(".listBtn").on("click", function()  {
-
         $("#status").val($(this).attr('data-type'));
-
         formValue = $('#' + form + '-form').serializeArray();
         table.DataTable().draw();
       });

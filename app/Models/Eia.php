@@ -5,12 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use \Venturecraft\Revisionable\RevisionableTrait;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Helpers\FunctionHelper;
 
 class Eia extends Model
 {
     use HasFactory;
     use RevisionableTrait;
+    use SoftDeletes;
+
+    protected $dates = ['deleted_at'];
 
     public function stage()
     {

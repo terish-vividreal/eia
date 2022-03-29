@@ -53,28 +53,31 @@
                       </div>
                     </div>
                     <div class="row">
-                          <form id="page-form" name="page-form">
-                            {!! Form::hidden('status', '', ['id' => 'status'] ); !!}
-                        </form>
-                      </div>
-                    <div class="row">
-                      <div class="col s12">
-                        <table id="data-table-company" class="display data-tables" data-url="{{ $page->link.'/lists' }}" data-form="page" data-length="10">
-                          <thead>
-                            <tr>
-                              <th width="20px" data-orderable="false" data-column="DT_RowIndex"> No </th>
-                              <th width="" data-orderable="false" data-column="name"> Name </th>
-                              <th width="" data-orderable="false" data-column="contact_name"> Contact Name	 </th>
-                              <th width="" data-orderable="false" data-column="email"> E-mail </th>
-                              <th width="" data-orderable="false" data-column="contact"> Contact </th>
-                              <th width="100px" data-orderable="false" data-column="status"> Status </th>
-                              <th width="200px" data-orderable="false" data-column="action"> Action </th>
-                            </tr>
-                          </thead>
-                        </table>
-                      </div>
+                        <form id="page-form" name="page-form">
+                          {!! Form::hidden('status', '', ['id' => 'status'] ); !!}
+                      </form>
                     </div>
                   </div>
+                    <div id="view-borderless-table">
+                      <div class="row">
+                        <div class="col s12">
+                          <table id="data-table-company" class="display data-tables" data-url="{{ $page->link.'/lists' }}" data-form="page" data-length="10">
+                            <thead>
+                              <tr>
+                                <th width="20px" data-orderable="false" data-column="DT_RowIndex"> No </th>
+                                <th width="" data-orderable="false" data-column="name"> Name </th>
+                                <th width="" data-orderable="false" data-column="contact_name"> Contact Name	 </th>
+                                <th width="" data-orderable="false" data-column="email"> E-mail </th>
+                                <th width="" data-orderable="false" data-column="contact"> Contact </th>
+                                <th width="100px" data-orderable="false" data-column="status"> Status </th>
+                                <th width="200px" data-orderable="false" data-column="action"> Action </th>
+                              </tr>
+                            </thead>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  
               </div>
           </div>
       </div>

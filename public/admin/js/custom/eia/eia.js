@@ -17,6 +17,7 @@ $('#sortBy').select2({ placeholder: "Sort By", allowClear: true});
 $('#documentType').select2({ placeholder: "Please select Document Type", allowClear: true});
 $('#status').select2({ placeholder: "Please select Status", allowClear: true});
 $('#stage').select2({ placeholder: "Please select Stage", allowClear: true});
+$('#project_id').select2({ placeholder: "Please select a Project", allowClear: true});
 
 $('input[name="dateOfEntry"]').daterangepicker({
     singleDatePicker: true,
@@ -146,7 +147,7 @@ function resetForm() {
 var columns;
 var formValue;
 
-var table     = $('#data-table-projects');
+var table     = $('#data-table-eia');
 var url       = table.data('url');
 var form      = table.data('form');
 var length    = table.data('length');
@@ -194,9 +195,14 @@ $('#' + form + '-filterFormClearButton').click(function () {
     table.DataTable().draw();
 });
 
+$("#project_id").change(function() {
+  formValue = $('#' + form + '-form').serializeArray();
+  table.DataTable().draw();
+});
+
 // Show active and Inactive Lists
 $(".listBtn").on("click", function()  {
-    $("#status").val($(this).attr('data-type'));
+    $("#eia_status").val($(this).attr('data-type'));
     formValue = $('#' + form + '-form').serializeArray();
     table.DataTable().draw();
 });
