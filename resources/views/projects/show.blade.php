@@ -176,7 +176,6 @@
 <!-- users view ends -->
 @endsection
 
-
 {{-- vendor scripts --}}
 @section('vendor-script')
 
