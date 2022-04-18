@@ -81,6 +81,9 @@ $user_profile     = (Auth::user()->profile != null) ? asset('storage/store/users
                             <a class="@if (Request::is('eias*')) active @endif" href="{{ url('eias') }}"> <i class="material-icons">attach_file</i><span><span class="dropdown-title" data-i18n="Dashboard">EIA</span></span></a>
                         </li>
                         <li>
+                            <a class="@if (Request::is('documents*')) active @endif" href="{{ url('documents') }}"> <i class="material-icons">description</i><span><span class="dropdown-title" data-i18n="Dashboard">Documents</span></span></a>
+                        </li>
+                        <li>
                             <a class="@if (Request::is('home*')) active @endif" href="javascript:"> <i class="material-icons">assessment</i><span><span class="dropdown-title" data-i18n="Dashboard">Permits</span></span></a>
                         </li>
                     </ul>

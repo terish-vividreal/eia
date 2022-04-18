@@ -47,8 +47,7 @@
       </div> -->
     </div>
   </div>
-  <!-- users view media object ends -->
-  <!-- users view card data start -->
+  <!-- users view media object ends -->  <!-- users view card data start -->
   <div class="card">
     <div class="card-content">
       <div class="row">
@@ -104,48 +103,42 @@
                 <div class="row" id="product-four">
                   <div class="col m6 s12">
                     <h5>{{$document->stage->name}} </h5>
-
                     @isset($document->latestFile)
-                      
                       <img src="{{$document->latestFile->file_name}}" class="responsive-img" style="max-width: 75% !important" alt="">
-                      <p>
-                      <a class="waves-effect waves-light btn gradient-45deg-purple-deep-orange z-depth-4 mt-2" href="{{ route('document.file.download', ['document' => $document->latestFile->name])}}" style="margin-top: 10px; !important">Download</a>
+                      <p><a class="waves-effect waves-light btn gradient-45deg-purple-deep-orange z-depth-4 mt-2" href="{{ route('document.file.download', ['document' => $document->latestFile->name])}}" style="margin-top: 10px; !important">Download</a></p>
                     @endisset
                   </div>
                   <div class="col m6 s12">
-                    
                     <p style="text-align: right;">{!! App\Helpers\HtmlHelper::statusText($document->stage_id, $document->status) !!}</p>
                     <!-- <hr class="mb-5"> -->
-
                     <table class="striped">
                       <tbody>
                       <tr>
-                          <td>EIA ID:</td>
-                          <td>{{ $eia->code_id ?? ''}}</td>
+                        <td>EIA ID:</td>
+                        <td><a href="{{ url('documents/'.$document->id)}}" >{{ $eia->code_id ?? ''}} </a></td>
                       </tr>
                       <tr>
-                          <td>Date of Entry:</td>
-                          <td> {{$document->date_of_entry ?? ''}}</td>
+                        <td>Date of Entry:</td>
+                        <td> {{$document->date_of_entry ?? ''}}</td>
                       </tr>
                       <tr>
-                          <td>Title of Document:</td>
-                          <td>{{$document->title ?? '' }}</td>
+                        <td>Title of Document:</td>
+                        <td>{{$document->title ?? '' }}</td>
                       </tr> 
                       <tr>
-                          <td>EIA Status:</td>
-                          <td>{!! App\Helpers\HtmlHelper::statusText($eia->stage_id, $eia->status) !!}</td>
+                        <td>EIA Status:</td>
+                        <td>{!! App\Helpers\HtmlHelper::statusText($document->stage_id, $document->status) !!}</td>
                       </tr> 
                       <tr>
-                          <td>Project Team Leader:</td>
-                          <td>{{ $eia->project_team_leader ?? ''}}</td>
+                        <td>Project Team Leader:</td>
+                        <td>{{ $eia->project_team_leader ?? ''}}</td>
                       </tr>
                       <tr>
-                          <td>Cost of propose development:</td>
-                          <td>{{ number_format($eia->cost_of_develop) ?? ''}}</td>
+                        <td>Cost of propose development:</td>
+                        <td>{{ number_format($eia->cost_of_develop) ?? ''}}</td>
                       </tr> 
                       </tbody>
                     </table>
-                    
                   </div>
                 </div>
               </div>

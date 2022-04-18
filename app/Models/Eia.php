@@ -28,7 +28,7 @@ class Eia extends Model
 
     public function documents()
     {
-        return $this->hasMany(Document::class)->orderBy('id', 'DESC');
+        return $this->hasMany(Document::class)->where('parent_id', 0)->orderBy('id', 'DESC');
     }
 
     public function getFormattedDateOfEntryAttribute()

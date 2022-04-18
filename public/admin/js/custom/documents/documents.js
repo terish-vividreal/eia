@@ -18,21 +18,40 @@ let FileRemoveRoute   = $("#FileRemoveRoute").val();
 let FileListRoute     = $("#FileListRoute").val();
 let csrfToken         = $("#" + pageTitle + "Form ").find('input[name="_token"]').val();
 
-
-
 $('#sortBy').select2({ placeholder: "Sort By", allowClear: true});
 $('#documentType').select2({ placeholder: "Please select Document Type", allowClear: true});
 $('#status').select2({ placeholder: "Please select Status", allowClear: true});
 $('#stage').select2({ placeholder: "Please select Stage", allowClear: true});
+$('#project_id').select2({ placeholder: "Please select a Project", allowClear: true});
+$('#eia_id').select2({ placeholder: "Please select EIA", allowClear: true});
+$('#assigned_to').select2({ placeholder: "Please select User", allowClear: true});
 
 $('input[name="dateOfEntry"]').daterangepicker({
-    singleDatePicker: true,
-    // showDropdowns: true,
-    autoApply: true,
-    startDate: new Date(),
-    timePicker: true,
-    locale: { format: 'DD-MM-YYYY h:mm A'},
-    autoApply: true,
+  singleDatePicker: true,
+  // showDropdowns: true,
+  autoApply: true,
+  startDate: new Date(),
+  timePicker: true,
+  locale: { format: 'DD-MM-YYYY h:mm A'},
+  autoApply: true,
+});
+
+$( document ).ready(function() {
+  listSubDocuments();
+});
+
+$(document).on('change', '#project_id', function () {
+  var url = '';
+  $.ajax({ type: 'POST', url: "common/get-eia-of-project", data:{'project_id':this.value }, dataType: 'json',
+    success: function(data) {
+      var selectTerms = '<option value="">Please select EIA</option>';
+      $.each(data.data, function(key, value) {
+        selectTerms += '<option value="' + value.id + '" >' + value.code_id + '</option>';
+      });
+      var select = $('#eia_id');
+      select.empty().append(selectTerms);
+    }
+  });
 });
 
 // Form Validation with Ajax Submit
@@ -143,22 +162,24 @@ jQuery.validator.addMethod("mobileFormat", function (value, element) {
 
 function resetForm() {
 	validator.resetForm();
-    $('#' + pageTitle + 'Form').find("input[type=text]").val("");
-    $("#companyId").val('').trigger('change');
-    $("#categoryId").val('').trigger('change');
-    $("#projectTypeId").val('').trigger('change');
+  $('#' + pageTitle + 'Form').find("input[type=text]").val("");
+  $("#companyId").val('').trigger('change');
+  $("#categoryId").val('').trigger('change');
+  $("#projectTypeId").val('').trigger('change');
 }
 
 let uploadedDocumentMap = {};
 let addRemoveLink   = (documentId == '') ? true : false;
-Dropzone.autoDiscover = false;
-var myDropzone = new Dropzone(".dropzone", {
+
+if (FileUploadRoute != undefined) {
+  Dropzone.autoDiscover = false;
+  var myDropzone = new Dropzone(".dropzone", {
     url: FileUploadRoute,
     acceptedFiles: ".jpeg,.jpg,.png,.pdf",
     dictDefaultMessage: "Browse or Drag and Drop the File Here.",
     addRemoveLinks: addRemoveLink,
     maxFilesize: 40, //MB
-    maxFiles: 3, 
+    maxFiles: 1, 
     // renameFile: function (file) {
     //   let random      = Math.random().toString(36).substring(2,10);
     //   let newName     = new Date().getTime() + random + '_' + file.name;
@@ -166,8 +187,8 @@ var myDropzone = new Dropzone(".dropzone", {
     // },
     init:function() {
       // Get images
-      documentId    = $("#documentId").val();
-      var myDropzone = this;
+      documentId      = $("#documentId").val();
+      var myDropzone  = this;
       $.ajax({ url: FileListRoute, type: 'GET', dataType: 'json', data: {documentId:documentId},
         success: function(data){
           console.log(data);
@@ -197,19 +218,18 @@ var myDropzone = new Dropzone(".dropzone", {
       $("#" + pageTitle + "Form").append('<input class="document-hidden" type="hidden" name="documents[]" value="' + response.filename + '">')
       $("#" + pageTitle + "Form").append('<input class="document-hidden" type="hidden" name="documentOrg[]" value="' + response.name + '">')
     },
-});
+  });
+}
 
 // DataTable Initialization
 var columns;
 var formValue;
-
 table         = $('#data-table-projects');
 var url       = table.data('url');
 var form      = table.data('form');
 var length    = table.data('length');
-
-columns   = [];
-formValue = [];
+columns       = [];
+formValue     = [];
 
 table.find('thead th').each(function () {
   var column = {'data': $(this).data('column')};
@@ -237,6 +257,11 @@ $('#' + form + '-show-result-button').click(function () {
 $("#sortBy").change(function() {
     formValue = $('#' + form + '-form').serializeArray();
     table.DataTable().draw();
+});
+
+$("#eia_id").change(function() {
+  formValue = $('#' + form + '-form').serializeArray();
+  table.DataTable().draw();
 });
 
 $('#' + form + '-filterFormClearButton').click(function () {
@@ -316,5 +341,106 @@ table.on('click', '.view-more-details', function() {
     var postUrl   = $(this).attr('data-url'); 
     var id        = $(this).attr('data-id');
     var column    = $(this).attr('data-column');
-    alert(postUrl)
 });
+
+function listSubDocuments() {
+  $.ajax({ url: 'sub-documents/list/', type: 'GET', dataType: 'json', data: {documentId:documentId},
+    success: function(data) {
+      $("#subDocumentsDiv").html(data.html);
+      $(".subDocument-save-comment-btn").on("click", function () {
+        var comment       = $(this).closest('.commentContainer').find('textarea').val();
+        var document_Id   = $(this).attr('data-id');
+        addComment(comment, document_Id);
+      });
+    }
+  });
+}
+
+function addComment(comment, document_Id) {
+  $(".documentComment-error").hide();
+  if(comment == '') {
+    $("#documentComment-error-"+document_Id).html("Please enter comment");
+    $("#documentComment-error-"+document_Id).show();
+  } else {
+    $.ajax({ url: 'comments/store', type: 'POST', dataType: 'json', data: {document_id:document_Id, comment:comment},
+    }).done(function (data) {
+      if (data.flagError == false) {
+        $("#latestComment"+document_Id).prepend(data.html);
+        $(".commentField").val('');
+      } else {
+        showErrorToaster(data.message);
+        printErrorMsg(data.error);
+      }
+    }); 
+  }
+}
+
+$(".save-comment-btn").on("click", function () {
+  var comment       = $(this).closest('.commentContainer').find('textarea').val();
+  var document_Id   = $(this).attr('data-id');
+  addComment(comment, document_Id);
+});
+
+$(".assign-task").on("click", function () {
+  $('#description').val("");
+  $("#assigned_to").val('').trigger('change');
+  taskAssignValidator.resetForm();
+  var assignedId = $("#assignedId").val();
+  if(assignedId != '') {
+    $.ajax({ url: "task-assign/" + assignedId + "/edit" , type: 'get',
+      success: function(data) {
+        if (data.flagError == false) { 
+          alert(data.data.id);                                                                                        
+        } else {                                                                                                            
+          showErrorToaster(data.message);
+        }                                                                                                                                                           
+        $(".subDocument-save-comment-btn").on("click", function () {                                                                                                    
+          var comment       = $(this).closest('.commentContainer').find('textarea').val();                                                                             
+          var document_Id   = $(this).attr('data-id');                                                                                                               
+          addComment(comment, document_Id); 
+        });
+      }
+    });
+  }
+  $("#data-create-modal").modal("open");
+});
+
+// Form Validation with Ajax Submit
+if ($("#assignTaskForm").length > 0) {
+  var taskAssignValidator = $("#assignTaskForm").validate({ 
+    rules: {
+      assigned_to: { required: true }
+    },
+    messages: { 
+      assigned_to: { required: "Please select User" }
+    },
+    submitHandler: function (form) {
+      disableBtn("formSubmitBtn");
+      var assignRoute   = $("#assignTaskForm input[name=assignRoute]").val();
+      var forms         = $("#assignTaskForm");
+
+      $.ajax({ url:assignRoute , type: 'POST', processData: false, data: forms.serialize(), 
+      }).done(function (data) {
+        enableBtn("formSubmitBtn");
+        if (data.flagError == false) {
+          showSuccessToaster(data.message);
+          $("#data-create-modal").modal("close");
+          setTimeout(function () { 
+            location.reload();   
+          }, 2000);
+        } else {
+          showErrorToaster(data.message);
+          printErrorMsg(data.error);
+        }
+      });
+    },
+    errorPlacement: function(error, element) {
+      if (element.is("select")) {
+        error.insertAfter(element.next('.select2'));
+      }else {
+        error.insertAfter(element);
+      }
+    },
+    errorElement : 'div',
+  })
+}

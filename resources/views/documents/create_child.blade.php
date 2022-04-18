@@ -24,9 +24,10 @@
     <ol class="breadcrumbs mb-0">
         <li class="breadcrumb-item"><a href="{{ url('home') }}">Dashboard</a></li>        
         <li class="breadcrumb-item"><a href="{{ url('projects') }}">Projects</a></li>        
-        <li class="breadcrumb-item"><a href="{{ url($page->projectRoute) }}">{{ Str::limit(strip_tags($eia->project->name), 20) ?? 'Show' }}</a></li>
-        <li class="breadcrumb-item"><a href="{{ url($page->eiaRoute) }}">{{ Str::limit(strip_tags($eia->code_id), 20) ?? 'Show' }}</a></li>
-        <li class="breadcrumb-item active">{{ Str::plural($page->title) ?? ''}}</li>
+        <li class="breadcrumb-item"><a href="{{ url($page->projectRoute) }}">{{ Str::limit(strip_tags($eia->project->name), 10) ?? 'Show' }}</a></li>
+        <li class="breadcrumb-item"><a href="{{ url($page->eiaRoute) }}">{{ Str::limit(strip_tags($eia->code_id), 10) ?? 'Show' }}</a></li>
+        <li class="breadcrumb-item"><a href="{{ url($page->documentRoute) }}">{{ Str::limit(strip_tags($document->document_number), 10) ?? 'Show' }}</a></li>
+        <li class="breadcrumb-item active">Create {{ Str::singular($page->title) ?? ''}}</li>
     </ol>
 </div>
 @endsection
@@ -44,7 +45,8 @@
                 <div class="display-flex media">
                     <div class="media-body">
                         <h6 class="media-heading"><span>Project: </span><span class="users-view-name">{{ $eia->project->name ?? ''}} </span></h6>
-                        <h5 class="media-heading"><span>EIA Id: </span><span class="users-view-name">{{ $eia->code_id ?? ''}} </span></h5>
+                        <h6 class="media-heading"><span>EIA Id: </span><span class="users-view-name">{{ $eia->code_id ?? ''}} </span></h5>
+                        <h5 class="media-heading"><span>Document: </span><span class="users-view-name">{{ $document->document_number ?? ''}} - {{ $document->title ?? ''}} </span></h5>
                     </div>
                 </div>
             </div>
@@ -60,7 +62,7 @@
                     <div class="card-title">
                         <div class="row right">
                             <div class="col s12 m12 ">
-                                {!! App\Helpers\HtmlHelper::listLinkButton(url($page->eiaRoute), 'Back') !!}
+                                {!! App\Helpers\HtmlHelper::listLinkButton(url($page->documentRoute), 'Back') !!}
                             </div>
                         </div>
                         <div class="row">
@@ -71,64 +73,58 @@
                     </div>
                     @include('layouts.error') 
                     @include('layouts.success') 
-                    {!! Form::open(['class'=>'ajax-submit','id'=> Str::camel($page->title).'Form', "enctype" => "multipart/form-data"]) !!}
+                    {!! Form::open(['class'=>'ajax-submit','id'=> 'child'.Str::camel($page->title).'Form', "enctype" => "multipart/form-data"]) !!}
                         {{ csrf_field() }}
-                        {!! Form::hidden('pageTitle', Str::camel($page->title), ['id' => 'pageTitle']); !!} 
+                        {!! Form::hidden('pageTitle', 'child'.Str::camel($page->title), ['id' => 'pageTitle']); !!} 
                         {!! Form::hidden('pageRoute', $page->route, ['id' => 'pageRoute'] ); !!}
                         {!! Form::hidden('eiaRoute', $page->eiaRoute, ['id' => 'eiaRoute'] ); !!}
+                        {!! Form::hidden('documentRoute', $page->documentRoute, ['id' => 'documentRoute'] ); !!}
                         {!! Form::hidden('projectId', $eia->project->id ?? '', ['id' => 'projectId']); !!}
                         {!! Form::hidden('eiaId', $eia->id ?? '', ['id' => 'eiaId'] ); !!}
                         {!! Form::hidden('documentId', $document->id ?? '', ['id' => 'documentId']); !!}
-                        {!! Form::hidden('FileUploadRoute', url('documents/file/upload'), ['id' => 'FileUploadRoute'] ); !!}
+                        {!! Form::hidden('FileUploadRoute', route('child.documents.file.upload'), ['id' => 'FileUploadRoute'] ); !!}
                         {!! Form::hidden('FileListRoute', route('documents.file.list'), ['id' => 'FileListRoute'] ); !!}
                         {!! Form::hidden('FileRemoveRoute', route('documents.file.remove'), ['id' => 'FileRemoveRoute'] ); !!}
                         {!! Form::hidden('documentFile', '', ['id' => 'documentFile'] ); !!}
                         <div class="row">
                             <div class="input-field col m6 s12">
-                                {!! Form::text('documentNumber', $document->document_number ?? '', array('id' => 'documentNumber')) !!}
+                                {!! Form::text('documentNumber', $document->document_number ?? '', array('id' => 'documentNumber', 'disabled' => 'disabled',)) !!}
                                 <label for="documentNumber" class="label-placeholder active"> Document Number <span class="red-text">*</span></label>
                             </div>
                             <div class="input-field col m6 s12">
-                                {!! Form::text('dateOfEntry', $document->date_of_entry ?? '', array('id' => 'dateOfEntry')) !!}
-                                <label for="dateOfEntry" class="label-placeholder active"> Date of Entry <span class="red-text">*</span></label>
-                            </div>   
-                        </div>
-                        <div class="row">
-                            <div class="input-field col m6 s12">
-                                {!! Form::text('title', $document->title ?? '', array('id' => 'title')) !!}
+                                {!! Form::text('title', $document->title ?? '', array('id' => 'title', 'disabled' => 'disabled')) !!}
                                 <label for="title" class="label-placeholder active"> Title of Document <span class="red-text">*</span></label>
                             </div>
-                            <div class="input-field col m3 s12">
-                                {!! Form::select('stage', $variants->stages, $document->stage_id ?? '', ['id' => 'stage', 'class' => 'select2 browser-default', 'placeholder'=>'Please select Stage']) !!}
-                            </div>
-                            <div class="input-field col m3 s12">
-                                {!! Form::select('status', $variants->documentStatuses, $document->status ?? '', ['id' => 'status', 'class' => 'select2 browser-default', 'placeholder'=>'Please select Status']) !!}
-                            </div>
-                        </div>
-                        <div class="row">  
-                            <div class="input-field col m12 s12">
-                                {!! Form::textarea('briefDescription', $document->brief_description ?? '',  ['id' => 'briefDescription', 'class' => 'materialize-textarea']) !!}
-                                <label for="briefDescription" class="label-placeholder active"> Brief Description </label>    
-                            </div>
-                        </div>
-                        <div class="row">
                             <div class="input-field col m6 s12">
                                 {!! Form::text('uploadedBy', $user->name ?? '', array('id' => 'uploadedBy', 'disabled' => 'disabled')) !!}
                                 <label for="title" class="label-placeholder active"> Uploaded by <span class="red-text">*</span></label>
-                            </div>   
-                            <div class="input-field col m6 s12"> 
-                                {!! Form::select('documentType', [1 => 'Hard Copy', 2 => 'Soft Copy'], $document->document_type ?? '', ['id' => 'documentType', 'class' => 'select2 browser-default', 'placeholder'=>'Please select Document type']) !!}
+                            </div> 
+                        </div>
+                        <div class="row">
+                            <div class="input-field col m6 s12">
+                                {!! Form::text('dateOfEntry', $childDocument->date_of_entry ?? '', array('id' => 'dateOfEntry')) !!}
+                                <label for="dateOfEntry" class="label-placeholder active"> Date of Entry <span class="red-text">*</span></label>
+                            </div>
+                            <div class="input-field col m3 s12">
+                                {!! Form::select('stage', $variants->stages, $childDocument->stage_id ?? '', ['id' => 'stage', 'class' => 'select2 browser-default', 'placeholder'=>'Please select Stage']) !!}
+                            </div>
+                            <div class="input-field col m3 s12">
+                                {!! Form::select('status', $variants->documentStatuses, $childDocument->status ?? '', ['id' => 'status', 'class' => 'select2 browser-default', 'placeholder'=>'Please select Status']) !!}
                             </div>
                         </div>
                         <div class="row">  
+                            
                             <div class="input-field col m12 s12">
-                                {!! Form::textarea('comment', $document->comment ?? '',  ['id' => 'comment', 'class' => 'materialize-textarea']) !!}
-                                <label for="comment" class="label-placeholder active"> Remarks / Comments </label>    
+                                {!! Form::textarea('briefDescription', $childDocument->brief_description ?? '',  ['id' => 'briefDescription', 'class' => 'materialize-textarea']) !!}
+                                <label for="briefDescription" class="label-placeholder active"> Description </label>    
                             </div>
+                        </div>
+ 
+                        <div class="row">  
                         </div>
                         <div class="row">  
                             <div class="input-field col m12 s12">
-                                <div class="dropzone" id="document-dropzone"></div>   
+                                <div class="dropzone" id="file-dropzone"></div>   
                             </div>
                             <label for="dropzone" class="label-placeholder active"> Maximum:10 MB | Document Format: JPEG, PNG, PDF, XL, Word </label>
                             <div id="file-error" class="error red-text"></div>
@@ -156,7 +152,7 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
-<script src="{{asset('admin/js/custom/documents/documents.js')}}"></script>
+<script src="{{asset('admin/js/custom/documents/child_documents.js')}}"></script>
 <script>
 
 </script>

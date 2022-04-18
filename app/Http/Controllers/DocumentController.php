@@ -12,10 +12,13 @@ use App\Models\DocumentStatus;
 use App\Models\DocumentFile;
 use App\Models\EiaStage;
 use App\Models\File;
+use App\Models\Project;
+use App\Models\User;
 use App\Models\Eia;
 use Validator;
 use DataTables;
 use Carbon;
+use PDF;
 
 class DocumentController extends Controller
 {
@@ -29,9 +32,19 @@ class DocumentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        if ($request->ajax()) {
+            return $this->lists($request); 
+        }
+        $page                       = collect();
+        $variants                   = collect();
+        $user                       = auth()->user();
+        $page->title                = $this->title;
+        $page->link                 = url($this->route);
+        $page->route                = url($this->route); 
+        $variants->projects         = Project::pluck('name','id'); 
+        return view($this->viewPath . '.list', compact('page', 'variants', 'user'));
     }
 
     /**
@@ -82,6 +95,7 @@ class DocumentController extends Controller
             $document->document_type        = $request->documentType;
             $document->comment              = $request->comment;
             $document->stage_id             = $request->stage;
+            $document->parent_id            = 0;
             $document->status               = $request->status;
             $document->save();
 
@@ -105,9 +119,33 @@ class DocumentController extends Controller
      * Display a listing of the resource in datatable.
      * @throws \Exception
      */
-    public function lists(Request $request, $eiaId)
+    public function lists(Request $request, $eiaId = null)
     {
-        $detail     =  Document::select(['documents.*'])->where('eia_id', $eiaId);
+        $detail     =  Document::select(['documents.*'])->where('parent_id', 0);
+
+        if (isset($request->form)) {
+            foreach ($request->form as $search) {
+                if ($search['value'] != NULL && $search['name'] == 'searchTitle') {
+                    $name       = strtolower($search['value']);
+                    $detail     = $detail->where( function($query) use ($name) {
+                        $query->where('document_number', 'LIKE', "{$name}%");
+                        $query->orWhere('title', 'LIKE', "{$name}%");
+                    });
+                }
+
+                if ($search['value'] != NULL && $search['name'] == 'eia_id') {
+                    $detail         = $detail->where('eia_id',  $search['value']);
+                }
+            }
+        }
+        else {
+            $detail         = $detail->orderBy('id', 'DESC');
+        }
+
+        if ($eiaId!= null) {
+            $detail     = $detail->where('eia_id', $eiaId);
+        }
+
         return Datatables::eloquent($detail)
             ->addIndexColumn()
             ->editColumn('date_of_entry', function($detail) {
@@ -121,8 +159,7 @@ class DocumentController extends Controller
             ->editColumn('title', function($detail) {
                 $title      = '';
                 $link       = '';
-                $title       = Str::limit(strip_tags($detail->title), 40);
-                            
+                $title       = Str::limit(strip_tags($detail->title), 15);
                 $link       .= '<a href="documents/'. $detail->id.'">'.$title.'</a>';
                 return $link ;
             })
@@ -134,7 +171,6 @@ class DocumentController extends Controller
             ->editColumn('brief_description', function($detail) {
                 $description    = '';
                 $description    = Str::limit(strip_tags($detail->brief_description), 40);
-
                 if (strlen(strip_tags($detail->brief_description)) > 50) {
                     $description .= '<a href="javascript:void(0);" class="view-more-details" data-column="brief_description" data-url="'.url($this->route.'/'.$detail->id).'" data-id="'.$detail->id.'" >View</a>';
                 }
@@ -148,7 +184,6 @@ class DocumentController extends Controller
             ->editColumn('comment', function($detail) {
                 $comment    = '';
                 $comment    = Str::limit(strip_tags($detail->comment), 40);
-
                 if (strlen(strip_tags($detail->comment)) > 50) {
                     // onclick='viewMoreDetails(\"".$detail->comment."\")'
                     $comment .= '<a href="javascript:void(0);" class="view-more-details" data-column="comment" data-url="'.url($this->route.'/'.$detail->id).'" data-id="'.$detail->id.'" >View</a>';
@@ -192,11 +227,10 @@ class DocumentController extends Controller
                     $user                       = auth()->user();
                     $page->title                = $this->title;
                     $page->route                = url($this->route);
-                    $page->projectRoute         = url('projects/'.$eia->project_id); 
-                    $page->eiaRoute             = url('eias/'.$eia->id); 
-                    $variants->documentStatuses = DocumentStatus::pluck('name','id'); 
-                    $variants->stages           = EiaStage::pluck('name','id'); 
-                    return view($this->viewPath . '.show', compact('page', 'variants', 'eia', 'document', 'user'));
+                    $variants->users            = User::where([['status', '=', 1], ['is_admin', 0]])->pluck('name','id'); 
+                    $page->projectRoute         = url('projects/'.$document->eia->project_id); 
+                    $page->eiaRoute             = url('eias/'.$document->eia->id);  
+                    return view($this->viewPath . '.show', compact('page', 'variants', 'document', 'user'));
                 }
                 abort(404);
             }
@@ -326,7 +360,7 @@ class DocumentController extends Controller
 
     /**
      * Remove Document file.
-     *
+     * 
      * @return \Illuminate\Http\Response
      */
     public function fileRemove(Request $request)
@@ -349,5 +383,31 @@ class DocumentController extends Controller
     {
         $store_path = 'public/' . $this->uploadPath;
         return Storage::download($store_path.'/'.$document);
+    }
+    
+    /**
+     * Download Document file.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    function viewDocumentFile(Request $request, $document)
+    {
+        // $pdf = PDF::loadView($document);
+        // return $pdf->stream('whateveryourviewname.pdf');
+    }
+
+    public function autocomplete(Request $request)
+    {
+        $data = array();
+        $result   = Document::select("documents.id", "documents.document_number")
+                                ->where("document_number","LIKE","%{$request->search}%")->orWhere("title","LIKE","%{$request->search}%")->get();
+        if ($result) {
+            foreach($result as $row) {
+                $data[] = array(['id' => $row->id, 'name' => $row->document_number]);
+            }
+        } else {
+            $data = [];
+        }
+        return response()->json($result);
     }
 }

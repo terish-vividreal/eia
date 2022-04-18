@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\HomeController as AdminHome;
 use App\Http\Controllers\Admin\UserController as AdminUser;
 use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\Admin\ProjectTypeController;
+use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\DesignationController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 
@@ -16,7 +17,9 @@ use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\EiaController;
 use App\Http\Controllers\DocumentController;
-
+use App\Http\Controllers\ChildDocumentController;
+use App\Http\Controllers\TaskAssignController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CommonController;
 
 /*
@@ -80,7 +83,23 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('documents/file/upload', [DocumentController::class, 'uploadDocument'])->name('documents.file.upload');
     Route::post('documents/file/remove', [DocumentController::class, 'fileRemove'])->name('documents.file.remove');
     Route::get('documents/file/list', [DocumentController::class, 'fileList'])->name('documents.file.list');
-    Route::get('document/file/download/{document}', [DocumentController::class, 'downloadFile'])->name('document.file.download');
+    Route::get('documents/file/download/{document}', [DocumentController::class, 'downloadFile'])->name('documents.file.download');
+    // Route::get('document/file/view/{document}', [DocumentController::class, 'viewDocumentFile'])->name('document.file.stream');
+    // Route::get('document/autocomplete', [DocumentController::class, 'autocomplete'])->name('document.autocomplete');
+    
+    Route::resource('task-assign', TaskAssignController::class);
+    Route::post('documents/task/assign', [TaskAssignController::class, 'assign']);
+
+    // Child document routes
+    // Route::resource('documents', DocumentController::class);
+    Route::get('documents/{documentId}/create', [ChildDocumentController::class, 'create']);
+    Route::get('sub-documents/list', [ChildDocumentController::class, 'index']);
+    Route::post('documents/{documentId}/store', [ChildDocumentController::class, 'store']);
+    Route::post('sub-documents/file/upload', [ChildDocumentController::class, 'uploadDocument'])->name('child.documents.file.upload');
+
+    // Route::resource('comments', CommentController::class);
+    Route::post('comments/store', [CommentController::class, 'store']);
+
 });
 
 // Super Admin Routes
@@ -118,6 +137,10 @@ Route::prefix('admin/')->name('admin.')->group(function () {
         Route::get($departments.'/lists', [DepartmentController::class, 'lists']);
         Route::post($departments.'/update-status', [DepartmentController::class, 'updateStatus']);
 
+        // Settings
+        Route::get('settings', [SettingController::class, 'index']);
+        Route::post('settings/currency', [SettingController::class, 'storeCurrency']);
+
         $link = 'common';
         Route::post($link . '/is-unique-email', [CommonController::class, 'isUniqueEmail']);
         Route::post($link . '/is-unique-mobile', [CommonController::class, 'isUniqueMobile']);
@@ -128,3 +151,5 @@ $link = 'common';
 Route::post($link . '/is-unique-email', [CommonController::class, 'isUniqueEmail']);
 Route::post($link . '/is-unique-mobile', [CommonController::class, 'isUniqueMobile']);
 Route::post($link . '/get-more-details', [CommonController::class, 'getMoredetails']);
+Route::post($link . '/get-eia-of-project', [CommonController::class, 'getEiaOfProject']);
+Route::post($link . '/get-currency', [CommonController::class, 'getCurrency']);

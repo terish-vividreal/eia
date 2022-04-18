@@ -14,7 +14,6 @@
   <link rel="stylesheet" type="text/css" href="{{asset('admin/css/pages/page-users.css')}}">
 @endsection
 
-
 @section('content')
 
 @section('breadcrumb')
@@ -29,14 +28,15 @@
 </div>
 @endsection
 <!-- users view start -->
-<div class="section users-view">
+<div class="section">
   <!-- users view media object start -->
   <div class="card-panel">
     <div class="row">
       <div class="col s12 m12">
         <div class="display-flex media">
           <div class="media-body">
-            <h6 class="media-heading"><span>Project: </span><span class="users-view-name">{{ $eia->project->name ?? ''}} </span></h6>
+            <h6 class="media-heading"><span>Project Title: </span><span class="users-view-name">{{ $eia->project->name ?? ''}} </span></h6>
+            <h6 class="media-heading"><span>Project ID: </span><span class="users-view-name">{{ $eia->project->project_code_id ?? ''}} </span></h6>
             <h5 class="media-heading"><span>EIA ID: </span><span class="users-view-name">{{ $eia->code_id ?? ''}} </span></h5>
           </div>
         </div>
@@ -44,7 +44,7 @@
       <!-- <div class="col s12 m5 quick-action-btns display-flex justify-content-end align-items-center pt-2">
         <a href="{{ url($page->route.'/'.$eia->id.'/edit')}}" class="btn-small indigo">Edit </a>
         <a href="{{ url($page->route)}}" class="btn-small indigo">Back </a>
-      </div> -->
+      </div>  -->
     </div>
   </div>
   <!-- users view media object ends -->
@@ -53,12 +53,16 @@
     <div class="card-content">
       <div class="row">
         <div class="col s12 m6">
-          <h6 class="mb-2 mt-2"><i class="material-icons">info_outline</i>{{ Str::plural($page->title) ?? ''}} Details <a href="{{ url($page->route.'/'.$eia->id.'/details')}}" class="btn-small indigo"><i class="material-icons">remove_red_eye</i>  View </a> </h6>
+          <h6 class="mb-2 mt-2"><i class="material-icons">info_outline</i>{{ Str::plural($page->title) ?? ''}} Details </h6>
           <table class="striped">
             <tbody>
               <tr>
                 <td>EIA Id:</td>
-                <td>{{ $eia->code_id ?? ''}}</td>
+                <td><a href="{{ url($page->route.'/'.$eia->id.'/details')}}">{{ $eia->code_id ?? ''}}</a></td>
+              </tr>
+              <tr>
+                <td>Date Of Creation:</td>
+                <td>{{ $eia->formatted_date_of_entry }}</td>
               </tr>
               <tr>
                 <td>Project Team Leader:</td>
@@ -68,10 +72,19 @@
                 <td>Status:</td>
                 <td>{!! App\Helpers\HtmlHelper::statusText($eia->stage_id, $eia->status) !!}</td>
               </tr>
+              <tr>
+                <td>Cost Of Proposed Develop:</td>
+                <td><span class="">{{ App\Helpers\FunctionHelper::currency() . ' ' . number_format($eia->cost_of_develop) ?? ''}}</span></td>
+              </tr>
+              <tr>
+                <td>Address:</td>
+                <td>{{ $eia->address ?? ''}}</td>
+              </tr>
             </tbody>
           </table>
         </div>
-        <div class="col s12 m6" style="margin-top: 55px">
+        <div class="col s12 m6">
+          <h6 class="mb-2 mt-2"><i class="material-icons">info_outline</i>Project Details </h6>
           <table class="striped">
             <tbody>
               <tr>
@@ -79,12 +92,8 @@
                 <td>{{ $eia->project->project_code_id ?? ''}}</td>
               </tr>
               <tr>
-                <td>Date of Entry:</td>
-                <td>{{ $eia->formatted_date_of_entry ?? ''}}</td>
-              </tr>
-              <tr>
-                <td>Cost Of Proposed Develop:</td>
-                <td>{{ number_format($eia->cost_of_develop) ?? ''}}</td>
+                <td>Project Title:</td>
+                <td>{{ $eia->project->name ?? ''}}</td>
               </tr>
             </tbody>
           </table>
@@ -110,19 +119,20 @@
             <thead>
               <tr>
                 <th width="20px" data-orderable="false" data-column="DT_RowIndex"> No </th>
-                <th width="150px" data-orderable="false" data-column="document_number"> Document Number </th>
-                <th width="200px" data-orderable="true" data-column="date_of_entry"> Date of Creation</th>
+                <th width="250px" data-orderable="false" data-column="document_number"> Document Number </th>
                 <th width="250px" data-orderable="false" data-column="title"> Title </th>
+                <th width="200px" data-orderable="true" data-column="date_of_entry"> Date of Creation</th>
                 <th width="250px" data-orderable="false" data-column="status"> Status </th>
                 <th width="300px" data-orderable="true" data-column="brief_description"> Brief Description </th>
-                <th width="150px" data-orderable="false" data-column="document_type"> Document Type </th>  
+                <!-- <th width="150px" data-orderable="false" data-column="document_type"> Document Type </th>   -->
                 <th width="200px" data-orderable="false" data-column="comment"> Remarks/Comments  </th>                            
                 <th width="250px" data-orderable="false" data-column="action"> Action </th>   
               </tr>
             </thead>
           </table>
         </div>
-      </div>
+
+       </div>
       <!-- </div> -->
     </div>
   </div>
@@ -142,4 +152,3 @@
 <script src="{{asset('admin/js/custom/project/project.js')}}"></script>
 <script></script>
 @endpush
-
