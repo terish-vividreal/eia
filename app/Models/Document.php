@@ -11,6 +11,21 @@ class Document extends Model
 {
     use HasFactory, RevisionableTrait;
 
+    public function eia()
+    {
+        return $this->belongsTo(Eia::class);
+    }
+
+    public function uploadedBy()
+    {
+        return $this->belongsTo(User::class, 'uploaded_by');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(Document::class, 'parent_id', 'id')->orderBy('id', 'DESC');
+    }
+
     public function getFormattedDateOfEntryAttribute()
     {
         return FunctionHelper::dateToTimeZone($this->date_of_entry, 'd/m/Y h:i');
@@ -21,6 +36,11 @@ class Document extends Model
         return $this->hasMany(DocumentFile::class);
     }
 
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
     public function stage()
     {
         return $this->belongsTo(EiaStage::class);
@@ -29,6 +49,10 @@ class Document extends Model
     public function latestFile()
     {
         return $this->hasOne(DocumentFile::class)->latestOfMany();
+    }   
+
+    public function assign()
+    {
+        return $this->belongsTo(TaskAssign::class, 'id', 'document_id');
     }
-    
 }

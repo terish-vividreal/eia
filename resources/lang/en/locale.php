@@ -26,5 +26,7 @@ return [
     'Departments' => 'Departments',
     'Companies' => 'Companies',
     'Permissions' => 'Permissions',
+    'Currency' => 'Currency',
+    'Settings' => 'Settings',
 ];
 ?>

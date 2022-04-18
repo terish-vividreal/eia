@@ -91,6 +91,7 @@ $user_profile     = (Auth::user()->profile != null) ? asset('storage/store/users
                                 <li data-menu=""><a href="{{ url(ROUTE_PREFIX.'/designations') }}"><span data-i18n="Modern">{{__('locale.Designations')}}</span></a></li>
                                 <li data-menu=""><a href="{{ url(ROUTE_PREFIX.'/project-types') }}"><span data-i18n="eCommerce">{{__('locale.Project Types')}}</span></a></li>
                                 <li data-menu=""><a href="{{ url(ROUTE_PREFIX.'/departments') }}"><span data-i18n="eCommerce">{{__('locale.Departments')}}</span></a></li>
+                                <li data-menu=""><a href="{{ url(ROUTE_PREFIX.'/settings') }}"><span data-i18n="eCommerce">{{__('locale.Settings')}}</span></a></li>
                             </ul>
                         </li>
                         <li>

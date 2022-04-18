@@ -52,7 +52,7 @@
             </div>
           </div>
           <div class="row">
-            <div class="col s12 m6 "><h4 class="card-title">{{ Str::singular($page->title) ?? ''}} List</h4></div>
+            <div class="col s12 m6 "><h4 class="card-title">{{ $page->title ?? ''}} List</h4></div>
           </div>
           <div class="row">
             <div class="card-content data-table-container">

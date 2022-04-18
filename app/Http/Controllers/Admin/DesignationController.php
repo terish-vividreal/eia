@@ -166,6 +166,4 @@ class DesignationController extends Controller
         }
         return ['flagError' => true, 'message' => "Errors occurred Please check !",  'error'=>$validator->errors()->all()];
     }
-
-
 }

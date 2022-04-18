@@ -18,36 +18,27 @@
 @section('content')
 
 @section('breadcrumb')
-<div class="col s12 m6 l6"><h5 class="breadcrumbs-title"><span>{{ Str::plural($page->title) ?? ''}}</span></h5></div>
+<div class="col s12 m6 l6"><h5 class="breadcrumbs-title"><span>{{ $page->title ?? ''}}</span></h5></div>
 <div class="col s12 m6 l6 right-align-md">
     <ol class="breadcrumbs mb-0">
         <li class="breadcrumb-item"><a href="{{ url('home') }}">Dashboard</a></li>        
         <li class="breadcrumb-item"><a href="{{ url('projects') }}">Projects</a></li>        
         <li class="breadcrumb-item"><a href="{{ url($page->projectRoute) }}">{{ Str::limit(strip_tags($project->name), 20) ?? 'Show' }}</a></li>
-        <li class="breadcrumb-item active">Create {{ Str::plural($page->title) ?? ''}}</li>
+        <li class="breadcrumb-item active"> {{ $page->title ?? ''}} Create</li>
     </ol>
 </div>
 @endsection
-<div class="seaction">
-    
-  <!-- users view media object ends -->
-    <!-- <div class="card">
-        <div class="card-content">
-            <p class="caption mb-0">Create {{ $page->title ?? ''}} page description.</p>
-        </div>
-    </div> -->
+<div class="section">
     <div class="card-panel">
         <div class="row">
-        <div class="col s12 m12">
-            <div class="display-flex media">
-            <div class="media-body">
-                <span>Project Title</span>
-                <h6 class="media-heading"><span class="users-view-name"> {{ $project->name ?? ''}} </span></h6>
-                <span>ID:</span>
-                <span class="users-view-id">{{ $project->project_code_id ?? ''}}</span>
+            <div class="col s12 m12">
+                <div class="display-flex media">
+                    <div class="media-body">
+                        <h6 class="media-heading"><span>Project Title: </span><span class="users-view-name">{{ $project->name ?? ''}} </span></h6>
+                        <h6 class="media-heading"><span>Project ID: </span><span class="users-view-name">{{ $project->project_code_id ?? ''}} </span></h6>
+                    </div>
+                </div>
             </div>
-            </div>
-        </div>
         </div>
     </div>
     <!--Basic Form-->
@@ -78,7 +69,6 @@
                         {!! Form::hidden('projectRoute', $page->projectRoute, ['id' => 'projectRoute'] ); !!}
                         {!! Form::hidden('projectId', $project->id ?? '', ['id' => 'projectId'] ); !!}
                         {!! Form::hidden('eiaId', $eia->id ?? '', ['id' => 'eiaId'] ); !!}
-
                         <div class="row">
                             <div class="input-field col m6 s12">
                                 {!! Form::text('codeId', $eia->code_id ?? '', array('id' => 'codeId')) !!}

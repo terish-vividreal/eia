@@ -142,6 +142,11 @@ class ProjectController extends Controller
         }
         return Datatables::eloquent($detail)
             ->addIndexColumn()
+            ->editColumn('project_code_id', function($detail) {
+                $link   = '';
+                $link   = '<a href="'.$this->route.'/'.$detail->id.'">'.$detail->project_code_id.'</a>';
+                return $link ;
+            })
             ->editColumn('company_id', function($detail) {
                 return $detail->company->name;
             })
@@ -165,7 +170,7 @@ class ProjectController extends Controller
                 return FunctionHelper::dateToTimeZone($detail->date_of_creation, 'd/m/Y h:i'); 
             })
             ->editColumn('total_budget', function($detail) {
-                return number_format($detail->total_budget, 2); 
+                return FunctionHelper::currency(). ' ' . number_format($detail->total_budget, 2); 
             })
             ->editColumn('location_name', function($detail) {
                 return '<a href="javascript:">'.$detail->location_name.'</a>';  
@@ -196,7 +201,7 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        if($project) {
+        if ($project) {
             $page                   = collect();
             $variants               = collect();
             $page->title            = $this->title;
@@ -215,7 +220,7 @@ class ProjectController extends Controller
      */
     public function edit(Project $project)
     {
-        if($project) {
+        if ($project) {
             $page                   = collect();
             $variants               = collect();
             $page->title            = $this->title;
@@ -238,11 +243,11 @@ class ProjectController extends Controller
     public function update(Request $request, Project $project)
     {
         $validator = \Validator::make($request->all(), 
-                            [ 'name' => 'required|unique:projects,name,'.$project->id, 'project_code_id' => 'required|unique:projects,project_code_id,'.$project->id,],
-                            [ 'name.required' => 'Please enter Project name', 'project_code_id.unique' => 'Project ID is already used.']);
+                            ['name' => 'required|unique:projects,name, '.$project->id, 'project_code_id' => 'required|unique:projects,project_code_id,'.$project->id,],
+                            ['name.required' => 'Please enter Project name', 'project_code_id.unique' => 'Project ID is already used.']);
 
         if ($validator->passes()) {
-            if($project) {
+            if ($project) {
                 $project->name              = $request->name;
                 $project->date_of_creation  = FunctionHelper::dateToUTC($request->dateOfCreated, 'Y-m-d H:i:s');
                 $project->company_id        = $request->companyId;

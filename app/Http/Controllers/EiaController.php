@@ -153,7 +153,7 @@ class EiaController extends Controller
                 return $status;
             })
             ->editColumn('cost_of_develop', function($detail) {
-                return number_format($detail->cost_of_develop);
+                return FunctionHelper::currency(). ' ' . number_format($detail->cost_of_develop);
             })
             ->addColumn('action', function($detail) use ($projectId) {
                 $action = '';
@@ -185,7 +185,7 @@ class EiaController extends Controller
             $page->link                 = url($this->route);
             $page->route                = $this->route; 
             $page->projectRoute         = url('projects/'.$eia->project_id); 
-            $page->eiaRoute             = url('projects/'.$eia->project_id); 
+            $page->eiaRoute             = url('eias/'.$eia->id); 
             return view($this->viewPath . '.show', compact('page', 'variants', 'eia'));
         }
         abort(404);
@@ -208,12 +208,6 @@ class EiaController extends Controller
             $page->route                = $this->route; 
             $page->projectRoute         = url('projects/'.$eia->project_id); 
             $page->eiaRoute             = url('projects/'.$eia->project_id); 
-
-            // echo "<pre>"; print_r($eia->document); exit;
-
-            // foreach($eia->document as )
-
-
             return view($this->viewPath . '.details', compact('page', 'variants', 'eia'));
         }
         abort(404);

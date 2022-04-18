@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Form;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Eia;
 use Response;
 use Session;
 use Carbon;
@@ -39,4 +40,23 @@ class CommonController extends Controller
         }
     }
 
+    /** Get all EIA under Project Id. */
+    public function getEiaOfProject(Request $request) {
+
+        $eia   = Eia::where('project_id', $request->project_id)->get();
+        if($eia)
+            return response()->json(['flagError' => false, 'data' => $eia]);
+        else
+            return response()->json(['flagError' => true, 'data' => null]);
+    }
+
+    /** Get all EIA under Project Id. */
+    public function getCurrency(Request $request) {
+
+        $currencies   = DB::table('currencies')->where('country_id', $request->country)->get();
+        if($currencies)
+            return response()->json(['flagError' => false, 'data' => $currencies]);
+        else
+            return response()->json(['flagError' => true, 'data' => null]);
+    }
 }

@@ -29,26 +29,21 @@
 </div>
 @endsection
 <!-- users view start -->
-<div class="section users-view">
+<div class="section">
   <!-- users view media object start -->
   <div class="card-panel">
     <div class="row">
-      <div class="col s12 m10">
+      <div class="col s12 m12">
         <div class="display-flex media">
           <div class="media-body">
-            <h5 class="media-heading">
-              <span class="users-view-name"> {{ $project->name ?? ''}} </span>
-              <!-- <span class="grey-text">@</span> -->
-              <!-- <span class="users-view-username grey-text">candy007</span> -->
-            </h5>
-            <span>Project ID:</span>
-            <span class="users-view-id">{{ $project->project_code_id ?? ''}}</span>
+            <h6 class="media-heading"><span>Project Title: </span><span class="users-view-name">{{ $project->name ?? ''}} </span></h6>
+            <h6 class="media-heading"><span>Project ID: </span><span class="users-view-name">{{ $project->project_code_id ?? ''}} </span></h6>
           </div>
         </div>
       </div>
       <div class="col s12 m2 quick-action-btns display-flex justify-content-end align-items-center pt-2">
-        <a href="{{ url($page->route.'/'.$project->id.'/edit')}}" class="btn-small indigo">Edit </a>
-        <a href="{{ url($page->route)}}" class="btn-small indigo">Back </a>
+        <!-- <a href="{{ url($page->route.'/'.$project->id.'/edit')}}" class="btn-small indigo">Edit </a> -->
+        <!-- <a href="{{ url($page->route)}}" class="btn-small indigo">Back </a> -->
       </div>
     </div>
   </div>
@@ -81,15 +76,13 @@
                     <td>Type:</td>
                     <td><span class="">{{ $project->projectType->name ?? ''}}</span></td>
                 </tr>
-
                 <tr>
                     <td>Total EIAs:</td>
                     <td><span class="">{{count($project->eias)}}</span></td>
                 </tr>
-
                 <tr>
                     <td>Total Budget:</td>
-                    <td><span class="">{{ number_format($project->total_budget) ?? ''}}</span></td>
+                    <td><span class="">{{ App\Helpers\FunctionHelper::currency() . ' ' . number_format($project->total_budget) ?? ''}}</span></td>
                 </tr>
                 </tbody>
             </table>
@@ -149,15 +142,12 @@
                     <thead>
                       <tr>
                         <th width="20px" data-orderable="false" data-column="DT_RowIndex"> No </th>
-                        <th width="150px" data-orderable="false" data-column="code_id">EIA ID</th>
-                         <th width="200px" data-orderable="true" data-column="date_of_entry"> Date of Creation</th>
+                        <th width="250px" data-orderable="false" data-column="code_id">EIA ID</th>
+                         <th width="150px" data-orderable="true" data-column="date_of_entry"> Date of Creation</th>
                         <th width="250px" data-orderable="false" data-column="status"> Status </th>
-                        <th width="300px" data-orderable="true" data-column="project_team_leader"> Project Team Leader </th>
+                        <th width="200px" data-orderable="true" data-column="project_team_leader"> Project Team Leader </th>
                         <th width="150px" data-orderable="false" data-column="cost_of_develop"> Cost Of Proposed Development </th>  
-                        <th width="200px" data-orderable="false" data-column="gps_coordinates"> GPS  </th> 
-                        <!--                           
-                        <th width="200px" data-orderable="false" data-column="total_budget"> Project Budget </th>                              
-                        <th width="200px" data-orderable="false" data-column="total_eias"> Total EIAs</th> -->                             
+                        <th width="150px" data-orderable="false" data-column="gps_coordinates"> GPS  </th>                           
                         <th width="250px" data-orderable="false" data-column="action"> Action </th> 
                       </tr>
                     </thead>
@@ -189,4 +179,3 @@
 
 </script>
 @endpush
-

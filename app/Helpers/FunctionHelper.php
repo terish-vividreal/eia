@@ -110,6 +110,10 @@ class FunctionHelper
         } 
     }
 
+    public static function currency()
+    {
+        return Setting::join('currencies', 'currencies.id', '=', 'settings.currency_id')->value('currencies.symbol');
+    }
     
     
     
