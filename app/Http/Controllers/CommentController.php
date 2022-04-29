@@ -112,7 +112,7 @@ class CommentController extends Controller
             $html .= '<div class="card-content p-0 pb-2"><div class="collection email-collection"><div class="email-brief-info collection-item animate fadeUp ">';
             $html .= '<a class="list-content" href="javascript:"><div class="list-title-area"><div class="user-media">';
             $html .= '<img src="'.$comment->commentedBy->profile.'" alt="" class="circle z-depth-2 responsive-img avtar">';
-            $html .= '<div class="list-title">'.$comment->commentedBy->name.'</div>';
+            $html .= '<div class="list-title">You</div>';
             $html .= '</div></div><div class="list-desc">'.$comment->comment.'</div></a>';
             $html .= '<div class="list-right"><div class="list-date">'.$comment->created_at->format('M d, h:i A').'</div></div>';
             $html .= '</div></div></div></div></div></div></div>';

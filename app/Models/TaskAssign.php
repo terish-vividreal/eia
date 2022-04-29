@@ -18,4 +18,9 @@ class TaskAssign extends Model
     {
         return $this->belongsTo(User::class, 'assigned_by');
     }
+
+    public function completedBy()
+    {
+        return $this->belongsTo(User::class, 'completed_by');
+    }
 }

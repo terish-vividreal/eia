@@ -13,6 +13,16 @@
 @section('page-style')
   <link rel="stylesheet" type="text/css" href="{{asset('admin/css/pages/app-sidebar.css')}}">
   <link rel="stylesheet" type="text/css" href="{{asset('admin/css/pages/app-email.css')}}">
+  <style>
+    #documentDetailsSection .app-email .content-area {
+      margin-top: 0px;
+      width: auto;
+    }
+    .smalltxt {
+      font-size: 11px;
+      color: #a9a9a9;
+    }
+  </style>
 @endsection
 
 @section('content')
@@ -46,57 +56,105 @@
   </div>
   <!-- users view media object ends -->
   <!-- users view card data start -->
-  <div class="card">
+  <div class="card" id="documentDetailsSection">
     <div class="card-content">
       <div class="row">
-        <div class="col s12 m4">
-          <h6 class="mb-2 mt-2"><i class="material-icons">info_outline</i> {{ Str::plural($page->title) ?? ''}} Details</h6>
+        <div class="col s12 m6">
+        <!-- $document->children -->
           @isset($document->latestFile)
-            <img src="{{$document->latestFile->file_name}}" class="responsive-img" style="max-width: 75% !important" alt="">
-                <!-- <a class="waves-effect waves-light btn gradient-45deg-purple-deep-orange z-depth-4 mt-2" href="{{ route('documents.file.download', ['document' => $document->latestFile->name])}}" style="margin-top: 10px; !important">Download</a>  -->
-                @if($document->is_assigned == 0)
-                  <p id=""><a class="waves-effect waves-light btn gradient-45deg-purple-deep-orange z-depth-4 mt-2 assign-task" id="" data-id="{{$document->id}}" href="javascript:" style="margin-top: 10px; !important">Assign Task</a></p>                  
-                @else                
-                <div class="col s12 m12 card-width" id="taskDetailsDiv">
-                  <h6><a href="javascript:" class="mt-5">Task Details</a></h6>
-                  <div class="card-panel mt-2">
-                    <p>{{ $document->assign->details}}</p>
-                    <div class="row mt-8">
-                      <div class="col s2">
-                        <img src="{{ $document->assign->assignedTo->profile}}" width="40" alt="news" class="circle responsive-img mr-3">
-                      </div>
-                      <div class="col s3 p-0 mt-1"><span class="pt-2">{{ $document->assign->assignedTo->name}}</span></div>
-                      <div class="col s7 mt-1 right-align">
-                        <a href="javascript:" class="assign-task"><span class="material-icons"> edit </span></a>
-                      </div>
+            <h6 class="mb-4 mt-4"><i class="material-icons">info_outline</i> {{ Str::plural($page->title) ?? ''}} Details</h6>
+            @if(count($document->children) > 0) 
+              <img src="{{$document->children[0]->latestFile->file_name}}" class="responsive-img" alt="">
+            @else
+              <img src="{{$document->latestFile->file_name}}" class="responsive-img" alt="">
+            @endif
+            <!-- <a class="waves-effect waves-light btn gradient-45deg-purple-deep-orange z-depth-4 mt-2" href="https://eia.vividreal.co.in/documents/file/download/MUSMHX0A0NXFG3FN4EPQ_1159079-immap-ihf_humanitarian_access_response_-_landmine_erw_contamination_areas_aug_2018.png" style="margin-top: 10px; !important">Download</a>  -->
+          @endisset
+          @if($document->is_assigned == 0)
+            <p id=""><a class="waves-effect waves-light btn gradient-45deg-purple-deep-orange z-depth-4 mt-2 assign-task" id="" data-id="{{$document->id}}" href="javascript:" style="margin-top: 10px; !important">Assign Task</a></p>                  
+            @if(!empty($document->completedTask))
+            <div class="col s12 m12 card-details mt-2" id="taskDetailsDiv">
+              <h5><a href="javascript:" class="mt-8 blue-text">Completed Task Details</a></h5>
+              <div class="card-panel mt-2">
+                  <p>{{ $document->completedTask->completed_note}}</p>
+                  <div class="mt-1 smalltxt">Completed by <a href="javascript:">{{$document->completedTask->assignedBy->name}}</a> on {{$document->completedTask->created_at->format('M d, h:i A')}}</div>
+              </div>
+            </div>
+            @endif
+          
+            @else
+            <div class="col s12 m12 card-details mt-2" id="taskDetailsDiv">
+              <h5><a href="javascript:" class="mt-8 blue-text">Task Details</a></h5>
+              <div class="card-panel mt-2">
+
+
+                  <p>{{ $activeTask[0]->tasks->details}}</p>
+                  <div class="mt-1 smalltxt">assigned by <a href="javascript:">
+                    {{ ($activeTask[0]->tasks->assigned_by == auth()->user()->id) ? 'You' : $activeTask[0]->tasks->assignedBy->name }}
+      
+                  
+                  </a> on {{$activeTask[0]->tasks->created_at->format('M d, h:i A')}}</div>
+                  <div class="row mt-2">
+                    <div class="col s2">
+                      <img src="{{$activeTask[0]->tasks->assignedTo->profile}}" width="40" alt="news" class="circle responsive-img mr-3">
+                    </div>
+                    <div class="col s3 p-0 mt-1"><span class="pt-2">
+                      {{ ($activeTask[0]->tasks->assigned_to == auth()->user()->id) ? 'You' : $activeTask[0]->tasks->assignedTo->name}}
+ 
+                    </span></div>
+                    <div class="col s7 mt-1 right-align">
+                      <a href="javascript:" class="assign-task"><span class="material-icons"> edit </span></a>
                     </div>
                   </div>
-                </div>
-                @endif
-          @endisset
+              </div>
+
+
+            </div>
+          @endif
         </div>
-        <div class="col s12 m4" style="margin-top: 40px">
+        <div class="col s12 m6" style="margin-top: 40px">
           <table class="striped">
             <tbody>
               <tr>
-                <td> Document Number: </td>
-                <td>{{ $document->document_number ?? ''}}</td>
+                <td width="30%">Document Number:</td>
+                <td>{{$document->document_number ?? ''}}</td>
               </tr>
               <tr>
-                <td>Title of Document: </td>
-                <td>{{ $document->title ?? ''}}</td>
+                <td width="30%">Title of Document: </td>
+                <td>{{$document->title ?? ''}}</td>
               </tr>
               <tr>
                 <td>Uploaded by: </td>
-                <td>{{ $document->uploadedBy->name ?? ''}}</td>
+                <td>{{$document->uploadedBy->name ?? ''}}</td>
               </tr> 
               <tr>
                 <td>Date of Entry: </td>
-                <td>{{ $document->date_of_entry ?? ''}}</td>
+                <td>{{$document->date_of_entry ?? ''}}</td>
               </tr>
               <tr>
                 <td>Status: </td>
-                <td>{!! App\Helpers\HtmlHelper::statusText($document->stage_id, $document->status) !!}</td>
+                <td>
+                  @if(count($document->children) > 0) 
+                    {!! App\Helpers\HtmlHelper::statusText($document->children[0]->stage_id, $document->children[0]->status) !!}
+                  @else
+                    {!! App\Helpers\HtmlHelper::statusText($document->stage_id, $document->status) !!}
+                  @endif
+                </td>
+              </tr>
+              <tr>
+                <td>Update Status: </td>
+                <td>
+                  @php 
+                    $stageID    = (count($document->children) > 0) ? $document->children[0]->stage_id : $document->stage_id;
+                    $statusID   = (count($document->children) > 0) ? $document->children[0]->status : $document->status;
+                    $documentID = (count($document->children) > 0) ? $document->children[0]->id : $document->id;                    
+                  @endphp 
+                  
+                  {!! Form::hidden('documentStatusId', $documentID ?? '', ['id' => 'documentStatusId']); !!}
+                  {!! Form::select('stage', $variants->stages, $stageID ?? '', ['id' => 'stage', 'class' => 'select2 browser-default document-stage', 'placeholder'=>'Please select Stage']) !!}
+                  {!! Form::select('status', $variants->documentStatuses, $statusID ?? '', ['id' => 'status', 'class' => 'select2 browser-default document-status', 'placeholder'=>'Please select Status']) !!}
+                  
+                </td>
               </tr>
               <tr>
                 <td>Brief Description: </td>
@@ -105,48 +163,89 @@
             </tbody>
           </table>
         </div>
-        <div class="col s12 m4" style="margin-top: 10px">
+        
+        <div class="col s12 m10" style="margin-top: 10px">
           <div class="row commentContainer">  
             <div class="input-field col m10 s12 commentArea">
-              {!! Form::textarea('comment', '',  ['id' => 'documentComment', 'class' => 'materialize-textarea commentField']) !!}
-              <label for="comment" class="label-placeholder active"> Comments </label>  
+              <textarea id="documentComment" class="materialize-textarea commentField" name="comment" cols="50" rows="10" placeholder="Enter comment"></textarea>  
               <div id="documentComment-error-{{$document->id}}" class="error documentComment-error" style="display:none;"></div>
             </div>
-            <div class="input-field col m2 s12" style="margin-top: 37px; ! important">
-              <a href="javascript:" class="text-sub save-comment-btn" data-id="{{$document->id}}"><i class="material-icons mr-2"> send </i></a>
+            <div class="input-field col m2 s12" style="margin-top: 37px; !important">
+              <a href="javascript:" class="text-sub save-comment-btn" data-id="{{$document->id}}"><i class="material-icons mr-2">send</i></a>
             </div>
           </div>
           <!-- Content Area Starts -->
           <div class="app-email" id="latestComment{{$document->id}}"></div>
-          @forelse ($document->comments as $comment)
-            <div class="app-email" id="docCommentsDiv{{$document->id}}">
-              <div class="content-area">
-                <div class="app-wrapper">
-                  <div class="card card card-default scrollspy border-radius-6 fixed-width">
-                    <div class="card-content p-0 pb-2">
-                      <div class="collection email-collection">
-                        <div class="email-brief-info collection-item animate fadeUp ">
-                          <a class="list-content" href="javascript:">
-                            <div class="list-title-area">
-                              <div class="user-media">
-                                <img src="{{$comment->commentedBy->profile}}" alt="" class="circle z-depth-2 responsive-img avtar">
-                                <div class="list-title">{{$comment->commentedBy->name}}</div>
+            @if(count($document->children) > 0) 
+
+              @forelse ($document->children[0]->comments as $comment)
+                <div class="app-email" id="docCommentsDiv{{$comment->id}}">
+                  <div class="content-area">
+                    <div class="app-wrapper">
+                      <div class="card card card-default scrollspy border-radius-6 fixed-width">
+                        <div class="card-content p-0 pb-2">
+                          <div class="collection email-collection">
+                            <div class="email-brief-info collection-item animate fadeUp">
+                              <a class="list-content" href="javascript:">
+                                <div class="list-title-area">
+                                  <div class="user-media">
+                                    <img src="{{$comment->commentedBy->profile}}" alt="" class="circle z-depth-2 responsive-img avtar">
+                                    <div class="list-title">
+                                      {{($comment->commented_by == auth()->user()->id) ? 'You' : $comment->commentedBy->name}}
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="list-desc">{{$comment->comment}}</div>
+                              </a>
+                              <div class="list-right">
+                                <div class="list-date">{{$comment->created_at->format('M d, h:i A')}}</div>
                               </div>
                             </div>
-                            <div class="list-desc">{{$comment->comment}}</div>
-                          </a>
-                          <div class="list-right">
-                            <div class="list-date">{{$comment->created_at->format('M d, h:i A')}} </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          @empty
-          @endforelse
+              @empty
+              @endforelse
+
+            @else
+
+              @forelse ($document->comments as $comment)
+                <div class="app-email" id="docCommentsDiv{{$comment->id}}">
+                  <div class="content-area">
+                    <div class="app-wrapper">
+                      <div class="card card card-default scrollspy border-radius-6 fixed-width">
+                        <div class="card-content p-0 pb-2">
+                          <div class="collection email-collection">
+                            <div class="email-brief-info collection-item animate fadeUp">
+                              <a class="list-content" href="javascript:">
+                                <div class="list-title-area">
+                                  <div class="user-media">
+                                    <img src="{{$comment->commentedBy->profile}}" alt="" class="circle z-depth-2 responsive-img avtar">
+                                    <div class="list-title">
+                                      {{($comment->commented_by == auth()->user()->id) ? 'You' : $comment->commentedBy->name}}
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="list-desc">{{$comment->comment}}</div>
+                              </a>
+                              <div class="list-right">
+                                <div class="list-date">{{$comment->created_at->format('M d, h:i A')}}</div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              @empty
+              @endforelse
+
+            @endif
+              
         </div>
       </div>
     </div>

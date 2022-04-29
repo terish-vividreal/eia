@@ -72,7 +72,22 @@ function enableBtn(element) {
 
 
 
+$('.notification-text').click(function() {
+    
+    var id          = $(this).data("id");
+    var actionURL   = $(this).data("url");
 
+    $.ajax({ type: 'PUT',  url: 'notification/'+id, dataType: "json", 
+        success: function(data) {
+            if(data.flagError == false) {
+                window.location.href = actionURL;  
+            } else {
+                showErrorToaster("Error!,  Please try again.");
+            }
+        }
+    });
+    
+});
 
 // function clearForm() {
 //     validator.resetForm();

@@ -10,6 +10,9 @@ use App\Events\UserLogged;
 use App\Listeners\StoreUserLoginHistory;
 use App\Events\UserRegistered;
 use App\Listeners\SendPasswordCreateMail;
+use App\Events\TaskAssigned;
+use App\Listeners\SendTaskAssignedEmail;
+use App\Listeners\StoreTaskAssignedNotifications;
 
 
 class EventServiceProvider extends ServiceProvider
@@ -25,6 +28,11 @@ class EventServiceProvider extends ServiceProvider
         ],
         UserRegistered::class => [
             SendPasswordCreateMail::class,
+        ],
+        TaskAssigned::class => [
+            // SendTaskAssignedEmail::class,
+            StoreTaskAssignedNotifications::class, 
+            // SendTaskAssignedNotifications::class,
         ],
         // UserLogged::class => [
         //     StoreUserLoginHistory::class,

@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\TaskAssign;
+use App\Events\TaskAssigned;
+use App\Jobs\SendTaskAssignedEmailJob;
 use Illuminate\Http\Request;
 use App\Models\Document;
+use Event;
+use Carbon;
 
 
 class TaskAssignController extends Controller
@@ -16,15 +20,7 @@ class TaskAssignController extends Controller
      */
     function assign(Request $request)
     {
-        $assign                 = new TaskAssign();
-        $assign->document_id    = $request->documentId;
-        $assign->assigned_to    = $request->assigned_to;
-        $assign->details        = $request->description;
-        $assign->assigned_by    = auth()->user()->id;
-        $assign->save();
-
-        $document               = Document::where('id', $request->documentId)->update(['is_assigned' => 1]);
-        return ['flagError' => false, 'message' => "Task assigned successfully"];
+        
     }
 
     /**
@@ -55,7 +51,18 @@ class TaskAssignController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $assign                 = new TaskAssign();
+        $assign->document_id    = $request->documentId;
+        $assign->assigned_to    = $request->assigned_to;
+        $assign->details        = $request->description;
+        $assign->assigned_by    = auth()->user()->id;
+        $assign->save();
+        $document               = Document::where('id', $request->documentId)->update(['is_assigned' => 1]);
+        //Call Queue and Job
+        // dispatch(new SendTaskAssignedEmailJob($assign));
+        //Call events
+        event(new TaskAssigned($assign));
+        return ['flagError' => false, 'message' => "Task assigned successfully"];
     }
 
     /**
@@ -91,7 +98,25 @@ class TaskAssignController extends Controller
      */
     public function update(Request $request, TaskAssign $taskAssign)
     {
-        //
+        if ($request->has('taskCompleted') ) {
+            $taskAssign->status         = 3 ;
+            $taskAssign->completed_note = $request->completedNote;
+            $taskAssign->completed_by   = auth()->user()->id;
+            $taskAssign->completed_at   = Carbon\Carbon::now();
+            $taskAssign->save();
+            $document                   = Document::where('id', $request->documentId)->update(['is_assigned' => 0]);
+            return ['flagError' => false, 'message' => "Task completed successfully"];
+        } else {
+            $assign                 = new TaskAssign();
+            $assign->document_id    = $request->documentId;
+            $assign->assigned_to    = $request->assigned_to;
+            $assign->details        = $request->description;
+            $assign->assigned_by    = auth()->user()->id;
+            $assign->save();
+            $taskAssign->status     = 2 ;
+            $taskAssign->save();
+            return ['flagError' => false, 'message' => "Task Reassigned successfully"];
+        }
     }
 
     /**

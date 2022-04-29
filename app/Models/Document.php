@@ -38,7 +38,7 @@ class Document extends Model
 
     public function comments()
     {
-        return $this->hasMany(Comment::class);
+        return $this->hasMany(Comment::class)->orderBy('id', 'DESC');;
     }
 
     public function stage()
@@ -51,8 +51,13 @@ class Document extends Model
         return $this->hasOne(DocumentFile::class)->latestOfMany();
     }   
 
-    public function assign()
+    public function tasks()
     {
         return $this->belongsTo(TaskAssign::class, 'id', 'document_id');
+    }
+
+    public function completedTask()
+    {
+        return $this->belongsTo(TaskAssign::class, 'id', 'document_id')->where('status', 3)->orderBy('id', 'DESC');
     }
 }

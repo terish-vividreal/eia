@@ -8,23 +8,26 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use App\Mail\WelcomeUser;
-use Mail;
+use App\Mail\SendTaskAssignedEmail;
+use App\Models\User;
+use Mail
 
-class WelcomeUserJob implements ShouldQueue
+;
+
+class SendTaskAssignedEmailJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $user;
+    protected $task;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($user)
+    public function __construct($task)
     {
-        $this->user = $user;
+        $this->task = $task;
     }
 
     /**
@@ -34,11 +37,9 @@ class WelcomeUserJob implements ShouldQueue
      */
     public function handle()
     {
-        $user               = $this->user;
-        $email              = new WelcomeUser($user);
+        $task               = $this->task;
+        $user               = User::find($task->assigned_to);
+        $email              = new SendTaskAssignedEmail($task);
         Mail::to($user->email)->send($email);
-
-        // $user               = $event->user;
-        // Mail::to($user->email)->send(new PasswordCreateTokenMail($user));
     }
 }
