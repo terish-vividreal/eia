@@ -192,40 +192,90 @@ class ChildDocumentController extends Controller
     public function loadSubDocumentsHTML($document) 
     {
 
-        $html = '';
-        foreach($document->children as $child) {
-            $html .= '<div class="card animate fadeUp"><div class="card-content"><div class="row" id="product-four"><div class="col m4 s12">';
-            $html .= '<h5>' . HtmlHelper::statusText($child->stage_id, $child->status) . '</h5>';
-            $html .= '<img src="'.$child->latestFile->file_name.'" class="responsive-img" style="max-width: 75% !important" alt=""></div>';
+        $html       = '';
+        $parentHTML = '';
 
-            $html .= '<div class="col m4 s12"><p style="text-align: right;"></p><table class="striped"><tbody>';
-            $html .= '<tr><td>Date of Entry:</td><td>'.$child->date_of_entry.'</td></tr>' ;    
-            $html .= '<tr><td>Uploaded By:</td><td>'.$child->uploadedBy->name.'</td></tr>' ;    
-            $html .= '<tr><td>Description:</td><td>'.$child->brief_description.'</td></tr>' ;    
-            $html .= '</tbody></table></div>';
+        if( count($document->children) > 0) {
 
-            $html .= '<div class="col m4 s12"><div class="row commentContainer" id="commentContainer'.$child->id.'">';
-            $html .= '<div class="input-field col m10 s12 commentArea">';
-            $html .= '<textarea id="comment" class="materialize-textarea commentField" name="comment" cols="50" rows="10" placeholder="Comments"></textarea>';
-            // $html .= '<label for="comment" class="label-placeholder active">  </label>';
-            $html .= '<div id="documentComment-error-'.$child->id.'" class="error documentComment-error" style="display:none;"></div></div>';
-            $html .= '<div class="input-field col m2 s12" style="margin-top: 37px; ! important">';
-            $html .= '<a href="javascript:" class="text-sub subDocument-save-comment-btn" data-id="'.$child->id.'"><i class="material-icons mr-2"> send </i></a></div> </div>';
-            $html .= '<div class="app-email" id="latestComment'.$child->id.'"></div>';           
-            
-            if(count($child->comments) > 0) {
-                foreach($child->comments as $comment) {
-                    $html .= '<div class="app-email" id="docCommentsDiv'.$document->id.'"><div class="content-area"><div class="app-wrapper"><div class="card card card-default scrollspy border-radius-6 fixed-width">';
-                    $html .= '<div class="card-content p-0 pb-2"><div class="collection email-collection"><div class="email-brief-info collection-item animate fadeUp ">';
-                    $html .= '<a class="list-content" href="javascript:"><div class="list-title-area"><div class="user-media">';
-                    $html .= '<img src="'.$comment->commentedBy->profile.'" alt="" class="circle z-depth-2 responsive-img avtar"><div class="list-title">'.$comment->commentedBy->name.'</div></div></div>';
-                    $html .= '<div class="list-desc">'.$comment->comment.'</div></a><div class="list-right"><div class="list-date">'.$comment->created_at->format('M d, h:i A').'</div>';
-                    $html .= '</div></div></div></div></div></div></div></div>';
-                }
+            foreach($document->children as $key => $child) {
+
+
+                if($key != 0){
+
+               
+                    $html .= '<div class="card animate fadeUp"><div class="card-content"><div class="row" id="product-four"><div class="col m4 s12">';
+                    $html .= '<h5>' . HtmlHelper::statusText($child->stage_id, $child->status) . $key. '</h5>';
+                    $html .= '<img src="'.$child->latestFile->file_name.'" class="responsive-img" style="max-width: 75% !important" alt=""></div>';
+
+                    $html .= '<div class="col m4 s12"><p style="text-align: right;"></p><table class="striped"><tbody>';
+                    $html .= '<tr><td width="30%">Date of Entry:</td><td>'.$child->date_of_entry.'</td></tr>' ;    
+                    $html .= '<tr><td width="30%">Uploaded By:</td><td>'.$child->uploadedBy->name.'</td></tr>' ;    
+                    $html .= '<tr><td width="30%">Description:</td><td>'.$child->brief_description.'</td></tr>' ;    
+                    $html .= '</tbody></table></div>';
+
+                    $html .= '<div class="col m4 s12"><div class="row commentContainer" id="commentContainer'.$child->id.'">';
+                    $html .= '<div class="input-field col m10 s12 commentArea">';
+                    $html .= '<textarea id="comment" class="materialize-textarea commentField" name="comment" cols="50" rows="10" placeholder="Comments"></textarea>';
+                    // $html .= '<label for="comment" class="label-placeholder active">  </label>';
+                    $html .= '<div id="documentComment-error-'.$child->id.'" class="error documentComment-error" style="display:none;"></div></div>';
+                    $html .= '<div class="input-field col m2 s12" style="margin-top: 37px; ! important">';
+                    $html .= '<a href="javascript:" class="text-sub subDocument-save-comment-btn" data-id="'.$child->id.'"><i class="material-icons mr-2"> send </i></a></div> </div>';
+                    $html .= '<div class="app-email" id="latestComment'.$child->id.'"></div>';           
+                    
+                    if(count($child->comments) > 0) {
+                        foreach($child->comments as $comment) {
+                            $html .= '<div class="app-email" id="docCommentsDiv'.$document->id.'"><div class="content-area"><div class="app-wrapper"><div class="card card card-default scrollspy border-radius-6 fixed-width">';
+                            $html .= '<div class="card-content p-0 pb-2"><div class="collection email-collection"><div class="email-brief-info collection-item animate fadeUp ">';
+                            $html .= '<a class="list-content" href="javascript:"><div class="list-title-area"><div class="user-media">';
+                            $html .= '<img src="'.$comment->commentedBy->profile.'" alt="" class="circle z-depth-2 responsive-img avtar"><div class="list-title">'.$comment->commentedBy->name.'</div></div></div>';
+                            $html .= '<div class="list-desc">'.$comment->comment.'</div></a><div class="list-right"><div class="list-date">'.$comment->created_at->format('M d, h:i A').'</div>';
+                            $html .= '</div></div></div></div></div></div></div></div>';
+                        }
+                    }
+
+                    $html .= '</div></div></div></div>' ; 
+                }   
             }
 
-            $html .= '</div></div></div></div>' ;    
+                $parentHTML .= '<div class="card animate fadeUp"><div class="card-content"><div class="row" id="product-four"><div class="col m4 s12">';
+                $parentHTML .= '<h5>' . HtmlHelper::statusText($document->stage_id, $document->status) . '</h5>';
+                $parentHTML .= '<img src="'.$document->latestFile->file_name.'" class="responsive-img" style="max-width: 75% !important" alt=""></div>';
+
+                $parentHTML .= '<div class="col m4 s12"><p style="text-align: right;"></p><table class="striped"><tbody>';
+                $parentHTML .= '<tr><td width="30%">Date of Entry:</td><td>'.$document->date_of_entry.'</td></tr>' ;    
+                $parentHTML .= '<tr><td width="30%">Uploaded By:</td><td>'.$document->uploadedBy->name.'</td></tr>' ;    
+                $parentHTML .= '<tr><td width="30%">Description:</td><td>'.$document->brief_description.'</td></tr>' ;    
+                $parentHTML .= '</tbody></table></div>';
+
+                $parentHTML .= '<div class="col m4 s12"><div class="row commentContainer" id="commentContainer'.$document->id.'">';
+                $parentHTML .= '<div class="input-field col m10 s12 commentArea">';
+                $parentHTML .= '<textarea id="comment" class="materialize-textarea commentField" name="comment" cols="50" rows="10" placeholder="Comments"></textarea>';
+                // $html .= '<label for="comment" class="label-placeholder active">  </label>';
+                $parentHTML .= '<div id="documentComment-error-'.$document->id.'" class="error documentComment-error" style="display:none;"></div></div>';
+                $parentHTML .= '<div class="input-field col m2 s12" style="margin-top: 37px; ! important">';
+                $parentHTML .= '<a href="javascript:" class="text-sub subDocument-save-comment-btn" data-id="'.$document->id.'"><i class="material-icons mr-2"> send </i></a></div> </div>';
+                $parentHTML .= '<div class="app-email" id="latestComment'.$document->id.'"></div>';           
+                
+                if(count($document->comments) > 0) {
+                    foreach($document->comments as $comment) {
+                        $parentHTML .= '<div class="app-email" id="docCommentsDiv'.$document->id.'"><div class="content-area"><div class="app-wrapper"><div class="card card card-default scrollspy border-radius-6 fixed-width">';
+                        $parentHTML .= '<div class="card-content p-0 pb-2"><div class="collection email-collection"><div class="email-brief-info collection-item animate fadeUp ">';
+                        $parentHTML .= '<a class="list-content" href="javascript:"><div class="list-title-area"><div class="user-media">';
+                        $parentHTML .= '<img src="'.$comment->commentedBy->profile.'" alt="" class="circle z-depth-2 responsive-img avtar"><div class="list-title">'.$comment->commentedBy->name.'</div></div></div>';
+                        $parentHTML .= '<div class="list-desc">'.$comment->comment.'</div></a><div class="list-right"><div class="list-date">'.$comment->created_at->format('M d, h:i A').'</div>';
+                        $parentHTML .= '</div></div></div></div></div></div></div></div>';
+                    }
+                }
+
+                $parentHTML .= '</div></div></div></div>' ;
+                $html .= $parentHTML;
+        } else {
+
+            
+
         }
+
+            
         return $html;
     }
 }

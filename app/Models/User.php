@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Laravel\Sanctum\HasApiTokens;
+// use Laravel\Sanctum\HasApiTokens;
+use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
@@ -57,4 +58,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Country::class, 'phone_code', 'id');
     }
+
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class, 'user_id')->where('is_open', 0)->orderBy('id', 'DESC');
+    } 
 }

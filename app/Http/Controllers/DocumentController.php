@@ -19,6 +19,8 @@ use Validator;
 use DataTables;
 use Carbon;
 use PDF;
+use App\Jobs\SendTaskAssignedEmailJob;
+use App\Models\TaskAssign;
 
 class DocumentController extends Controller
 {
@@ -122,7 +124,6 @@ class DocumentController extends Controller
     public function lists(Request $request, $eiaId = null)
     {
         $detail     =  Document::select(['documents.*'])->where('parent_id', 0);
-
         if (isset($request->form)) {
             foreach ($request->form as $search) {
                 if ($search['value'] != NULL && $search['name'] == 'searchTitle') {
@@ -193,7 +194,7 @@ class DocumentController extends Controller
             ->addColumn('action', function($detail) use ($eiaId) {
                 $action = '';
                 if ($detail->deleted_at == null) { 
-                    $action .= HtmlHelper::editButton(url('eias/'.$eiaId.'/documents/'.$detail->id.'/edit'), $detail->id);
+                    $action .= HtmlHelper::editButton(url('eias/'.$detail->eia->id.'/documents/'.$detail->id.'/edit'), $detail->id);
                     $action .= HtmlHelper::disableButton(url($this->route), $detail->id, 'Inactive');
                 } else {
                     $action .= HtmlHelper::restoreButton(url($this->route.'/restore'), $detail->id);
@@ -225,12 +226,23 @@ class DocumentController extends Controller
                     $page                       = collect();
                     $variants                   = collect();
                     $user                       = auth()->user();
+                    $assignedId                 = '';
+                    $activeTask                 = array();
+                    $completedTask              = array();
                     $page->title                = $this->title;
                     $page->route                = url($this->route);
                     $variants->users            = User::where([['status', '=', 1], ['is_admin', 0]])->pluck('name','id'); 
                     $page->projectRoute         = url('projects/'.$document->eia->project_id); 
                     $page->eiaRoute             = url('eias/'.$document->eia->id);  
-                    return view($this->viewPath . '.show', compact('page', 'variants', 'document', 'user'));
+                    $variants->documentStatuses = DocumentStatus::pluck('name','id'); 
+                    $variants->stages           = EiaStage::pluck('name','id'); 
+                    if($document->is_assigned != 0) {
+                        $activeTask             = Document::with('tasks')->whereHas("tasks", function($query) use ($document) { 
+                                                            $query->where("status", 0)->where("document_id", $document->id); 
+                                                    })->get();
+                        $assignedId             = $activeTask[0]->tasks->id;
+                    } 
+                    return view($this->viewPath . '.show', compact('page', 'variants', 'document', 'user', 'activeTask', 'assignedId'));
                 }
                 abort(404);
             }
@@ -398,9 +410,10 @@ class DocumentController extends Controller
 
     public function autocomplete(Request $request)
     {
-        $data = array();
-        $result   = Document::select("documents.id", "documents.document_number")
-                                ->where("document_number","LIKE","%{$request->search}%")->orWhere("title","LIKE","%{$request->search}%")->get();
+        $data       = array();
+        $result     = Document::select("documents.id", "documents.document_number")
+                                ->where("document_number","LIKE","%{$request->search}%")
+                                ->orWhere("title","LIKE","%{$request->search}%")->get();
         if ($result) {
             foreach($result as $row) {
                 $data[] = array(['id' => $row->id, 'name' => $row->document_number]);
@@ -410,4 +423,22 @@ class DocumentController extends Controller
         }
         return response()->json($result);
     }
+
+    /**
+     * Remove Document file.
+     * 
+     * @return \Illuminate\Http\Response
+     */
+    public function updateStatus(Request $request)
+    {
+        $document            = Document::find($request->document_Id);
+        if ($document) {
+            $document->stage_id = $request->stage_id;
+            $document->status   = $request->status_id;
+            $document->save();
+            return ['flagError' => false, 'message' => $this->title. " updated successfully"];
+        }
+        abort(404);
+    }
+    
 }

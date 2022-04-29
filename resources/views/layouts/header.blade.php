@@ -15,7 +15,9 @@ $user_profile     = (Auth::user()->profile != null) ? asset('storage/store/users
                         <li class="dropdown-language"><a class="waves-effect waves-block waves-light translation-button" href="javascript:void(0);" data-target="translation-dropdown"><span class="flag-icon flag-icon-gb"></span></a></li>
                         <li class="hide-on-med-and-down"><a class="waves-effect waves-block waves-light toggle-fullscreen" href="javascript:void(0);"><i class="material-icons">settings_overscan</i></a></li>
                         <li class="hide-on-large-only"><a class="waves-effect waves-block waves-light search-button" href="javascript:void(0);"><i class="material-icons">search </i></a></li>
-                        <li><a class="waves-effect waves-block waves-light notification-button" href="javascript:void(0);" data-target="notifications-dropdown"><i class="material-icons">notifications_none<small class="notification-badge orange accent-3">2</small></i></a></li>
+                        @if ( auth()->user()->notifications->count() > 0)
+                            <li><a class="waves-effect waves-block waves-light notification-button" href="javascript:void(0);" data-target="notifications-dropdown"><i class="material-icons">notifications_none<small class="notification-badge orange accent-3">{{auth()->user()->notifications->count()}}</small></i></a></li>
+                        @endif
                         <li><a class="waves-effect waves-block waves-light profile-button" href="javascript:void(0);" data-target="profile-dropdown"><span class="avatar-status avatar-online"><img src="{{auth()->user()->profile}}" alt="Admin"><i></i></span></a></li>
                     </ul>
                     <!-- translation-button-->
@@ -29,19 +31,29 @@ $user_profile     = (Auth::user()->profile != null) ? asset('storage/store/users
                         @endforeach
                     </ul>
                     <!-- notifications-dropdown-->
-                    <ul class="dropdown-content" id="notifications-dropdown">
-                        <li>
-                            <h6>NOTIFICATIONS<span class="new badge">2</span></h6>
-                        </li>
-                        <li class="divider"></li>
+                        @forelse(auth()->user()->notifications as $notification)
+                            @if ($loop->first)
+                                <ul class="dropdown-content" id="notifications-dropdown">
+                                <li>
+                                    <h6>NOTIFICATIONS<span class="new badge">{{auth()->user()->notifications->count()}}</span></h6>
+                                </li>
+                                <li class="divider"></li>
+                            @endif
+                                <li class="notification-text" data-id="{{$notification->id}}" data-url="{{$notification->url}}"><a class="black-text "  href="javascript:"><span class="material-icons icon-bg-circle cyan small ">{{$notification->icon}}</span> {{$notification->title}}</a>
+                                    {!!$notification->message!!}
+                                </li>
+                            @if ($loop->last)
+                                </ul>
+                            @endif
+                        @empty
+                        @endforelse
+                        <!-- <li class="divider"></li>
                          <li><a class="black-text" href="#!"><span class="material-icons icon-bg-circle cyan small">add_shopping_cart</span> A new document uploaded!</a>
                             <time class="media-meta grey-text darken-2" datetime="2015-06-12T20:50:48+08:00">2 hours ago</time>
                         </li>
                         <li><a class="black-text" href="#!"><span class="material-icons icon-bg-circle red small">stars</span> New project submitted. </a>
                             <time class="media-meta grey-text darken-2" datetime="2015-06-12T20:50:48+08:00">3 days ago</time>
-                        </li>
-
-                    </ul>
+                        </li> -->
                     <!-- profile-dropdown-->
                     <ul class="dropdown-content" id="profile-dropdown">
                         <li><a class="grey-text text-darken-1" href="{{ url('profile') }}"><i class="material-icons">person_outline</i> Profile</a></li>

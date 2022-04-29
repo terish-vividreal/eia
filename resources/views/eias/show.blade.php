@@ -121,11 +121,11 @@
                 <th width="20px" data-orderable="false" data-column="DT_RowIndex"> No </th>
                 <th width="250px" data-orderable="false" data-column="document_number"> Document Number </th>
                 <th width="250px" data-orderable="false" data-column="title"> Title </th>
-                <th width="200px" data-orderable="true" data-column="date_of_entry"> Date of Creation</th>
+                <th width="200px" data-orderable="true" data-column="date_of_entry"> Date of Creation </th>
                 <th width="250px" data-orderable="false" data-column="status"> Status </th>
                 <th width="300px" data-orderable="true" data-column="brief_description"> Brief Description </th>
-                <!-- <th width="150px" data-orderable="false" data-column="document_type"> Document Type </th>   -->
-                <th width="200px" data-orderable="false" data-column="comment"> Remarks/Comments  </th>                            
+                <!-- <th width="150px" data-orderable="false" data-column="document_type"> Document Type </th> -->
+                <th width="200px" data-orderable="false" data-column="comment"> Remarks/Comments </th>                            
                 <th width="250px" data-orderable="false" data-column="action"> Action </th>   
               </tr>
             </thead>

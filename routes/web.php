@@ -20,6 +20,7 @@ use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\ChildDocumentController;
 use App\Http\Controllers\TaskAssignController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\CommonController;
 
 /*
@@ -77,6 +78,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     // Document Routes
     Route::resource('documents', DocumentController::class);
+    Route::post('documents/update-status', [DocumentController::class, 'updateStatus']);
     Route::get('eias/{eiaId}/documents/create', [DocumentController::class, 'create']);
     Route::get('eias/{eiaId}/documents/lists', [DocumentController::class, 'lists']);
     Route::get('eias/{eiaId}/documents/{id}/edit', [DocumentController::class, 'edit']);
@@ -88,7 +90,7 @@ Route::group(['middleware' => ['auth']], function () {
     // Route::get('document/autocomplete', [DocumentController::class, 'autocomplete'])->name('document.autocomplete');
     
     Route::resource('task-assign', TaskAssignController::class);
-    Route::post('documents/task/assign', [TaskAssignController::class, 'assign']);
+    // Route::post('documents/task/assign', [TaskAssignController::class, 'assign']);
 
     // Child document routes
     // Route::resource('documents', DocumentController::class);
@@ -99,6 +101,8 @@ Route::group(['middleware' => ['auth']], function () {
 
     // Route::resource('comments', CommentController::class);
     Route::post('comments/store', [CommentController::class, 'store']);
+
+    Route::resource('notification', NotificationController::class);
 
 });
 

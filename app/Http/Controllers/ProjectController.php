@@ -272,6 +272,11 @@ class ProjectController extends Controller
      */
     public function destroy(Project $project)
     {
+        if ($project->eias) {
+            $errors = array('Cant Delete !, There are active EIA under this Project');
+            return ['flagError' => true, 'message' => "Cant Delete !, There are active EIA under this Project",  'error' => $errors];
+        }
+
         $project->delete();
         return ['flagError' => false, 'message' =>  Str::singular($this->title). " disabled successfully"];
     }

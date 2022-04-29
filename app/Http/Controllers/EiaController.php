@@ -78,7 +78,7 @@ class EiaController extends Controller
             $eia->project_id            = $request->projectId;
             $eia->code_id               = str_replace(' ', '', $request->codeId);
             $eia->date_of_entry         = FunctionHelper::dateToUTC($request->dateOfEntry, 'Y-m-d H:i:s');
-            $eia->code                  = FunctionHelper::EIACode();; 
+            $eia->code                  = FunctionHelper::EIACode(); 
             $eia->project_team_leader   = $request->projectTeamLeader;
             $eia->cost_of_develop       = $request->costOfDevelop;
             $eia->stage_id              = $request->stage;
@@ -253,7 +253,6 @@ class EiaController extends Controller
         $validator = \Validator::make($request->all(), 
                             [ 'codeId' => 'required|unique:eias,code_id,'.$eia->id],
                             [ 'codeId.unique' => 'EIA ID is already used', 'codeId.required' => 'Please enter EIA ID']);
-
         if ($validator->passes()) {            
             $eia->project_id            = $request->projectId;
             $eia->code_id               = str_replace(' ', '', $request->codeId);
@@ -279,6 +278,10 @@ class EiaController extends Controller
      */
     public function destroy(Eia $eia)
     {
+        if ($eia->documents) {
+            $errors = array('Cant Delete !, There are active documents under this EIA');
+            return ['flagError' => true, 'message' => "Cant Delete !, There are active documents under this EIA",  'error' => $errors];
+        }
         $eia->delete();
         return ['flagError' => false, 'message' =>  $this->title. " disabled successfully"];
     }

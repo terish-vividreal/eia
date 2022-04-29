@@ -127,7 +127,8 @@ if ($("#" + pageTitle + "Form").length > 0) {
           if (data.flagError == false) {
             showSuccessToaster(data.message);
             setTimeout(function () { 
-              window.location.href = eiaRoute;                
+              // window.location.href = eiaRoute;   
+              location.reload();             
             }, 2000);
           } else {
             showErrorToaster(data.message);
@@ -138,8 +139,6 @@ if ($("#" + pageTitle + "Form").length > 0) {
         $('#file-error').text("Please Browse or Drag and Drop the File");
         $('#file-error').show();
       }
-
-        
     },
     errorPlacement: function(error, element) {
       if (element.is("select")) {
@@ -390,15 +389,18 @@ $(".assign-task").on("click", function () {
     $.ajax({ url: "task-assign/" + assignedId + "/edit" , type: 'get',
       success: function(data) {
         if (data.flagError == false) { 
-          alert(data.data.id);                                                                                        
+          $("#assigned_to").val(data.data.assigned_to).trigger('change');                                                                                  
+          $("#description").val(data.data.details);  
+          $("#assignedId").val(data.data.id);  
+          $(".task-complete-checkbox").show();                                                                                     
         } else {                                                                                                            
           showErrorToaster(data.message);
         }                                                                                                                                                           
-        $(".subDocument-save-comment-btn").on("click", function () {                                                                                                    
-          var comment       = $(this).closest('.commentContainer').find('textarea').val();                                                                             
-          var document_Id   = $(this).attr('data-id');                                                                                                               
-          addComment(comment, document_Id); 
-        });
+        // $(".subDocument-save-comment-btn").on("click", function () {                                                                                                    
+        //   var comment       = $(this).closest('.commentContainer').find('textarea').val();                                                                             
+        //   var document_Id   = $(this).attr('data-id');                                                                                                               
+        //   addComment(comment, document_Id); 
+        // });
       }
     });
   }
@@ -417,17 +419,20 @@ if ($("#assignTaskForm").length > 0) {
     submitHandler: function (form) {
       disableBtn("formSubmitBtn");
       var assignRoute   = $("#assignTaskForm input[name=assignRoute]").val();
+      var taskId        = $("#assignTaskForm input[name=assignedId]").val();
+      var post_id       = "" == taskId ? "" : "/" + taskId;
+      formMethod        = "" == taskId ? "POST" : "PUT";
       var forms         = $("#assignTaskForm");
 
-      $.ajax({ url:assignRoute , type: 'POST', processData: false, data: forms.serialize(), 
-      }).done(function (data) {
+      $.ajax({ url: assignRoute + post_id , type: formMethod, processData: false, data: forms.serialize(), })
+      .done(function (data) {
         enableBtn("formSubmitBtn");
         if (data.flagError == false) {
           showSuccessToaster(data.message);
           $("#data-create-modal").modal("close");
           setTimeout(function () { 
             location.reload();   
-          }, 2000);
+          }, 1000);
         } else {
           showErrorToaster(data.message);
           printErrorMsg(data.error);
@@ -444,3 +449,48 @@ if ($("#assignTaskForm").length > 0) {
     errorElement : 'div',
   })
 }
+
+$('#taskCompleted').click(function() {
+  // $('#taskCompleteBtn').attr('disabled', !this.checked)
+  // $('#formSubmitBtn').attr('disabled', this.checked)
+
+  if(this.checked) {
+    $('.task-completed-section').show()
+    // $('.task-store-input').attr('disabled', true)
+  } else {
+    $('.task-completed-section').hide()
+    // $('.task-store-input').attr('disabled', false)
+  }
+});
+
+
+$('#taskCompleteBtn').click(function(){
+  $("#assignTaskForm").submit();
+});
+
+
+$("#status").change(function() {
+  swal({ title: "Are you sure update status?",icon: 'warning', dangerMode: true, buttons: { cancel: 'Cancel !', delete: 'Yes Update, ' }
+  }).then(function (willDelete) {
+    if (willDelete) {
+      var stage_id  = $("#stage").val();
+      var status_id = $("#status").val();
+      var document_Id = $("#documentStatusId").val();
+
+      $.ajax({url: "documents/update-status", type: "POST", dataType: "json", data:{'document_Id':document_Id, 'stage_id':stage_id, 'status_id':status_id}})
+        .done(function (data) {
+          if (data.flagError == false) {
+            showSuccessToaster(data.message);          
+            setTimeout(function () {
+              location.reload();  
+            }, 2000);
+          } else {
+            showErrorToaster(data.message);
+            printErrorMsg(data.error);
+          }   
+      }).fail(function () {
+        showErrorToaster("Something went wrong!");
+      });
+    } 
+  });
+});
