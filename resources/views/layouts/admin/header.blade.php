@@ -86,12 +86,12 @@ $user_profile     = (Auth::user()->profile != null) ? asset('storage/store/users
                         <li>
                             <a class="@if (Request::is(ROUTE_PREFIX.'/users*') ||  Request::is(ROUTE_PREFIX.'/users/create*')) active @endif" href="{{ url(ROUTE_PREFIX.'/users') }}"> <i class="material-icons">person</i><span>{{__('locale.Users')}}</span></span></a>
                         </li>
-                        <li><a class="dropdown-menu" href="Javascript:void(0)" data-target="SettingsDropdown"><i class="material-icons">settings</i><span><span class="dropdown-title" data-i18n="Dashboard">{{__('locale.Masters')}}</span><i class="material-icons right">keyboard_arrow_down</i></span></a>
+                        <li><a class="dropdown-menu @if (Request::is(ROUTE_PREFIX.'/designations*') ||  Request::is(ROUTE_PREFIX.'/project-types*')) active @endif" href="Javascript:void(0)" data-target="SettingsDropdown"><i class="material-icons">settings</i><span><span class="dropdown-title" data-i18n="Dashboard">{{__('locale.Masters')}}</span><i class="material-icons right">keyboard_arrow_down</i></span></a>
                             <ul class="dropdown-content dropdown-horizontal-list" id="SettingsDropdown">
-                                <li data-menu=""><a href="{{ url(ROUTE_PREFIX.'/designations') }}"><span data-i18n="Modern">{{__('locale.Designations')}}</span></a></li>
-                                <li data-menu=""><a href="{{ url(ROUTE_PREFIX.'/project-types') }}"><span data-i18n="eCommerce">{{__('locale.Project Types')}}</span></a></li>
-                                <li data-menu=""><a href="{{ url(ROUTE_PREFIX.'/departments') }}"><span data-i18n="eCommerce">{{__('locale.Departments')}}</span></a></li>
-                                <li data-menu=""><a href="{{ url(ROUTE_PREFIX.'/settings') }}"><span data-i18n="eCommerce">{{__('locale.Settings')}}</span></a></li>
+                                <li data-menu=""><a class="@if (Request::is(ROUTE_PREFIX.'/designations*')) active @endif" href="{{ url(ROUTE_PREFIX.'/designations') }}"><span data-i18n="Modern">{{__('locale.Designations')}}</span></a></li>
+                                <li data-menu=""><a class="@if (Request::is(ROUTE_PREFIX.'/project-types*')) active @endif" href="{{ url(ROUTE_PREFIX.'/project-types') }}"><span data-i18n="eCommerce">{{__('locale.Project Types')}}</span></a></li>
+                                <li data-menu=""><a class="@if (Request::is(ROUTE_PREFIX.'/departments*')) active @endif" href="{{ url(ROUTE_PREFIX.'/departments') }}"><span data-i18n="eCommerce">{{__('locale.Departments')}}</span></a></li>
+                                <li data-menu=""><a class="@if (Request::is(ROUTE_PREFIX.'/settings*')) active @endif" href="{{ url(ROUTE_PREFIX.'/settings') }}"><span data-i18n="eCommerce">{{__('locale.Settings')}}</span></a></li>
                             </ul>
                         </li>
                         <li>

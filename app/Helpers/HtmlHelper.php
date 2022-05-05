@@ -78,7 +78,6 @@ class HtmlHelper
         $stage          = '';
         $status         = null;
         $status_colors  = array(1 => 'green', 2 => 'yellow', 3 => 'red');
-        
     
         if($stageID) {
             $stage      = EiaStage::where('id', $stageID)->value('name');

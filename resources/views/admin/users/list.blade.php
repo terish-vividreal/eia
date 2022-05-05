@@ -22,7 +22,7 @@
 <div class="col s12 m6 l6"><h5 class="breadcrumbs-title"><span>{{ Str::plural(__('locale.Users')) ?? ''}}</span></h5></div>
 <div class="col s12 m6 l6 right-align-md">
     <ol class="breadcrumbs mb-0">
-        <li class="breadcrumb-item"><a href="{{ url(ROUTE_PREFIX.'/home') }}">{{__('locale.Dashboard')}}</a></li>
+        <li class="breadcrumb-item"><a href="{{ url(ROUTE_PREFIX.'/dashboard') }}">{{__('locale.Dashboard')}}</a></li>
         <li class="breadcrumb-item"><a href="{{ url($page->route) }}">{{ Str::plural(__('locale.Users')) ?? ''}}</a></li>
         <li class="breadcrumb-item active">{{__('locale.List')}}</li>
     </ol>
@@ -92,12 +92,12 @@
                           <thead>
                               <tr>
                                   <th width="20px" data-orderable="false" data-column="DT_RowIndex"> No </th>
-                                  <th width="" data-orderable="false" data-column="name"> Name </th>
-                                  <th width="" data-orderable="false" data-column="email"> E-mail </th>
-                                  <th width="200px" data-orderable="false" data-column="mobile"> Mobile </th>
-                                  <th width="" data-orderable="false" data-column="role"> Roles </th>
+                                  <th width="200px" data-orderable="false" data-column="name"> Name </th>
+                                  <th width="200px" data-orderable="false" data-column="email"> E-mail </th>
+                                  <th width="150px" data-orderable="false" data-column="mobile"> Mobile </th>
+                                  <th width="250px" data-orderable="false" data-column="role"> Roles </th>
                                   <th width="100px" data-orderable="false" data-column="status"> Status </th>
-                                  <th width="200px" data-orderable="false" data-column="action"> Action </th>
+                                  <th width="150px" data-orderable="false" data-column="action"> Action </th>
                               </tr>
                               </thead>
                         </table>

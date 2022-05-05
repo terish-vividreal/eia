@@ -165,7 +165,7 @@ class UserController extends Controller
                 $action = '';
                 if ($detail->deleted_at == null) { 
                     $action .= HtmlHelper::editButton(url($this->route.'/'.$detail->id.'/edit'), $detail->id);
-                    $action .= HtmlHelper::disableButton(url($this->route), $detail->id);
+                    // $action .= HtmlHelper::disableButton(url($this->route), $detail->id);
                 } else {
                     $action .= HtmlHelper::restoreButton(url($this->route.'/restore'), $detail->id);
                 }

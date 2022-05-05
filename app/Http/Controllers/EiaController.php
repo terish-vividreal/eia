@@ -99,14 +99,13 @@ class EiaController extends Controller
      */
     public function lists(Request $request, $projectId = null)
     {
-        $detail     =  Eia::with('project')->select(['code_id', 'status', 'date_of_entry', 'project_team_leader', 'cost_of_develop', 'stage_id', 'deleted_at', 'project_id', 'id']);
+        $detail     =  Eia::with('project')->select(['code_id', 'status', 'date_of_entry', 'project_team_leader', 'cost_of_develop', 'stage_id', 'deleted_at', 'project_id', 'id'])->where('is_permit', 0);
         
         if ($projectId!= null) {
             $detail     = $detail->where('project_id', $projectId);
         }
         
         if (isset($request->form)) {
-            
             foreach ($request->form as $search) {
                 if ($search['value'] != NULL && $search['name'] == 'searchTitle') {
                     

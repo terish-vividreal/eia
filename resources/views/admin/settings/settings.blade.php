@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.admin.app')
 
 {{-- page title --}}
 @section('seo_title', Str::plural($page->title) ?? '') 

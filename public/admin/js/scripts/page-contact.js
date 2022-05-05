@@ -28,7 +28,6 @@ $(document).ready(function () {
     }
 });
 
-
 $(window).on('resize', function () {
   if ($(window).width() > 991) {
     $("#contact-sidenav").removeClass("sidenav");
