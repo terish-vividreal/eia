@@ -57,21 +57,7 @@
           <div class="row">
             <div class="card-content data-table-container">
               <form id="page-form" name="page-form">
-                {!! Form::hidden('eia_status', '', ['id' => 'eia_status'] ); !!}
-                <div class="row">
-                  <div class="input-field col m3 s12">
-                    {!! Form::text('searchTitle', '', array('id' => 'searchTitle', 'placeholder' => 'Search EIA ID..')) !!}
-                  </div>
-                  <div class="input-field col m6 s12">
-                    {!! Form::select('project_id', $variants->projects, '', ['id' => 'project_id', 'class' => 'select2 browser-default', 'placeholder'=>'Please select a Project']) !!}
-                  </div>
-                  <div class="input-field col m3 s12">
-                    <div style="margin-top: 10px;">
-                      <button type="button" class="btn mr-2 cyan" id="page-show-result-button" >Show Result</button>
-                      <button type="button" class="btn" id="page-filterFormClearButton">Clear Filter </button>
-                    </div>
-                  </div>
-                </div>
+
               </form>
             </div>
           </div>
@@ -79,18 +65,16 @@
           <div id="view-borderless-table">
             <div class="row">
               <div class="col s12">
-                <table id="data-table-eia" class="display data-tables" data-url="{{ $page->link }}" data-form="page" data-length="10">
+                <table id="data-table-eia" class="display data-tables" data-url="{{ $page->route }}" data-form="page" data-length="10">
                   <thead>
                     <tr>
                       <th width="20px" data-orderable="false" data-column="DT_RowIndex"> No </th>
-                      <th width="300px" data-orderable="false" data-column="code_id">EIA ID</th>
+                      <th width="300px" data-orderable="false" data-column="permit_code">Permit ID</th>
                       <th width="150px" data-orderable="false" data-column="project_id">Project ID</th>                      
-                      <th width="200px" data-orderable="true" data-column="date_of_entry"> Date of Creation</th>
-                      <th width="250px" data-orderable="false" data-column="status"> Status </th>
-                      <th width="200px" data-orderable="true" data-column="project_team_leader"> Project Team Leader </th>
-                      <th width="150px" data-orderable="false" data-column="cost_of_develop"> Cost Of Proposed Development </th>  
-                      <th width="150px" data-orderable="false" data-column="gps_coordinates"> GPS  </th>                            
-                      <th width="250px" data-orderable="false" data-column="action"> Action </th> 
+                      <th width="200px" data-orderable="true" data-column="certificate_number"> Environmental Approval/Certificate Number </th>
+                      <th width="250px" data-orderable="false" data-column="status"> Status of the Permit</th>
+                      <th width="200px" data-orderable="true" data-column="comment"> Remarks/Comments </th>
+                      <th width="150px" data-orderable="false" data-column="date_of_approval"> Date of Approval </th>          
                     </tr>
                   </thead>
                 </table>
@@ -119,6 +103,6 @@
 @push('page-scripts')
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-<script src="{{asset('admin/js/custom/eia/eia.js')}}"></script>
+<script src="{{asset('admin/js/custom/permits/permits.js')}}"></script>
 @endpush
 

@@ -22,7 +22,7 @@
 <div class="col s12 m6 l6"><h5 class="breadcrumbs-title"><span>{{ Str::plural(__('locale.'.$page->title)) ?? ''}}</span></h5></div>
 <div class="col s12 m6 l6 right-align-md">
     <ol class="breadcrumbs mb-0">
-        <li class="breadcrumb-item"><a href="{{ url(ROUTE_PREFIX.'/home') }}">{{__('locale.Dashboard')}}</a></li>
+        <li class="breadcrumb-item"><a href="{{ url(ROUTE_PREFIX.'/dashboard') }}">{{__('locale.Dashboard')}}</a></li>
         <li class="breadcrumb-item"><a href="{{ url($page->route) }}">{{ Str::plural(__('locale.'.$page->title)) ?? ''}}</a></li>
         <li class="breadcrumb-item active">{{__('locale.List')}}</li>
     </ol>

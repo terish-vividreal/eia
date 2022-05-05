@@ -148,10 +148,15 @@ class DesignationController extends Controller
     public function destroy(Designation $designation, Request $request)
     {
         if($designation) {
-            $designation->delete();
-            return ['flagError' => false, 'message' => Str::singular($this->title). " deleted successfully"];
+
+            if (!$designation->users->isEmpty()) {
+                return ['flagError' => true, 'message' => "Cant Delete! Designation is used by Users "];
+            } else {
+                $designation->delete();
+                return ['flagError' => false, 'message' => Str::singular($this->title). " deleted successfully"];
+            }
         }
-        return ['flagError' => true, 'message' => "Errors Occurred. Please check !",  'error' => $validator->errors()->all()];
+        return ['flagError' => true, 'message' => "Errors Occurred. Please check !", 'error' => ['error' => 'Error! Please try again']];
     }
 
     // User update status 

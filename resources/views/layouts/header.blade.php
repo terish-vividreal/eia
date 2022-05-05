@@ -83,11 +83,16 @@ $user_profile     = (Auth::user()->profile != null) ? asset('storage/store/users
                         <li>
                             <a class="@if (Request::is('dashboard*')) active @endif" href="{{ url('dashboard') }}"> <i class="material-icons">dashboard</i><span><span class="dropdown-title" data-i18n="Dashboard">Dashboard</span></span></a>
                         </li>
-                        <li><a class="dropdown-menu @if (Request::is('projects*') ||  Request::is('projects/create*')) || (Request::is('companies*') ||  Request::is('companies/create*')) active @endif" href="Javascript:void(0)" data-target="ProjectDropdown"><i class="material-icons">assignment</i><span><span class="dropdown-title" data-i18n="Project Profile">Project Profile</span><i class="material-icons right">keyboard_arrow_down</i></span></a>
+                        <!-- <li><a class="dropdown-menu @if (Request::is('projects*') ||  Request::is('projects/create*')) || (Request::is('companies*') ||  Request::is('companies/create*')) active @endif" href="Javascript:void(0)" data-target="ProjectDropdown"><i class="material-icons">assignment</i><span><span class="dropdown-title" data-i18n="Project Profile">Project Profile</span><i class="material-icons right">keyboard_arrow_down</i></span></a>
                             <ul class="dropdown-content dropdown-horizontal-list" id="ProjectDropdown">
-                                <li data-menu=""><a href="{{ url('projects') }}" class="@if (Request::is('projects*') ||  Request::is('projects/create*')) active @endif"><span data-i18n="Modern">Projects</span></a></li>
-                                <li data-menu=""><a href="{{ url('companies') }}" class="@if (Request::is('companies*') ||  Request::is('companies/create*')) active @endif"><span data-i18n="Modern">Companies</span></a></li>
+                                <li data-menu=""><a  ><span data-i18n="Modern"></span></a></li>
                             </ul>
+                        </li> -->
+                        <li>
+                            <a class="@if (Request::is('projects*') ||  Request::is('projects/create*')) active @endif" href="{{ url('projects') }}"> <i class="material-icons">description</i><span><span class="dropdown-title" data-i18n="Dashboard">Projects</span></span></a>
+                        </li>
+                        <li>
+                            <a class="@if (Request::is('companies*') ||  Request::is('companies/create*')) active @endif" href="{{ url('companies') }}"> <i class="material-icons">business</i><span><span class="dropdown-title" data-i18n="Dashboard">Companies</span></span></a>
                         </li>
                         <li>
                             <a class="@if (Request::is('eias*')) active @endif" href="{{ url('eias') }}"> <i class="material-icons">attach_file</i><span><span class="dropdown-title" data-i18n="Dashboard">EIA</span></span></a>
@@ -96,7 +101,7 @@ $user_profile     = (Auth::user()->profile != null) ? asset('storage/store/users
                             <a class="@if (Request::is('documents*')) active @endif" href="{{ url('documents') }}"> <i class="material-icons">description</i><span><span class="dropdown-title" data-i18n="Dashboard">Documents</span></span></a>
                         </li>
                         <li>
-                            <a class="@if (Request::is('home*')) active @endif" href="javascript:"> <i class="material-icons">assessment</i><span><span class="dropdown-title" data-i18n="Dashboard">Permits</span></span></a>
+                            <a class="@if (Request::is('permits*')) active @endif" href="{{ url('permits') }}"> <i class="material-icons">assessment</i><span><span class="dropdown-title" data-i18n="Dashboard">Permits</span></span></a>
                         </li>
                     </ul>
                 </div>

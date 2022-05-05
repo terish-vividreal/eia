@@ -17,6 +17,7 @@ use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\EiaController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\PermitController;
 use App\Http\Controllers\ChildDocumentController;
 use App\Http\Controllers\TaskAssignController;
 use App\Http\Controllers\CommentController;
@@ -35,7 +36,7 @@ use App\Http\Controllers\CommonController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect(route('login'));
 });
 
 Auth::routes();
@@ -103,6 +104,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('comments/store', [CommentController::class, 'store']);
 
     Route::resource('notification', NotificationController::class);
+
+    Route::resource('permits', PermitController::class);
 
 });
 

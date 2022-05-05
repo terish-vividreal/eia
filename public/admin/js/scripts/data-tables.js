@@ -117,7 +117,7 @@ $(document).ready(function () {
         var postUrl = $(this).attr('data-url'); 
         var id      = $(this).attr('data-id');
         
-        swal({ title: "Are you sure?",icon: 'warning', dangerMode: true, buttons: { cancel: 'No, Please!', delete: 'Yes, Disable' }
+        swal({ title: "Are you sure?",icon: 'warning', dangerMode: true, buttons: { cancel: 'No, Please!', delete: 'Yes, Inactivate' }
         }).then(function (willDelete) {
           if (willDelete) {
             $.ajax({url: postUrl + "/" + id, type: "DELETE", dataType: "html"})
@@ -146,7 +146,7 @@ $(document).ready(function () {
         var postUrl = $(this).attr('data-url'); 
         var id      = $(this).attr('data-id');
         
-        swal({ title: "Are you sure?",icon: 'warning', dangerMode: true, buttons: { cancel: 'No, Please!', delete: 'Yes, Enable' }
+        swal({ title: "Are you sure?",icon: 'warning', dangerMode: true, buttons: { cancel: 'No, Please!', delete: 'Yes, Activate' }
         }).then(function (willDelete) {
           if (willDelete) {
             $.ajax({url: postUrl + "/" + id, type: "POST", dataType: "html"})
