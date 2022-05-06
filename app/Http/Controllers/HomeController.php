@@ -3,12 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Rules\MatchOldPassword;
-use App\Models\Country;
+use App\Models\Project;
+use App\Models\Document;
 use App\Models\User;
-use Validator;
-use Auth;
-use Hash;
+use App\Models\Eia;
 use DB;
 
 class HomeController extends Controller
@@ -39,6 +37,9 @@ class HomeController extends Controller
         $user                   = auth()->user();
         $page->title            = "Dashboard";
         $page->route            = "profile";
+        $variants->projects     = Project::get();
+        $variants->eia          = Eia::get();
+        $variants->documents    = Document::get();
         return view('home', compact('page', 'variants', 'user'));
     }
 }

@@ -204,7 +204,7 @@ class ChildDocumentController extends Controller
 
                
                     $html .= '<div class="card animate fadeUp"><div class="card-content"><div class="row" id="product-four"><div class="col m4 s12">';
-                    $html .= '<h5>' . HtmlHelper::statusText($child->stage_id, $child->status) . $key. '</h5>';
+                    $html .= '<h5>' . HtmlHelper::statusText($child->stage_id, $child->status) . '</h5>';
                     $html .= '<img src="'.$child->latestFile->file_name.'" class="responsive-img" style="max-width: 75% !important" alt=""></div>';
 
                     $html .= '<div class="col m4 s12"><p style="text-align: right;"></p><table class="striped"><tbody>';
