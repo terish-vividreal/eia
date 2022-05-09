@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use App\Http\Requests\MoveToPermitFormRequest​;
 use App\Helpers\HtmlHelper;
 use App\Helpers\FunctionHelper;
@@ -64,6 +65,14 @@ class PermitController extends Controller
                 $link   .= '<a href="'.$this->route .'/'. $detail->id.'">'.$detail->permit_code.'</a>';
                 return $link ;
             })
+            ->editColumn('comment', function($detail) {
+                $comment    = '';
+                $comment    = Str::limit(strip_tags($detail->comment), 50);
+                // if (strlen(strip_tags($detail->comment)) > 50) {
+                //     $comment .= '<a href="javascript:void(0);" class="view-more-details" data-column="comment" data-url="'.url($this->route.'/'.$detail->id).'" data-id="'.$detail->id.'" >View</a>';
+                // }
+                return $comment ;
+            })
             ->editColumn('status', function($detail) {
                 $status = '';
                 $status .= HtmlHelper::statusText($detail->stage_id, $detail->status);
@@ -102,7 +111,7 @@ class PermitController extends Controller
         $input                      = $request->all();
         $input['created_by']        = auth()->user()->id;
         $permit                     = Permit::create($input);
-        return redirect('permits/'. $permit->id)->with('success', 'Permit created successfully');
+        return redirect('permits/'. $permit->id)->with('success', 'Permit created successfully. PLease update details.');
     }
 
     /**
