@@ -20,8 +20,8 @@ let csrfToken         = $("#" + pageTitle + "Form ").find('input[name="_token"]'
 
 $('#sortBy').select2({ placeholder: "Sort By", allowClear: true});
 $('#documentType').select2({ placeholder: "Please select Document Type", allowClear: true});
-$('#status').select2({ placeholder: "Please select Status", allowClear: true});
-$('#stage').select2({ placeholder: "Please select Stage", allowClear: true});
+$('#status').select2({ placeholder: "Please select Status"});
+$('#stage').select2({ placeholder: "Please select Stage"});
 $('#project_id').select2({ placeholder: "Please select a Project", allowClear: true});
 $('#eia_id').select2({ placeholder: "Please select EIA", allowClear: true});
 $('#assigned_to').select2({ placeholder: "Please select User", allowClear: true});
@@ -337,9 +337,9 @@ table.on('click', '.restore-item', function() {
 });
 
 table.on('click', '.view-more-details', function() {
-    var postUrl   = $(this).attr('data-url'); 
-    var id        = $(this).attr('data-id');
-    var column    = $(this).attr('data-column');
+  var postUrl   = $(this).attr('data-url'); 
+  var id        = $(this).attr('data-id');
+  var column    = $(this).attr('data-column');
 });
 
 function listSubDocuments() {
@@ -469,7 +469,7 @@ $('#taskCompleteBtn').click(function(){
 });
 
 
-$("#status").change(function() {
+$("#documentStatusUpdateBtn").click(function() {
   swal({ title: "Are you sure update status?",icon: 'warning', dangerMode: true, buttons: { cancel: 'Cancel !', delete: 'Yes Update, ' }
   }).then(function (willDelete) {
     if (willDelete) {
@@ -494,3 +494,44 @@ $("#status").change(function() {
     } 
   });
 });
+
+$(".view-more-details").click(function() {
+  var postUrl   = $(this).attr('data-url'); 
+  var id        = $(this).attr('data-id');
+  var column    = $(this).attr('data-column');
+
+  $.ajax({url: postUrl, type: "GET"}).done(function (data) {
+    if (data.flagError == false) {
+      var details = '';
+      if (column == 'comment') {
+        details = data.document.comment;
+      } else {
+        details = data.document.brief_description;
+      }
+      $("#fullTextSection").text(details);
+      $("#viewMoreDetailsModel").modal("open");
+    } else {
+      showErrorToaster(data.message);
+      printErrorMsg(data.error);
+    }   
+  }).fail(function () {
+    showErrorToaster("Something went wrong!");
+  });
+});
+
+function getFullDescription(id) {
+  $.ajax({url: 'documents/'+id, type: "GET"}).done(function (data) {
+    if (data.flagError == false) {
+      var details = '';
+      details = data.document.brief_description;
+      $("#fullTextSection").text(details);
+      $("#viewMoreDetailsModel").modal("open");
+    } else {
+      showErrorToaster(data.message);
+      printErrorMsg(data.error);
+    }   
+  }).fail(function () {
+    showErrorToaster("Something went wrong!");
+  });
+
+}

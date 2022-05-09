@@ -5,6 +5,12 @@
 
 @section('page-style')
 <link rel="stylesheet" type="text/css" href="{{ asset('admin/css/pages/dashboard.css') }}">
+<style>
+.dash-card a {
+    color: #FFFFFF;
+    text-decoration: none;
+}
+</style>
 @endsection
 
 @section('content')
@@ -15,11 +21,11 @@
                <div class="col s12 m6 l3">
                   <div class="card animate fadeLeft">
                      <div class="card-content cyan white-text">
-                        <p class="card-stats-title"><i class="material-icons">person_outline</i>Total Projects</p>
+                        <p class="card-stats-title"><i class="material-icons">description</i>Total Projects</p>
                         <h4 class="card-stats-number white-text">{{$variants->projects->count()}}</h4>
-                        <p class="card-stats-compare">
-                           <i class="material-icons">keyboard_arrow_up</i> 15%
-                           <span class="cyan text text-lighten-5">Last updated yesterday</span>
+                        <p class="card-stats-compare dash-card">
+                           <i class="material-icons">link</i> 
+                           <a href="{{url('projects')}}"><span class="cyan text text-lighten-5">View More</span></a>
                         </p>
                      </div>
                   </div>
@@ -27,10 +33,11 @@
                <div class="col s12 m6 l3">
                   <div class="card animate fadeLeft">
                      <div class="card-content red accent-2 white-text">
-                        <p class="card-stats-title"><i class="material-icons">attach_money</i> EIA</p>
+                        <p class="card-stats-title"><i class="material-icons">attach_file</i> EIAS</p>
                         <h4 class="card-stats-number white-text">{{$variants->eia->count()}}</h4>
-                        <p class="card-stats-compare">
-                           <i class="material-icons">keyboard_arrow_up</i> 70% <span class="red-text text-lighten-5">last month</span>
+                        <p class="card-stats-compare dash-card">
+                           <i class="material-icons">link</i> 
+                           <a href="{{ url('eias') }}"><span class="text text-lighten-5">View More</span></a>
                         </p>
                      </div>
                   </div>
@@ -38,11 +45,11 @@
                <div class="col s12 m6 l3">
                   <div class="card animate fadeRight">
                      <div class="card-content orange lighten-1 white-text">
-                        <p class="card-stats-title"><i class="material-icons">trending_up</i> Documents </p>
+                        <p class="card-stats-title"><i class="material-icons">description</i> Documents </p>
                         <h4 class="card-stats-number white-text">{{$variants->documents->count()}}</h4>
-                        <p class="card-stats-compare">
-                           <i class="material-icons">keyboard_arrow_up</i> 80%
-                           <span class="orange-text text-lighten-5">from yesterday</span>
+                        <p class="card-stats-compare dash-card">
+                           <i class="material-icons">link</i> 
+                           <a href="{{ url('documents') }}"><span class=" text text-lighten-5">View More</span></a>
                         </p>
                      </div>
                   </div>
@@ -50,11 +57,11 @@
                <div class="col s12 m6 l3">
                   <div class="card animate fadeRight">
                      <div class="card-content green lighten-1 white-text">
-                        <p class="card-stats-title"><i class="material-icons">content_copy</i> New Permits</p>
+                        <p class="card-stats-title"><i class="material-icons">assessment</i> New Permits</p>
                         <h4 class="card-stats-number white-text">0</h4>
-                        <p class="card-stats-compare">
-                           <i class="material-icons">keyboard_arrow_down</i> 3%
-                           <span class="green-text text-lighten-5">from last month</span>
+                        <p class="card-stats-compare dash-card">
+                           <i class="material-icons">link</i> 
+                           <a href="{{ url('permits') }}"><span class=" text text-lighten-5">View More</span></a>
                         </p>
                      </div>
                   </div>

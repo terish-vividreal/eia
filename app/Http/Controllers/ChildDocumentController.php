@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use App\Helpers\FunctionHelper;
 use App\Helpers\HtmlHelper;
 use App\Models\DocumentFile;
@@ -31,19 +32,13 @@ class ChildDocumentController extends Controller
             // $posts = Post::with(['author' => function ($q){
             //     $q->orderBy('name', 'DESC');
             // }])
-            
-
-
-
+        
             $document   = Document::find($request->documentId);
             
             
             // ->with(['children' => function ($q){
             //                     $q->orderBy('id', 'DESC');
-            //                 }])->get(); 
-
-
-
+            //                 }]
             if ($document) {
                 $subDocumentsHTML       =  $this->loadSubDocumentsHTML($document);
                 // $subDocumentsHTML    = view($this->viewPath . '.list_child', compact('document'))->render();  
@@ -199,21 +194,28 @@ class ChildDocumentController extends Controller
 
             foreach($document->children as $key => $child) {
 
-
-                if($key != 0){
-
+                if($key != 0) {
                
-                    $html .= '<div class="card animate fadeUp"><div class="card-content"><div class="row" id="product-four"><div class="col m4 s12">';
+                    $html .= '<div class="card animate fadeUp"><div class="card-content"><div class="row" id="product-four"><div class="col s12 m6">';
                     $html .= '<h5>' . HtmlHelper::statusText($child->stage_id, $child->status) . '</h5>';
                     $html .= '<img src="'.$child->latestFile->file_name.'" class="responsive-img" style="max-width: 75% !important" alt=""></div>';
 
-                    $html .= '<div class="col m4 s12"><p style="text-align: right;"></p><table class="striped"><tbody>';
+                    $html .= '<div class="col s12 m6"><p style="text-align: right;"></p><table class="striped"><tbody>';
                     $html .= '<tr><td width="30%">Date of Entry:</td><td>'.$child->date_of_entry.'</td></tr>' ;    
-                    $html .= '<tr><td width="30%">Uploaded By:</td><td>'.$child->uploadedBy->name.'</td></tr>' ;    
-                    $html .= '<tr><td width="30%">Description:</td><td>'.$child->brief_description.'</td></tr>' ;    
+                    $html .= '<tr><td width="30%">Uploaded By:</td><td>'.$child->uploadedBy->name.'</td></tr>' ; 
+                    
+                    
+                    $html .= '<tr><td width="30%">Description:</td><td>';
+                    
+                    $html .= Str::limit(strip_tags($child->brief_description), 100);
+                    if(strlen(strip_tags($child->brief_description)) > 100) {
+                        $html .= '<a href="javascript:void(0);" onclick="getFullDescription('.$child->id.')" class="" data-column="brief_description" data-url="'.url('documents/'.$child->id).'" data-id="'.$child->id.'" >View</a>';
+                    }
+                    
+                    $html .= '</td></tr>' ;    
                     $html .= '</tbody></table></div>';
 
-                    $html .= '<div class="col m4 s12"><div class="row commentContainer" id="commentContainer'.$child->id.'">';
+                    $html .= '<div class="col s12 m12"><div class="row commentContainer" id="commentContainer'.$child->id.'">';
                     $html .= '<div class="input-field col m10 s12 commentArea">';
                     $html .= '<textarea id="comment" class="materialize-textarea commentField" name="comment" cols="50" rows="10" placeholder="Comments"></textarea>';
                     // $html .= '<label for="comment" class="label-placeholder active">  </label>';
@@ -237,17 +239,28 @@ class ChildDocumentController extends Controller
                 }   
             }
 
-                $parentHTML .= '<div class="card animate fadeUp"><div class="card-content"><div class="row" id="product-four"><div class="col m4 s12">';
+                $parentHTML .= '<div class="card animate fadeUp"><div class="card-content"><div class="row" id="product-four"><div class="col s12 m6">';
                 $parentHTML .= '<h5>' . HtmlHelper::statusText($document->stage_id, $document->status) . '</h5>';
                 $parentHTML .= '<img src="'.$document->latestFile->file_name.'" class="responsive-img" style="max-width: 75% !important" alt=""></div>';
 
-                $parentHTML .= '<div class="col m4 s12"><p style="text-align: right;"></p><table class="striped"><tbody>';
+                $parentHTML .= '<div class="col s12 m6"><p style="text-align: right;"></p><table class="striped"><tbody>';
                 $parentHTML .= '<tr><td width="30%">Date of Entry:</td><td>'.$document->date_of_entry.'</td></tr>' ;    
-                $parentHTML .= '<tr><td width="30%">Uploaded By:</td><td>'.$document->uploadedBy->name.'</td></tr>' ;    
-                $parentHTML .= '<tr><td width="30%">Description:</td><td>'.$document->brief_description.'</td></tr>' ;    
+                $parentHTML .= '<tr><td width="30%">Uploaded By:</td><td>'.$document->uploadedBy->name.'</td></tr>' ;   
+
+
+
+
+                $parentHTML .= '<tr><td width="30%">Description:</td><td>';
+                
+                $parentHTML .= Str::limit(strip_tags($document->brief_description), 100);
+                if(strlen(strip_tags($document->brief_description)) > 100) {
+                    $parentHTML .= '<a href="javascript:void(0);" onclick="getFullDescription('.$document->id.')" class="" data-column="brief_description" data-url="'.url('documents/'.$document->id).'" data-id="'.$document->id.'" >View</a>';
+                }
+                
+                $parentHTML .='</td></tr>' ;    
                 $parentHTML .= '</tbody></table></div>';
 
-                $parentHTML .= '<div class="col m4 s12"><div class="row commentContainer" id="commentContainer'.$document->id.'">';
+                $parentHTML .= '<div class="col s12 m12"><div class="row commentContainer" id="commentContainer'.$document->id.'">';
                 $parentHTML .= '<div class="input-field col m10 s12 commentArea">';
                 $parentHTML .= '<textarea id="comment" class="materialize-textarea commentField" name="comment" cols="50" rows="10" placeholder="Comments"></textarea>';
                 // $html .= '<label for="comment" class="label-placeholder active">  </label>';
@@ -266,16 +279,11 @@ class ChildDocumentController extends Controller
                         $parentHTML .= '</div></div></div></div></div></div></div></div>';
                     }
                 }
-
                 $parentHTML .= '</div></div></div></div>' ;
                 $html .= $parentHTML;
         } else {
 
-            
-
         }
-
-            
         return $html;
     }
 }

@@ -27,7 +27,7 @@
 <div class="section">
   <div class="card">
       <div class="card-content">
-          <p class="caption mb-0">{{__('messages.Dummy Text')}}</p>
+          <p class="caption mb-0">Companies that operate Oil and Gas projects in Iraq</p>
       </div>
   </div>
 

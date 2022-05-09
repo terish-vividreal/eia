@@ -60,7 +60,7 @@
     <div class="card-content">
       <div class="row">
         <div class="col s12 m6">
-        <!-- $document->children -->
+          <!-- $document->children -->
           @isset($document->latestFile)
             <h6 class="mb-4 mt-4"><i class="material-icons">info_outline</i> {{ Str::plural($page->title) ?? ''}} Details</h6>
             @if(count($document->children) > 0) 
@@ -142,42 +142,59 @@
                 </td>
               </tr>
               <tr>
-                <td>Update Status: </td>
+                <td>Project stage: </td>
                 <td>
                   @php 
                     $stageID    = (count($document->children) > 0) ? $document->children[0]->stage_id : $document->stage_id;
                     $statusID   = (count($document->children) > 0) ? $document->children[0]->status : $document->status;
                     $documentID = (count($document->children) > 0) ? $document->children[0]->id : $document->id;                    
                   @endphp 
-                  
-                  {!! Form::hidden('documentStatusId', $documentID ?? '', ['id' => 'documentStatusId']); !!}
+
                   {!! Form::select('stage', $variants->stages, $stageID ?? '', ['id' => 'stage', 'class' => 'select2 browser-default document-stage', 'placeholder'=>'Please select Stage']) !!}
-                  {!! Form::select('status', $variants->documentStatuses, $statusID ?? '', ['id' => 'status', 'class' => 'select2 browser-default document-status', 'placeholder'=>'Please select Status']) !!}
                   
                 </td>
               </tr>
               <tr>
+                <td>Document status: </td>
+                <td>
+                  {!! Form::select('status', $variants->documentStatuses, $statusID ?? '', ['id' => 'status', 'class' => 'select2 browser-default', 'placeholder'=>'Please select Status']) !!}
+                </td>
+              </tr>
+              <tr>
+                <td></td>
+                <td style="text-align:right">
+                  {!! Form::hidden('documentStatusId', $documentID ?? '', ['id' => 'documentStatusId']); !!}
+                  {!! App\Helpers\HtmlHelper::submitButton('Submit', 'documentStatusUpdateBtn') !!}
+                </td>
+              </tr>
+              <tr>
                 <td>Brief Description: </td>
-                <td>{{ $document->brief_description ?? ''}}</td>
+
+                <td>  
+                  {{ Str::limit(strip_tags($document->brief_description), 100)}}
+                  @if(strlen(strip_tags($document->brief_description)) > 100)
+                    <a href="javascript:void(0);" class="view-more-details" data-column="brief_description" data-url="{{ url('documents/'.$document->id)}}" data-id="{{$document->id}}" >View</a>
+                  @endif
+                </td>
               </tr>
             </tbody>
           </table>
         </div>
         
-        <div class="col s12 m10" style="margin-top: 10px">
+        <div class="col s12 m12" style="margin-top: 10px">
           <div class="row commentContainer">  
             <div class="input-field col m10 s12 commentArea">
               <textarea id="documentComment" class="materialize-textarea commentField" name="comment" cols="50" rows="10" placeholder="Enter comment"></textarea>  
-              <div id="documentComment-error-{{$document->id}}" class="error documentComment-error" style="display:none;"></div>
+              <div id="documentComment-error-{{$documentID}}" class="error documentComment-error" style="display:none;"></div>
             </div>
             <div class="input-field col m2 s12" style="margin-top: 37px; !important">
-              <a href="javascript:" class="text-sub save-comment-btn" data-id="{{$document->id}}"><i class="material-icons mr-2">send</i></a>
+              <a href="javascript:" class="text-sub save-comment-btn" data-id="{{$documentID}}"><i class="material-icons mr-2">send</i></a>
             </div>
           </div>
           <!-- Content Area Starts -->
-          <div class="app-email" id="latestComment{{$document->id}}"></div>
-            @if(count($document->children) > 0) 
+          <div class="app-email" id="latestComment{{$documentID}}"></div>
 
+          @if(count($document->children) > 0) 
               @forelse ($document->children[0]->comments as $comment)
                 <div class="app-email" id="docCommentsDiv{{$comment->id}}">
                   <div class="content-area">
@@ -210,30 +227,29 @@
               @empty
               @endforelse
 
-            @else
+          @else
 
-              @forelse ($document->comments as $comment)
-                <div class="app-email" id="docCommentsDiv{{$comment->id}}">
-                  <div class="content-area">
-                    <div class="app-wrapper">
-                      <div class="card card card-default scrollspy border-radius-6 fixed-width">
-                        <div class="card-content p-0 pb-2">
-                          <div class="collection email-collection">
-                            <div class="email-brief-info collection-item animate fadeUp">
-                              <a class="list-content" href="javascript:">
-                                <div class="list-title-area">
-                                  <div class="user-media">
-                                    <img src="{{$comment->commentedBy->profile}}" alt="" class="circle z-depth-2 responsive-img avtar">
-                                    <div class="list-title">
-                                      {{($comment->commented_by == auth()->user()->id) ? 'You' : $comment->commentedBy->name}}
-                                    </div>
+            @forelse ($document->comments as $comment)
+              <div class="app-email" id="docCommentsDiv{{$comment->id}}">
+                <div class="content-area">
+                  <div class="app-wrapper">
+                    <div class="card card card-default scrollspy border-radius-6 fixed-width">
+                      <div class="card-content p-0 pb-1">
+                        <div class="collection email-collection">
+                          <div class="email-brief-info collection-item animate fadeUp">
+                            <a class="list-content" href="javascript:">
+                              <div class="list-title-area">
+                                <div class="user-media">
+                                  <img src="{{$comment->commentedBy->profile}}" alt="" class="circle z-depth-2 responsive-img avtar">
+                                  <div class="list-title">
+                                    {{($comment->commented_by == auth()->user()->id) ? 'You' : $comment->commentedBy->name}}
                                   </div>
                                 </div>
-                                <div class="list-desc">{{$comment->comment}}</div>
-                              </a>
-                              <div class="list-right">
-                                <div class="list-date">{{$comment->created_at->format('M d, h:i A')}}</div>
                               </div>
+                              <div class="list-desc">{{$comment->comment}}</div>
+                            </a>
+                            <div class="list-right">
+                              <div class="list-date">{{$comment->created_at->format('M d, h:i A')}}</div>
                             </div>
                           </div>
                         </div>
@@ -241,11 +257,11 @@
                     </div>
                   </div>
                 </div>
-              @empty
-              @endforelse
+              </div>
+            @empty
+            @endforelse
 
-            @endif
-              
+          @endif
         </div>
       </div>
     </div>
@@ -288,6 +304,7 @@
 </div>
 <!-- users view ends -->
 @include('documents.assign_task')
+@include('layouts.full-text')
 @endsection
 
 {{-- vendor scripts --}}

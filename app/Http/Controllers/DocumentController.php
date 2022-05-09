@@ -242,6 +242,8 @@ class DocumentController extends Controller
                                                     })->get();
                         $assignedId             = $activeTask[0]->tasks->id;
                     } 
+                    $documentID = (count($document->children) > 0 ) ? $document->children[0]->id : $document->id;
+
                     return view($this->viewPath . '.show', compact('page', 'variants', 'document', 'user', 'activeTask', 'assignedId'));
                 }
                 abort(404);

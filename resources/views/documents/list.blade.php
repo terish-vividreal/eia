@@ -28,7 +28,7 @@
 <div class="section">
   <div class="card">
     <div class="card-content">
-      <p class="caption mb-0">Sample description area. Tables are a nice way to organize a lot of data. </p>
+      <p class="caption mb-0">All documents related EIA applications for Oil and Gas projects in Iraq </p>
     </div>
   </div>
   <!-- Borderless Table -->

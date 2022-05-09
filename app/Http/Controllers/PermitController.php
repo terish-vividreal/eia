@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests\MoveToPermitFormRequest​;
 use App\Helpers\HtmlHelper;
+use App\Helpers\FunctionHelper;
+use App\Models\DocumentStatus;
+use App\Models\EiaStage;
 use App\Models\Permit;
 use App\Models\Eia;
 use Validator;
@@ -70,7 +73,7 @@ class PermitController extends Controller
                 return date('d/m/Y', strtotime( $detail->date_of_approval)); 
             })
             // ->removeColumn('id')
-            // ->escapeColumns([])
+            ->escapeColumns([])
             ->make(true);                    
     }
 
@@ -94,12 +97,12 @@ class PermitController extends Controller
     public function store(MoveToPermitFormRequest​ $request)
     {     
         // Update EIA Status to Permit
-        Eia::where('id', $request->eia_id)->update(['is_permit' => 1]);
+        // Eia::where('id', $request->eia_id)->update(['is_permit' => 1]);
 
         $input                      = $request->all();
         $input['created_by']        = auth()->user()->id;
         $permit                     = Permit::create($input);
-        return redirect('permits')->with('success', 'Permit created successfully');
+        return redirect('permits/'. $permit->id)->with('success', 'Permit created successfully');
     }
 
     /**
@@ -109,7 +112,17 @@ class PermitController extends Controller
      */
     public function show(Permit $permit)
     {
-        echo "<pre>"; print_r($permit); 
+        if ($permit) {
+            $page                       = collect();
+            $variants                   = collect();
+            $page->title                = $this->title;
+            $page->route                = url($this->route); 
+            $page->projectRoute         = url('projects/'.$permit->eia->project_id); 
+            $variants->documentStatuses = DocumentStatus::pluck('name','id'); 
+            $variants->stages           = EiaStage::pluck('name','id');
+            return view($this->viewPath . '.show', compact('page', 'variants', 'permit'));
+        }
+        abort(404); 
     }
 
     /**
@@ -130,9 +143,23 @@ class PermitController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Permit $permit)
     {
-        //
+        $validator = \Validator::make($request->all(), 
+                            [ 'permit_code' => 'required|unique:permits,permit_code,'.$permit->id],
+                            [ 'permit_code.unique' => 'Permit ID is already used', 'permit_code.required' => 'Please enter Permit ID']);
+        if ($validator->passes()) {            
+            $permit->permit_code            = str_replace(' ', '', $request->permit_code);
+            $permit->certificate_number     = $request->certificate_number;
+            $permit->status                 = $request->status;
+            $permit->comment                = $request->comment;
+            $permit->date_of_approval       = FunctionHelper::dateToUTC($request->date_of_approval, 'Y-m-d H:i:s');
+            $permit->active                 = 1;
+            $permit->updated_by             = auth()->user()->id;
+            $permit->save();
+            return ['flagError' => false, 'message' => $this->title. " updated successfully"];
+        }
+        return ['flagError' => true, 'message' => "Errors Occurred. Please check !", 'error' => $validator->errors()->all()];
     }
 
     /**
