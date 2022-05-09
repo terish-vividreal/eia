@@ -118,7 +118,7 @@
         </div>
       </div>
       <div class="row">
-        <div class="col s12 m6 "><h4 class="card-title">Document Lists</h4></div>
+        <div class="col s12 m6 "><h4 class="card-title">Permit Document Lists</h4></div>
         <div class="col s12">
           <table id="data-table-permit-documents" class="display data-tables" data-url="{{ $page->route.'/documents/list/'.$permit->id }}" data-form="page" data-length="10">
             <thead>

@@ -60,7 +60,7 @@
           <div id="view-borderless-table">
             <div class="row">
               <div class="col s12">
-                <table id="data-table-eia" class="display data-tables" data-url="{{ $page->route }}" data-form="page" data-length="10">
+                <table id="data-table-permit-documents" class="display data-tables" data-url="{{ $page->route }}" data-form="page" data-length="10">
                   <thead>
                     <tr>
                       <th width="20px" data-orderable="false" data-column="DT_RowIndex"> No </th>
