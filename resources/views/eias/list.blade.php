@@ -7,9 +7,6 @@
 {{-- vendor styles --}}
 @section('vendor-style')
   <link rel="stylesheet" type="text/css" href="{{asset('admin/vendors/flag-icon/css/flag-icon.min.css')}}">
-  <!-- <link rel="stylesheet" type="text/css" href="{{asset('admin/vendors/data-tables/css/jquery.dataTables.min.css')}}">
-  <link rel="stylesheet" type="text/css" href="{{asset('admin/vendors/data-tables/extensions/responsive/css/responsive.dataTables.min.css')}}">
-  <link rel="stylesheet" type="text/css" href="{{asset('admin/vendors/data-tables/css/select.dataTables.min.css')}}"> -->
 @endsection
 
 {{-- page style --}}
@@ -43,10 +40,9 @@
           <!-- <div class="card-title"> -->
           <div class="row right">
             <div class="col s12 m12 ">
-              <!-- {!! App\Helpers\HtmlHelper::createLinkButton(url($page->route.'/create'), 'Create New ' .$page->title, ) !!} -->
               <a class="dropdown-settings btn mb-1 waves-effect waves-light cyan" href="#!" data-target="dropdown1" id="customerListBtn"><i class="material-icons hide-on-med-and-up">settings</i><span class="hide-on-small-onl">List {{Str::plural($page->title)}}</span><i class="material-icons right">arrow_drop_down</i></a>
               <ul class="dropdown-content" id="dropdown1" tabindex="0">
-                <li tabindex="0"><a class="grey-text text-darken-2 listBtn" data-type="active" href="javascript:" > Active </a></li>
+                <li tabindex="0"><a class="grey-text text-darken-2 listBtn" data-type="active" href="javascript:"> Active </a></li>
                 <li tabindex="0"><a class="grey-text text-darken-2 listBtn" data-type="inactive" href="javascript:"> Inactive </a></li>
               </ul>
             </div>

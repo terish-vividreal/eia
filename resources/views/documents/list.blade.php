@@ -104,6 +104,7 @@
   </div>
 </div><!-- START RIGHT SIDEBAR NAV -->
 @include('projects.full_name')
+@include('layouts.full-text')
 @endsection
 
 {{-- vendor scripts --}}

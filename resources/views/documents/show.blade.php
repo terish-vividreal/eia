@@ -173,7 +173,7 @@
                 <td>  
                   {{ Str::limit(strip_tags($document->brief_description), 100)}}
                   @if(strlen(strip_tags($document->brief_description)) > 100)
-                    <a href="javascript:void(0);" class="view-more-details" data-column="brief_description" data-url="{{ url('documents/'.$document->id)}}" data-id="{{$document->id}}" >View</a>
+                    <a href="javascript:void(0);" onclick="getFullDescription({{$document->id}})">View</a>
                   @endif
                 </td>
               </tr>

@@ -340,8 +340,25 @@ table.on('click', '.view-more-details', function() {
   var postUrl   = $(this).attr('data-url'); 
   var id        = $(this).attr('data-id');
   var column    = $(this).attr('data-column');
-});
 
+  $.ajax({url: postUrl, type: "GET"}).done(function (data) {
+    if (data.flagError == false) {
+      var details = '';
+      if (column == 'comment') {
+        details = data.document.comment;
+      } else {
+        details = data.document.brief_description;
+      }
+      $("#fullTextSection").text(details);
+      $("#viewMoreDetailsModel").modal("open");
+    } else {
+      showErrorToaster(data.message);
+      printErrorMsg(data.error);
+    }   
+  }).fail(function () {
+    showErrorToaster("Something went wrong!");
+  });
+});
 function listSubDocuments() {
   $.ajax({ url: 'sub-documents/list/', type: 'GET', dataType: 'json', data: {documentId:documentId},
     success: function(data) {
@@ -495,29 +512,29 @@ $("#documentStatusUpdateBtn").click(function() {
   });
 });
 
-$(".view-more-details").click(function() {
-  var postUrl   = $(this).attr('data-url'); 
-  var id        = $(this).attr('data-id');
-  var column    = $(this).attr('data-column');
+// $(".view-more-details").click(function() {
+//   var postUrl   = $(this).attr('data-url'); 
+//   var id        = $(this).attr('data-id');
+//   var column    = $(this).attr('data-column');
 
-  $.ajax({url: postUrl, type: "GET"}).done(function (data) {
-    if (data.flagError == false) {
-      var details = '';
-      if (column == 'comment') {
-        details = data.document.comment;
-      } else {
-        details = data.document.brief_description;
-      }
-      $("#fullTextSection").text(details);
-      $("#viewMoreDetailsModel").modal("open");
-    } else {
-      showErrorToaster(data.message);
-      printErrorMsg(data.error);
-    }   
-  }).fail(function () {
-    showErrorToaster("Something went wrong!");
-  });
-});
+//   $.ajax({url: postUrl, type: "GET"}).done(function (data) {
+//     if (data.flagError == false) {
+//       var details = '';
+//       if (column == 'comment') {
+//         details = data.document.comment;
+//       } else {
+//         details = data.document.brief_description;
+//       }
+//       $("#fullTextSection").text(details);
+//       $("#viewMoreDetailsModel").modal("open");
+//     } else {
+//       showErrorToaster(data.message);
+//       printErrorMsg(data.error);
+//     }   
+//   }).fail(function () {
+//     showErrorToaster("Something went wrong!");
+//   });
+// });
 
 function getFullDescription(id) {
   $.ajax({url: 'documents/'+id, type: "GET"}).done(function (data) {
@@ -533,5 +550,5 @@ function getFullDescription(id) {
   }).fail(function () {
     showErrorToaster("Something went wrong!");
   });
-
 }
+
