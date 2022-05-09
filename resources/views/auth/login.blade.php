@@ -19,14 +19,14 @@
             <div class="row margin">
                 <div class="input-field col s12">
                 <i class="material-icons prefix pt-2">person_outline</i>
-                <input id="email" type="email" name="email" value="{{ old('email') }}" class="validate" autocomplete="off">
+                <input id="email" type="email" name="email" value="{{ old('email') }}" class="validate" autocomplete="off" style="padding-left: 20px;">
                 <label for="email" class="label-placeholder">User ID </label>
                 </div>
             </div>
             <div class="row margin">
                 <div class="input-field col s12">
                 <i class="material-icons prefix pt-2">lock_outline</i>
-                <input id="password" type="password" name="password" class="validate" autocomplete="off">
+                <input id="password" type="password" name="password" class="validate" autocomplete="off" style="padding-left: 20px;">
                 <label for="password" class="label-placeholder">Password </label>
                 </div>
             </div>

@@ -106,6 +106,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('notification', NotificationController::class);
 
     Route::resource('permits', PermitController::class);
+    Route::get('permits/documents/list/{id}', [PermitController::class, 'listDocuments']);
 
 });
 

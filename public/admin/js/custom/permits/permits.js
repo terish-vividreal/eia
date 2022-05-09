@@ -90,7 +90,7 @@ if ($("#permitForm").length > 0) {
 var columns;
 var formValue;
 
-var table     = $('#data-table-eia');
+var table     = $('#data-table-permit-documents');
 var url       = table.data('url');
 var form      = table.data('form');
 var length    = table.data('length');

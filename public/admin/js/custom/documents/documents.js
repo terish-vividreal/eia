@@ -127,8 +127,8 @@ if ($("#" + pageTitle + "Form").length > 0) {
           if (data.flagError == false) {
             showSuccessToaster(data.message);
             setTimeout(function () { 
-              // window.location.href = eiaRoute;   
-              location.reload();             
+              window.location.href = eiaRoute;   
+              // location.reload();             
             }, 2000);
           } else {
             showErrorToaster(data.message);
@@ -359,6 +359,7 @@ table.on('click', '.view-more-details', function() {
     showErrorToaster("Something went wrong!");
   });
 });
+
 function listSubDocuments() {
   $.ajax({ url: 'sub-documents/list/', type: 'GET', dataType: 'json', data: {documentId:documentId},
     success: function(data) {

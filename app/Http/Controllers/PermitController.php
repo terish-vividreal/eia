@@ -8,6 +8,7 @@ use App\Http\Requests\MoveToPermitFormRequest​;
 use App\Helpers\HtmlHelper;
 use App\Helpers\FunctionHelper;
 use App\Models\DocumentStatus;
+use App\Models\Document;
 use App\Models\EiaStage;
 use App\Models\Permit;
 use App\Models\Eia;
@@ -132,6 +133,74 @@ class PermitController extends Controller
             return view($this->viewPath . '.show', compact('page', 'variants', 'permit'));
         }
         abort(404); 
+    }
+
+    /**
+     * Display a listing of the resource in datatable.
+     * @throws \Exception
+     */
+    public function listDocuments(Request $request, $id = null)
+    {
+        $permit     = Permit::find($id);
+        $detail     = Document::select(['documents.*'])->where('eia_id', $permit->eia_id)->where('parent_id', 0);
+
+        return Datatables::eloquent($detail)
+            ->addIndexColumn()
+            ->editColumn('date_of_entry', function($detail) {
+                return $detail->formatted_date_of_entry; 
+            })
+            ->editColumn('document_number', function($detail) {
+                $link       = '';
+                $link       .= '<a href="documents/'. $detail->id.'">'.$detail->document_number.'</a>';
+                return $link ;
+            })
+            ->editColumn('title', function($detail) {
+                $title      = '';
+                $link       = '';
+                $title       = Str::limit(strip_tags($detail->title), 15);
+                $link       .= '<a href="documents/'. $detail->id.'">'.$title.'</a>';
+                return $link ;
+            })
+            ->editColumn('status', function($detail) {
+                $status = '';
+                $status .= HtmlHelper::statusText($detail->stage_id, $detail->status);
+                return $status;
+            })
+            ->editColumn('brief_description', function($detail) {
+                $description    = '';
+                $description    = Str::limit(strip_tags($detail->brief_description), 40);
+                if (strlen(strip_tags($detail->brief_description)) > 50) {
+                    $description .= '<a href="javascript:void(0);" class="view-more-details" data-column="brief_description" data-url="'.url($this->route.'/'.$detail->id).'" data-id="'.$detail->id.'" >View</a>';
+                }
+                return $description ;
+            })
+            ->editColumn('document_type', function($detail) {
+                $documentType   = '';
+                $documentType = ($detail->document_type == 1) ? 'Hard Copy' : 'Soft Copy';
+                return $documentType;
+            })
+            ->editColumn('comment', function($detail) {
+                $comment    = '';
+                $comment    = Str::limit(strip_tags($detail->comment), 40);
+                if (strlen(strip_tags($detail->comment)) > 50) {
+                    // onclick='viewMoreDetails(\"".$detail->comment."\")'
+                    $comment .= '<a href="javascript:void(0);" class="view-more-details" data-column="comment" data-url="'.url($this->route.'/'.$detail->id).'" data-id="'.$detail->id.'" >View</a>';
+                }
+                return $comment ;
+            })
+            ->addColumn('action', function($detail) {
+                $action = '';
+                if ($detail->deleted_at == null) { 
+                    $action .= HtmlHelper::editButton(url('eias/'.$detail->eia->id.'/documents/'.$detail->id.'/edit'), $detail->id);
+                    $action .= HtmlHelper::disableButton(url($this->route), $detail->id, 'Inactive');
+                } else {
+                    $action .= HtmlHelper::restoreButton(url($this->route.'/restore'), $detail->id);
+                }
+                return $action;
+            })
+            ->removeColumn('id')
+            ->escapeColumns([])
+            ->make(true);                    
     }
 
     /**

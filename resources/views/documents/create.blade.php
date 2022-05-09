@@ -116,9 +116,7 @@
                                 {!! Form::text('uploadedBy', $user->name ?? '', array('id' => 'uploadedBy', 'disabled' => 'disabled')) !!}
                                 <label for="title" class="label-placeholder active"> Uploaded by <span class="red-text">*</span></label>
                             </div>   
-                            <div class="input-field col m6 s12"> 
-                                {!! Form::select('documentType', [1 => 'Hard Copy', 2 => 'Soft Copy'], $document->document_type ?? '', ['id' => 'documentType', 'class' => 'select2 browser-default', 'placeholder'=>'Please select Document type']) !!}
-                            </div>
+                            
                         </div>
                         <div class="row">  
                             <div class="input-field col m12 s12">
