@@ -1,11 +1,11 @@
 <div class="card animate fadeUp">
    <div class="card-content">
       <div class="row" id="product-four">
-         <div class="col m4 s12">
+         <div class="col s12 m6">
             <h5><span class="chip pink lighten-5"><span class="pink-text">Scoping - Pending Action</span></span></h5>
             <img src="http://127.0.0.1:8000/admin/images/demo_pdf.png" class="responsive-img" style="max-width: 75% !important" alt="">
          </div>
-         <div class="col m4 s12">
+         <div class="col s12 m6">
             <p style="text-align: right;"></p>
             <table class="striped">
                <tbody>
@@ -24,7 +24,7 @@
                </tbody>
             </table>
          </div>
-         <div class="col m4 s12">
+         <div class="col s12 m12">
             <div class="row commentContainer" id="commentContainer20">
                <div class="input-field col m10 s12 commentArea">
                   <textarea id="comment" class="materialize-textarea commentField" name="comment" cols="50" rows="10"></textarea>

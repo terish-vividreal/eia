@@ -7,8 +7,11 @@
             <form method="POST" action="{{ route('login') }}">
             @csrf
             <div class="row">
+                <div class="input-field col s12" style="text-align:center">
+                    <img src="{{ asset('admin/images/logo/logo.png') }}" alt="materialize logo">
+                </div>
                 <div class="input-field col s12">
-                <h5 class="ml-4">Sign in : {{ config('app.name') }} </h5>
+                <h5 class="ml-4" style="text-align:center">Sign in </h5>
                 </div>
             </div>
             @include('layouts.success')

@@ -34,7 +34,7 @@
 <div class="section">
   <div class="card">
       <div class="card-content">
-          <p class="caption mb-0">Sample description area. Tables are a nice way to organize a lot of data. </p>
+          <p class="caption mb-0">Past and ongoing Oil and Gas projects that requires EIAs. </p>
       </div>
   </div>
 

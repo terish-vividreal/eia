@@ -106,7 +106,7 @@
                                 <label for="dateOfEntry" class="label-placeholder active"> Date of Entry <span class="red-text">*</span></label>
                             </div>
                             <div class="input-field col m3 s12">
-                                {!! Form::select('stage', $variants->stages, $childDocument->stage_id ?? '', ['id' => 'stage', 'class' => 'select2 browser-default', 'placeholder'=>'Please select Stage']) !!}
+                                {!! Form::select('stage', $variants->stages, $document->stage_id ?? '', ['id' => 'stage', 'disabled' => 'disabled', 'class' => 'select2 browser-default', 'placeholder'=>'Please select Stage']) !!}
                             </div>
                             <div class="input-field col m3 s12">
                                 {!! Form::select('status', $variants->documentStatuses, $childDocument->status ?? '', ['id' => 'status', 'class' => 'select2 browser-default', 'placeholder'=>'Please select Status']) !!}
