@@ -123,7 +123,10 @@ class DocumentController extends Controller
      */
     public function lists(Request $request, $eiaId = null)
     {
-        $detail     =  Document::select(['documents.*'])->where('parent_id', 0);
+        $detail     =  Document::select(['documents.*'])
+                        ->whereHas('eia', function($q){
+                            $q->where('is_permit', 0);                                
+                        })->where('parent_id', 0);
         if (isset($request->form)) {
             foreach ($request->form as $search) {
                 if ($search['value'] != NULL && $search['name'] == 'searchTitle') {
