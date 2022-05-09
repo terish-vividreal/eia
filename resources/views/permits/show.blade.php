@@ -44,7 +44,7 @@
   </div>
   <!-- users view media object ends -->
   <!-- users view card data start -->
-
+  
       <div id="Form-advance" class="card card card-default scrollspy">
         <div class="card-content">
           <div class="card-title">
@@ -66,48 +66,46 @@
               {!! Form::hidden('permitID', $permit->id ?? '', ['id' => 'permitID'] ); !!}
               {!! Form::hidden('pageRoute', $page->route, ['id' => 'pageRoute'] ); !!}
               <div class="row">
-                  <div class="input-field col m6 s12">
-                      {!! Form::text('project_code_id', $permit->eia->project->project_code_id ?? '', array('id' => 'project_code_id', 'disabled' => 'disabled')) !!}
-                      <label for="codeId" class="label-placeholder active"> Project Id <span class="red-text">*</span></label>
-                  </div>
-                  <div class="input-field col m6 s12">
-                      {!! Form::text('permit_code', $permit->permit_code ?? '', array('id' => 'permit_code')) !!}
-                      <label for="permit_code" class="label-placeholder active"> Permit Id <span class="red-text">*</span></label>
-                  </div>
+                <div class="input-field col m6 s12">
+                  {!! Form::text('project_code_id', $permit->eia->project->project_code_id ?? '', array('id' => 'project_code_id', 'disabled' => 'disabled')) !!}
+                  <label for="codeId" class="label-placeholder active"> Project Id <span class="red-text">*</span></label>
+                </div>
+                <div class="input-field col m6 s12">
+                  {!! Form::text('permit_code', $permit->permit_code ?? '', array('id' => 'permit_code')) !!}
+                  <label for="permit_code" class="label-placeholder active"> Permit Id <span class="red-text">*</span></label>
+                </div>
               </div>
               <div class="row">
-                  <div class="input-field col m6 s12">
-                      {!! Form::select('status', $variants->documentStatuses, $permit->status ?? '', ['id' => 'status', 'class' => 'select2 browser-default', 'placeholder'=>'Please select Status']) !!}
-                  </div>
-                  <div class="input-field col m6 s12">
-                      {!! Form::text('date_of_approval', $permit->date_of_approval ?? '', array('id' => 'date_of_approval')) !!}
-                      <label for="date_of_approval" class="label-placeholder active"> Date of Approval <span class="red-text">*</span></label>
-                  </div> 
+                <div class="input-field col m6 s12">
+                  {!! Form::select('status', $variants->documentStatuses, $permit->status ?? '', ['id' => 'status', 'class' => 'select2 browser-default', 'placeholder'=>'Please select Status']) !!}
+                </div>
+                <div class="input-field col m6 s12">
+                  {!! Form::text('date_of_approval', $permit->date_of_approval ?? '', array('id' => 'date_of_approval')) !!}
+                  <label for="date_of_approval" class="label-placeholder active"> Date of Approval <span class="red-text">*</span></label>
+                </div> 
               </div>
               <div class="row">  
-                  <div class="input-field col m6 s12">
-                      {!! Form::text('certificate_number', $permit->certificate_number ?? '', array('id' => 'certificate_number')) !!}
-                      <label for="certificate_number" class="label-placeholder active"> Certificate Number </label>    
-                  </div>
+                <div class="input-field col m6 s12">
+                  {!! Form::text('certificate_number', $permit->certificate_number ?? '', array('id' => 'certificate_number')) !!}
+                  <label for="certificate_number" class="label-placeholder active"> Certificate Number </label>    
+                </div>
               </div>
               <div class="row">  
-                  <div class="input-field col m12 s12">
-                    {!! Form::textarea('comment', $permit->comment ?? '',  ['id' => 'comment', 'class' => 'materialize-textarea']) !!}
-                    <label for="comment" class="label-placeholder active"> Remarks / Comments </label>    
-                  </div>
+                <div class="input-field col m12 s12">
+                  {!! Form::textarea('comment', $permit->comment ?? '',  ['id' => 'comment', 'class' => 'materialize-textarea']) !!}
+                  <label for="comment" class="label-placeholder active"> Remarks / Comments </label>    
+                </div>
               </div>
-
               <div class="row">
-                  <div class="input-field col s12">
-                      {!! App\Helpers\HtmlHelper::submitButton('Submit', 'formSubmitButton') !!}
-                      {!! App\Helpers\HtmlHelper::resetButton('Reset', 'formResetButton') !!}
-                  </div>
+                <div class="input-field col s12">
+                  {!! App\Helpers\HtmlHelper::submitButton('Submit', 'formSubmitButton') !!}
+                  {!! App\Helpers\HtmlHelper::resetButton('Reset', 'formResetButton') !!}
+                </div>
               </div>
           {{ Form::close() }}
         </div>
       </div>
  
-
   <!-- users view card data ends -->
   <!-- users view card details start -->
   <div class="card">
@@ -134,11 +132,10 @@
                 <th width="200px" data-orderable="false" data-column="comment"> Remarks/Comments </th>                            
                 <th width="250px" data-orderable="false" data-column="action"> Action </th>   
               </tr>
-            </thead> -->
-          </table>
+            </thead>
+          </table> -->
         </div>
        </div>
-      <!-- </div> -->
     </div>
   </div>
   <!-- users view card details ends -->
