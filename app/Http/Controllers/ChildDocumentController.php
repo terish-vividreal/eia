@@ -69,6 +69,7 @@ class ChildDocumentController extends Controller
             $page->eiaRoute             = url('eias/'.$document->eia->id); 
             $variants->documentStatuses = DocumentStatus::pluck('name','id'); 
             $variants->stages           = EiaStage::pluck('name','id'); 
+            $page->stageID              = (count($document->children) > 0) ? $document->children[0]->stage_id : $document->stage_id;
             return view($this->viewPath . '.create_child', compact('page', 'variants', 'eia', 'document', 'user'));
         }
         abort(404);
@@ -91,7 +92,7 @@ class ChildDocumentController extends Controller
         $document->brief_description    = $request->briefDescription;
         $document->uploaded_by          = auth()->user()->id;
         $document->created_by           = auth()->user()->id;
-        $document->stage_id             = $request->stage;
+        $document->stage_id             = $request->stageID;
         $document->parent_id            = $request->documentId;
         $document->status               = $request->status;
         $document->save();

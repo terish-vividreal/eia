@@ -106,7 +106,7 @@ class PermitController extends Controller
     public function store(MoveToPermitFormRequest​ $request)
     {     
         // Update EIA Status to Permit
-        // Eia::where('id', $request->eia_id)->update(['is_permit' => 1]);
+        Eia::where('id', $request->eia_id)->update(['is_permit' => 1]);
 
         $input                      = $request->all();
         $input['created_by']        = auth()->user()->id;
