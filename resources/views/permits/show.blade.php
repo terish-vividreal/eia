@@ -120,7 +120,7 @@
       <div class="row">
         <div class="col s12 m6 "><h4 class="card-title">Document Lists</h4></div>
         <div class="col s12">
-          <!-- <table id="data-table-projects" class="display data-tables" data-url="" data-form="page" data-length="10">
+          <table id="data-table-permit-documents" class="display data-tables" data-url="{{ $page->route.'/documents/list/'.$permit->id }}" data-form="page" data-length="10">
             <thead>
               <tr>
                 <th width="20px" data-orderable="false" data-column="DT_RowIndex"> No </th>
@@ -133,7 +133,7 @@
                 <th width="250px" data-orderable="false" data-column="action"> Action </th>   
               </tr>
             </thead>
-          </table> -->
+          </table>
         </div>
        </div>
     </div>
