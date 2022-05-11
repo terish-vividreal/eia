@@ -177,6 +177,16 @@
                   @endif
                 </td>
               </tr>
+              <tr>
+                <td>Remarks/Comments: </td>
+
+                <td>  
+                  {{ Str::limit(strip_tags($document->comment), 100)}}
+                  @if(strlen(strip_tags($document->comment)) > 100)
+                    <a href="javascript:void(0);" onclick="getFullComment({{$document->id}})">View</a>
+                  @endif
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>

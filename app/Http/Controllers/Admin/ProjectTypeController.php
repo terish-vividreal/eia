@@ -113,7 +113,7 @@ class ProjectTypeController extends Controller
      */
     public function edit($id)
     {
-        $projectType               = ProjectType::find($id);
+        $projectType               = ProjectType::find($id);        
         if($projectType) {
             $page                   = collect();
             $variants               = collect();
@@ -158,8 +158,13 @@ class ProjectTypeController extends Controller
      */
     public function destroy(ProjectType $projectType, Request $request)
     {
-        $projectType->delete();
-        return ['flagError' => false, 'message' => Str::singular($this->title). " deleted successfully"];
+        if (!$projectType->project->isEmpty()) {
+            return ['flagError' => true, 'message' => "Cant Delete! ProjectType is used in Projects "];
+        } else {
+            $projectType->delete();
+            return ['flagError' => false, 'message' => Str::singular($this->title). " deleted successfully"];
+        }
+        return ['flagError' => true, 'message' => "Errors Occurred. Please check !", 'error' => ['error' => 'Error! Please try again']];
     }
 
     // User update status 

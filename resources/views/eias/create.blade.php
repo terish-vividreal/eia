@@ -51,7 +51,7 @@
                     <div class="card-title">
                         <div class="row right">
                             <div class="col s12 m12 ">
-                                {!! App\Helpers\HtmlHelper::listLinkButton(url($page->projectRoute), 'Back') !!}
+                                {!! App\Helpers\HtmlHelper::listLinkButton(url()->previous(), 'Back') !!}
                             </div>
                         </div>
                         <div class="row">

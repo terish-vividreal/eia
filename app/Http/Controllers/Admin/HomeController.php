@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Rules\MatchOldPassword;
+use App\Models\Project;
+use App\Models\Document;
+use App\Models\Eia;
 use App\Models\Country;
 use App\Models\User;
 use Validator;
@@ -36,8 +39,14 @@ class HomeController extends Controller
     public function index()
     {
         $page                   = collect();
-        $page->title            = $this->title;
-        return view($this->viewPath . '.home', compact('page'));
+        $variants               = collect();
+        $user                   = auth()->user();
+        $page->title            = "Dashboard";
+        $page->route            = "profile";
+        $variants->projects     = Project::get();
+        $variants->eia          = Eia::get();
+        $variants->documents    = Document::get();
+        return view($this->viewPath . '.home', compact('page', 'variants', 'user'));
     }
 
     /**

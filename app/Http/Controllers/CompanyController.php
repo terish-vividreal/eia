@@ -182,8 +182,14 @@ class CompanyController extends Controller
      */
     public function destroy(Company $company)
     {
-        $company->delete();
-        return ['flagError' => false, 'message' =>  Str::singular($this->title). " disabled successfully"];
+
+        if (!$company->project->isEmpty()) {
+            return ['flagError' => true, 'message' => "Cant Delete! Company has Projects "];
+        } else {
+            $company->delete();
+            return ['flagError' => false, 'message' => Str::singular($this->title). " deleted successfully"];
+        }
+        return ['flagError' => true, 'message' => "Errors Occurred. Please check !", 'error' => ['error' => 'Error! Please try again']];
     }
 
     /**

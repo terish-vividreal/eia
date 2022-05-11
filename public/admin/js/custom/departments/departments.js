@@ -56,7 +56,7 @@ table.on('click', '.manage-status', function() {
 });
 
 
-table.on('click', '.delete-item', function() {
+table.on('click', '.disable-item', function() {
   var postUrl = $(this).attr('data-url'); 
   var id      = $(this).attr('data-id');
   swal({ title: "Are you sure?",icon: 'warning', dangerMode: true, buttons: { cancel: 'No, Please!', delete: 'Yes, Delete' }

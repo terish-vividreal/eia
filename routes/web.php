@@ -75,7 +75,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('eias/{id}/details', [EiaController::class, 'details']);
     Route::get('projects/{projectId}/eias/create', [EiaController::class, 'create']);
     Route::get('projects/{projectId}/eias/lists', [EiaController::class, 'lists']);
-    Route::get('projects/{projectId}/eias/{id}/edit', [EiaController::class, 'edit']);
+    // Route::get('projects/{projectId}/eias/{id}/edit', [EiaController::class, 'edit']);
 
     // Document Routes
     Route::resource('documents', DocumentController::class);
