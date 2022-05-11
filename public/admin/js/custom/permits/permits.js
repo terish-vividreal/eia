@@ -67,7 +67,7 @@ if ($("#permitForm").length > 0) {
         if (data.flagError == false) {
           showSuccessToaster(data.message);
           setTimeout(function () {         
-            location.reload();       
+            window.location.href = pageRoute;  
           }, 2000);
         } else {
           showErrorToaster(data.message);

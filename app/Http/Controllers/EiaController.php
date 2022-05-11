@@ -157,7 +157,7 @@ class EiaController extends Controller
             ->addColumn('action', function($detail) use ($projectId) {
                 $action = '';
                 if ($detail->deleted_at == null) { 
-                    $action .= HtmlHelper::editButton(url('projects/'.$detail->project_id.'/eias/'.$detail->id.'/edit'), $detail->id);
+                    $action .= HtmlHelper::editButton(url('/eias/'.$detail->id.'/edit'), $detail->id);
                     $action .= HtmlHelper::disableButton(url($this->route), $detail->id, 'Inactive');
                 } else {
                     $action .= HtmlHelper::restoreButton(url($this->route.'/restore'), $detail->id);
@@ -178,14 +178,17 @@ class EiaController extends Controller
     public function show(Eia $eia)
     {
         if($eia) {
-            $page                       = collect();
-            $variants                   = collect();
-            $page->title                = $this->title;
-            $page->link                 = url($this->route);
-            $page->route                = $this->route; 
-            $page->projectRoute         = url('projects/'.$eia->project_id); 
-            $page->eiaRoute             = url('eias/'.$eia->id); 
-            return view($this->viewPath . '.show', compact('page', 'variants', 'eia'));
+            if($eia->is_permit == 0) {
+                $page                       = collect();
+                $variants                   = collect();
+                $page->title                = $this->title;
+                $page->link                 = url($this->route);
+                $page->route                = $this->route; 
+                $page->projectRoute         = url('projects/'.$eia->project_id); 
+                $page->eiaRoute             = url('eias/'.$eia->id); 
+                return view($this->viewPath . '.show', compact('page', 'variants', 'eia'));
+            }
+            abort(404);
         }
         abort(404);
     }
@@ -219,25 +222,42 @@ class EiaController extends Controller
      * @param  \App\Models\Eia  $eia
      * @return \Illuminate\Http\Response
      */
-    public function edit(Request $request, $projectId, $id)
+    public function edit(Eia $eia)
     {
-        $project        = Project::find($projectId);
-        if($project) {
-            $eia            = Eia::find($id);
-            if($eia) {
+        if($eia) {
+            if($eia->is_permit == 0) {
                 $page                       = collect();
                 $variants                   = collect();
                 $user                       = auth()->user();
                 $page->title                = $this->title;
                 $page->route                = url($this->route);
-                $page->projectRoute         = url('projects/'.$projectId); 
+                $page->projectRoute         = url('projects/'.$eia->project_id); 
                 $variants->documentStatuses = DocumentStatus::pluck('name','id'); 
                 $variants->stages           = EiaStage::pluck('name','id'); 
+                $project                    = Project::find($eia->project_id);
                 return view($this->viewPath . '.create', compact('page', 'variants', 'eia', 'project', 'user'));
             }
             abort(404);
         }
         abort(404);
+
+        // $project        = Project::find($projectId);
+        // if($project) {
+        //     $eia            = Eia::find($id);
+        //     if($eia) {
+        //         $page                       = collect();
+        //         $variants                   = collect();
+        //         $user                       = auth()->user();
+        //         $page->title                = $this->title;
+        //         $page->route                = url($this->route);
+        //         $page->projectRoute         = url('projects/'.$projectId); 
+        //         $variants->documentStatuses = DocumentStatus::pluck('name','id'); 
+        //         $variants->stages           = EiaStage::pluck('name','id'); 
+        //         return view($this->viewPath . '.create', compact('page', 'variants', 'eia', 'project', 'user'));
+        //     }
+        //     abort(404);
+        // }
+        // abort(404);
     }
 
     /**

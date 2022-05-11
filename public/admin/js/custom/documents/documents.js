@@ -553,3 +553,19 @@ function getFullDescription(id) {
   });
 }
 
+function getFullComment(id) {
+  $.ajax({url: 'documents/'+id, type: "GET"}).done(function (data) {
+    if (data.flagError == false) {
+      var details = '';
+      details = data.document.comment;
+      $("#fullTextSection").text(details);
+      $("#viewMoreDetailsModel").modal("open");
+    } else {
+      showErrorToaster(data.message);
+      printErrorMsg(data.error);
+    }   
+  }).fail(function () {
+    showErrorToaster("Something went wrong!");
+  });
+}
+

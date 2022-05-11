@@ -106,13 +106,10 @@ class PermitController extends Controller
      */
     public function store(MoveToPermitFormRequest​ $request)
     {     
-        // Update EIA Status to Permit
-        Eia::where('id', $request->eia_id)->update(['is_permit' => 1]);
-
         $input                      = $request->all();
         $input['created_by']        = auth()->user()->id;
-        $permit                     = Permit::create($input);
-        return redirect('permits/'. $permit->id)->with('success', 'Permit created successfully. PLease update details.');
+        $permit                     = Permit::firstOrCreate(['eia_id' => $request->eia_id], $input );
+        return redirect('permits/'. $permit->id)->with('success', 'PLease enter permit details.');
     }
 
     /**
@@ -142,7 +139,10 @@ class PermitController extends Controller
     public function listDocuments(Request $request, $id = null)
     {
         $permit     = Permit::find($id);
-        $detail     = Document::select(['documents.*'])->where('eia_id', $permit->eia_id)->where('parent_id', 0);
+        $detail     = Document::select(['documents.*'])
+                        ->whereHas('eia', function($q){
+                            $q->where('is_permit', 1);                                
+                        })->where('eia_id', $permit->eia_id)->where('parent_id', 0);
 
         return Datatables::eloquent($detail)
             ->addIndexColumn()
@@ -226,7 +226,11 @@ class PermitController extends Controller
         $validator = \Validator::make($request->all(), 
                             [ 'permit_code' => 'required|unique:permits,permit_code,'.$permit->id],
                             [ 'permit_code.unique' => 'Permit ID is already used', 'permit_code.required' => 'Please enter Permit ID']);
-        if ($validator->passes()) {            
+        if ($validator->passes()) {  
+            
+            // Update EIA Status to Permit
+            Eia::where('id', $permit->eia_id)->update(['is_permit' => 1]);
+
             $permit->permit_code            = str_replace(' ', '', $request->permit_code);
             $permit->certificate_number     = $request->certificate_number;
             $permit->status                 = $request->status;

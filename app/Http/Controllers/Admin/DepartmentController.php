@@ -162,6 +162,12 @@ class DepartmentController extends Controller
      */
     public function destroy(Department $department)
     {
-        //
+        if (!$department->users->isEmpty()) {
+            return ['flagError' => true, 'message' => "Cant Delete! Department is used by Users "];
+        } else {
+            $department->delete();
+            return ['flagError' => false, 'message' => Str::singular($this->title). " deleted successfully"];
+        }
+        return ['flagError' => true, 'message' => "Errors Occurred. Please check !", 'error' => ['error' => 'Error! Please try again']];
     }
 }

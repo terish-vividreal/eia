@@ -347,7 +347,12 @@ class DocumentController extends Controller
      */
     public function destroy(Document $document)
     {
-        //
+        if (!$document->children->isEmpty()) {
+            $errors = array('Cant Delete !, There are files under this Document');
+            return ['flagError' => true, 'message' => "Cant Delete !, There are files under this Document",  'error' => $errors];
+        }
+        $document->delete();
+        return ['flagError' => false, 'message' =>  $this->title. " disabled successfully"];
     }
 
     /**

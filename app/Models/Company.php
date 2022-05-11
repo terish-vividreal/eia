@@ -12,4 +12,9 @@ class Company extends Model
     use SoftDeletes;
 
     protected $dates = ['deleted_at'];
+
+    public function project()
+    {
+        return $this->hasMany(Project::class);
+    }
 }
