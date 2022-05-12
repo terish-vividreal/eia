@@ -54,6 +54,11 @@ class User extends Authenticatable
         return $this->name . ' ' . $this->last_name;
     }
 
+    public function projects()
+    {
+        return $this->hasMany(Project::class, 'created_by');
+    }
+
     public function phoneCode()
     {
         return $this->belongsTo(Country::class, 'phone_code', 'id');

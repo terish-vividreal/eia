@@ -136,7 +136,7 @@ if ($("#" + pageTitle + "Form").length > 0) {
           }
         });
       } else {
-        $('#file-error').text("Please Browse or Drag and Drop the File");
+        $('#file-error').text("Please select a valid file");
         $('#file-error').show();
       }
     },
@@ -174,10 +174,10 @@ if (FileUploadRoute != undefined) {
   Dropzone.autoDiscover = false;
   var myDropzone = new Dropzone(".dropzone", {
     url: FileUploadRoute,
-    acceptedFiles: ".jpeg,.jpg,.png,.pdf",
+    acceptedFiles: ".jpeg,.jpg,.png,.pdf,.doc",
     dictDefaultMessage: "Browse or Drag and Drop the File Here.",
     addRemoveLinks: addRemoveLink,
-    maxFilesize: 40, //MB
+    maxFilesize: 250, //MB
     maxFiles: 1, 
     // renameFile: function (file) {
     //   let random      = Math.random().toString(36).substring(2,10);
@@ -568,4 +568,3 @@ function getFullComment(id) {
     showErrorToaster("Something went wrong!");
   });
 }
-

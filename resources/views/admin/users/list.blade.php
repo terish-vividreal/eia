@@ -123,4 +123,3 @@ $('#roles').select2({ placeholder: "Please choose roles", allowClear: true });
 
 </script>
 @endpush
-
