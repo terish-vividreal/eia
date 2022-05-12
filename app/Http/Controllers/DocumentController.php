@@ -449,6 +449,5 @@ class DocumentController extends Controller
             return ['flagError' => false, 'message' => $this->title. " updated successfully"];
         }
         abort(404);
-    }
-    
+    }   
 }

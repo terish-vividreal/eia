@@ -86,6 +86,7 @@ class ProjectController extends Controller
             $project->category_id       = $request->categoryId;
             $project->project_type      = $request->projectTypeId;
             $project->total_budget      = $request->totalBudget;
+            $project->created_by        = auth()->user()->id;
             $project->project_code_id   = $request->project_code_id;
             $project->project_code      = FunctionHelper::projectCode();
             $project->location_name     = $request->locationName;
@@ -254,6 +255,7 @@ class ProjectController extends Controller
                 $project->project_type      = $request->projectTypeId;
                 $project->total_budget      = $request->totalBudget;
                 $project->project_code_id   = $request->project_code_id;
+                $project->updated_by        = auth()->user()->id;
                 $project->location_name     = $request->locationName;
                 $project->map_link          = $request->mapLink;
                 $project->save();
@@ -271,7 +273,7 @@ class ProjectController extends Controller
      */
     public function destroy(Project $project)
     {
-        if ($project->eias) {
+        if (!$project->eias->isEmpty()) {
             $errors = array('Cant Delete !, There are active EIA under this Project');
             return ['flagError' => true, 'message' => "Cant Delete !, There are active EIA under this Project",  'error' => $errors];
         }

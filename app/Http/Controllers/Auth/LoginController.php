@@ -56,8 +56,7 @@ class LoginController extends Controller
                 
                 if (! auth()->user()->status == 1) {
                     Auth::logout();
-                    return redirect()->route('login')
-                    ->with('error','Account is not active, Please try again later or contact support.');
+                    return redirect()->route('login')->with('error','Account is not active, Please try again later or contact support.');
                 }
 
                 if (auth()->user()->is_admin == 1) {
@@ -68,7 +67,5 @@ class LoginController extends Controller
         } else {
             return redirect()->route('login')->with('error','The Username or Password is incorrect.');
         }
-          
     }
-
 }

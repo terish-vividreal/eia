@@ -73,42 +73,36 @@
           @if($document->is_assigned == 0)
             <p id=""><a class="waves-effect waves-light btn gradient-45deg-purple-deep-orange z-depth-4 mt-2 assign-task" id="" data-id="{{$document->id}}" href="javascript:" style="margin-top: 10px; !important">Assign Task</a></p>                  
             @if(!empty($document->completedTask))
-            <div class="col s12 m12 card-details mt-2" id="taskDetailsDiv">
-              <h5><a href="javascript:" class="mt-8 blue-text">Completed Task Details</a></h5>
-              <div class="card-panel mt-2">
-                  <p>{{ $document->completedTask->completed_note}}</p>
+              <div class="col s12 m12 card-details mt-2" id="taskDetailsDiv">
+                <h5><a href="javascript:" class="mt-8 blue-text">Completed Task Details</a></h5>
+                <div class="card-panel mt-2">
+                  <p>{{$document->completedTask->completed_note}}</p>
                   <div class="mt-1 smalltxt">Completed by <a href="javascript:">{{$document->completedTask->assignedBy->name}}</a> on {{$document->completedTask->created_at->format('M d, h:i A')}}</div>
+                </div>
               </div>
-            </div>
             @endif
-          
             @else
             <div class="col s12 m12 card-details mt-2" id="taskDetailsDiv">
               <h5><a href="javascript:" class="mt-8 blue-text">Task Details</a></h5>
               <div class="card-panel mt-2">
-
-
                   <p>{{ $activeTask[0]->tasks->details}}</p>
-                  <div class="mt-1 smalltxt">assigned by <a href="javascript:">
-                    {{ ($activeTask[0]->tasks->assigned_by == auth()->user()->id) ? 'You' : $activeTask[0]->tasks->assignedBy->name }}
-      
-                  
-                  </a> on {{$activeTask[0]->tasks->created_at->format('M d, h:i A')}}</div>
+                  <div class="mt-1 smalltxt">Assigned by 
+                    <a href="javascript:">
+                      {{ ($activeTask[0]->tasks->assigned_by == auth()->user()->id) ? 'You' : $activeTask[0]->tasks->assignedBy->name }}
+                    </a> on {{$activeTask[0]->tasks->created_at->format('M d, h:i A')}}
+                  </div>
                   <div class="row mt-2">
                     <div class="col s2">
                       <img src="{{$activeTask[0]->tasks->assignedTo->profile}}" width="40" alt="news" class="circle responsive-img mr-3">
                     </div>
                     <div class="col s3 p-0 mt-1"><span class="pt-2">
                       {{ ($activeTask[0]->tasks->assigned_to == auth()->user()->id) ? 'You' : $activeTask[0]->tasks->assignedTo->name}}
- 
                     </span></div>
                     <div class="col s7 mt-1 right-align">
                       <a href="javascript:" class="assign-task"><span class="material-icons"> edit </span></a>
                     </div>
                   </div>
               </div>
-
-
             </div>
           @endif
         </div>
@@ -149,9 +143,7 @@
                     $statusID   = (count($document->children) > 0) ? $document->children[0]->status : $document->status;
                     $documentID = (count($document->children) > 0) ? $document->children[0]->id : $document->id;                    
                   @endphp 
-
                   {!! Form::select('stage', $variants->stages, $stageID ?? '', ['id' => 'stage', 'class' => 'select2 browser-default document-stage', 'placeholder'=>'Please select Stage']) !!}
-                  
                 </td>
               </tr>
               <tr>
@@ -179,7 +171,6 @@
               </tr>
               <tr>
                 <td>Remarks/Comments: </td>
-
                 <td>  
                   {{ Str::limit(strip_tags($document->comment), 100)}}
                   @if(strlen(strip_tags($document->comment)) > 100)
@@ -190,7 +181,6 @@
             </tbody>
           </table>
         </div>
-        
         <div class="col s12 m12" style="margin-top: 10px">
           <div class="row commentContainer">  
             <div class="input-field col m10 s12 commentArea">
@@ -203,30 +193,28 @@
           </div>
           <!-- Content Area Starts -->
           <div class="app-email" id="latestComment{{$documentID}}"></div>
-
           @if(count($document->children) > 0) 
-              @forelse ($document->children[0]->comments as $comment)
-                <div class="app-email" id="docCommentsDiv{{$comment->id}}">
-                  <div class="content-area">
-                    <div class="app-wrapper">
-                      <div class="card card card-default scrollspy border-radius-6 fixed-width">
-                        <div class="card-content p-0 pb-2">
-                          <div class="collection email-collection">
-                            <div class="email-brief-info collection-item animate fadeUp">
-                              <a class="list-content" href="javascript:">
-                                <div class="list-title-area">
-                                  <div class="user-media">
-                                    <img src="{{$comment->commentedBy->profile}}" alt="" class="circle z-depth-2 responsive-img avtar">
-                                    <div class="list-title">
-                                      {{($comment->commented_by == auth()->user()->id) ? 'You' : $comment->commentedBy->name}}
-                                    </div>
+            @forelse ($document->children[0]->comments as $comment)
+              <div class="app-email" id="docCommentsDiv{{$comment->id}}">
+                <div class="content-area">
+                  <div class="app-wrapper">
+                    <div class="card card card-default scrollspy border-radius-6 fixed-width">
+                      <div class="card-content p-0 pb-2">
+                        <div class="collection email-collection">
+                          <div class="email-brief-info collection-item animate fadeUp">
+                            <a class="list-content" href="javascript:">
+                              <div class="list-title-area">
+                                <div class="user-media">
+                                  <img src="{{$comment->commentedBy->profile}}" alt="" class="circle z-depth-2 responsive-img avtar">
+                                  <div class="list-title">
+                                    {{($comment->commented_by == auth()->user()->id) ? 'You' : $comment->commentedBy->name}}
                                   </div>
                                 </div>
-                                <div class="list-desc">{{$comment->comment}}</div>
-                              </a>
-                              <div class="list-right">
-                                <div class="list-date">{{$comment->created_at->format('M d, h:i A')}}</div>
                               </div>
+                              <div class="list-desc">{{$comment->comment}}</div>
+                            </a>
+                            <div class="list-right">
+                              <div class="list-date">{{$comment->created_at->format('M d, h:i A')}}</div>
                             </div>
                           </div>
                         </div>
@@ -234,11 +222,10 @@
                     </div>
                   </div>
                 </div>
-              @empty
-              @endforelse
-
+              </div>
+            @empty
+            @endforelse
           @else
-
             @forelse ($document->comments as $comment)
               <div class="app-email" id="docCommentsDiv{{$comment->id}}">
                 <div class="content-area">
@@ -270,7 +257,6 @@
               </div>
             @empty
             @endforelse
-
           @endif
         </div>
       </div>

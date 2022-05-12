@@ -146,10 +146,12 @@ class UserController extends Controller
                 return $mobile;
             })
             ->editColumn('status', function($detail){
-                if ($detail->status != 2) {
-                    $checked    = ($detail->status == 1) ? 'checked' : '';
-                    $html       = '<div class="switch"><label> <input type="checkbox" '.$checked.' id="' . $detail->id . '" data-url="'.url($this->route.'/update-status').'" class="manage-status" data-id="'.$detail->id.'"> <span class="lever"></span> </label> </div>';
-                    return $html;
+                if ($detail->deleted_at == null) {
+                    if ($detail->status != 2) {
+                        $checked    = ($detail->status == 1) ? 'checked' : '';
+                        $html       = '<div class="switch"><label> <input type="checkbox" '.$checked.' id="' . $detail->id . '" data-url="'.url($this->route.'/update-status').'" class="manage-status" data-id="'.$detail->id.'"> <span class="lever"></span> </label> </div>';
+                        return $html;
+                    }
                 }
             })
             ->addColumn('role', function($detail){
@@ -165,7 +167,7 @@ class UserController extends Controller
                 $action = '';
                 if ($detail->deleted_at == null) { 
                     $action .= HtmlHelper::editButton(url($this->route.'/'.$detail->id.'/edit'), $detail->id);
-                    // $action .= HtmlHelper::disableButton(url($this->route), $detail->id);
+                    $action .= HtmlHelper::disableButton(url($this->route), $detail->id);
                 } else {
                     $action .= HtmlHelper::restoreButton(url($this->route.'/restore'), $detail->id);
                 }
@@ -252,6 +254,11 @@ class UserController extends Controller
      */
     public function destroy(User $user, Request $request)
     {
+        if (!$user->projects->isEmpty()) {
+            $errors = array('Cant Delete !, There are active Projects created by user');
+            return ['flagError' => true, 'message' => "Cant Delete !, There are active Project created by user",  'error' => $errors];
+        }
+
         $user->delete();
         return ['flagError' => false, 'message' => " User disabled successfully"];
     }
