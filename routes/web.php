@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LocalizationController;
 use App\Http\Controllers\Admin\HomeController as AdminHome;
 use App\Http\Controllers\Admin\UserController as AdminUser;
+use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\Admin\ProjectTypeController;
 use App\Http\Controllers\Admin\SettingController;
@@ -107,6 +108,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::resource('permits', PermitController::class);
     Route::get('permits/documents/list/{id}', [PermitController::class, 'listDocuments']);
+    Route::get('permits/{permitID}/documents/create', [PermitController::class, 'createDocument']);
 
 });
 
@@ -114,6 +116,10 @@ Route::group(['middleware' => ['auth']], function () {
 Route::prefix('admin/')->name('admin.')->group(function () {
 
     Route::group(['middleware' => ['auth', 'admin']], function () {
+
+        // Roles Routes
+        Route::resource('roles', RoleController::class);
+
         // Admin Dashboard Routes
         Route::get('dashboard', [AdminHome::class, 'index'])->name('dashboard');
         Route::get('profile', [AdminHome::class, 'edit'])->name('profile');

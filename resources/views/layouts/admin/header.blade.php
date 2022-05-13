@@ -34,7 +34,7 @@ $user_profile     = (Auth::user()->profile != null) ? asset('storage/store/users
                     </ul>
                     <!-- notifications-dropdown-->
                     <ul class="dropdown-content" id="notifications-dropdown">
-                        <li>
+                        <!-- <li>
                             <h6>NOTIFICATIONS<span class="new badge">2</span></h6>
                         </li>
                         <li class="divider"></li>
@@ -43,7 +43,7 @@ $user_profile     = (Auth::user()->profile != null) ? asset('storage/store/users
                         </li>
                         <li><a class="black-text" href="#!"><span class="material-icons icon-bg-circle red small">stars</span> New project submitted. </a>
                             <time class="media-meta grey-text darken-2" datetime="2015-06-12T20:50:48+08:00">3 days ago</time>
-                        </li>
+                        </li> -->
                         <!--<li><a class="black-text" href="#!"><span class="material-icons icon-bg-circle teal small">settings</span> Settings updated</a>
                             <time class="media-meta grey-text darken-2" datetime="2015-06-12T20:50:48+08:00">4 days ago</time>
                         </li>
@@ -95,11 +95,11 @@ $user_profile     = (Auth::user()->profile != null) ? asset('storage/store/users
                             </ul>
                         </li>
                         <li>
-                            <a class="@if (Request::is(ROUTE_PREFIX.'/roles*') ||  Request::is(ROUTE_PREFIX.'/roles/create*')) active @endif" href="javascript:"> <i class="material-icons">lock</i><span>{{__('locale.Roles')}}</span></span></a>
+                            <a class="@if (Request::is(ROUTE_PREFIX.'/roles*') ||  Request::is(ROUTE_PREFIX.'/roles/create*')) active @endif" href="{{ url(ROUTE_PREFIX.'/roles') }}"> <i class="material-icons">lock</i><span>{{__('locale.Roles')}} & {{__('locale.Permissions')}}</span></span></a>
                         </li>
-                        <li>
+                        <!-- <li>
                             <a class="@if (Request::is(ROUTE_PREFIX.'/roles*') ||  Request::is(ROUTE_PREFIX.'/roles/create*')) active @endif" href="javascript:"> <i class="material-icons">vpn_key</i><span>{{__('locale.Permissions')}}</span></span></a>
-                        </li>
+                        </li> -->
                     </ul>
                 </div>
                 <!-- END: Horizontal nav start-->
