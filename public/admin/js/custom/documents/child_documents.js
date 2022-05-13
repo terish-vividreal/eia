@@ -143,10 +143,10 @@ if (FileUploadRoute != undefined) {
   Dropzone.autoDiscover = false;
   var myDropzone = new Dropzone(".dropzone", {
     url: FileUploadRoute,
-    acceptedFiles: ".jpeg,.jpg,.png,.pdf",
+    acceptedFiles: ".jpeg,.jpg,.png,.pdf,.doc,.docx,.xls,.xlsx",
     dictDefaultMessage: "Browse or Drag and Drop the File Here.",
     addRemoveLinks: true,
-    maxFilesize: 40, //MB
+    maxFilesize: 250, //MB
     maxFiles: 1, 
     // renameFile: function (file) {
     //   let random      = Math.random().toString(36).substring(2,10);

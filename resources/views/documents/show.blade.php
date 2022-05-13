@@ -64,9 +64,9 @@
           @isset($document->latestFile)
             <h6 class="mb-4 mt-4"><i class="material-icons">info_outline</i> {{ Str::plural($page->title) ?? ''}} Details</h6>
             @if(count($document->children) > 0) 
-              <img src="{{$document->children[0]->latestFile->file_name}}" class="responsive-img" alt="">
+              <img src="{{$document->children[0]->latestFile->file_name}}" style="max-height: 400px;" class="responsive-img" alt="">
             @else
-              <img src="{{$document->latestFile->file_name}}" class="responsive-img" alt="">
+              <img src="{{$document->latestFile->file_name}}" style="max-height: 400px;" class="responsive-img" alt="">
             @endif
             <!-- <a class="waves-effect waves-light btn gradient-45deg-purple-deep-orange z-depth-4 mt-2" href="https://eia.vividreal.co.in/documents/file/download/MUSMHX0A0NXFG3FN4EPQ_1159079-immap-ihf_humanitarian_access_response_-_landmine_erw_contamination_areas_aug_2018.png" style="margin-top: 10px; !important">Download</a>  -->
           @endisset

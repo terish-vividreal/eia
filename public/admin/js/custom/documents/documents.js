@@ -174,7 +174,7 @@ if (FileUploadRoute != undefined) {
   Dropzone.autoDiscover = false;
   var myDropzone = new Dropzone(".dropzone", {
     url: FileUploadRoute,
-    acceptedFiles: ".jpeg,.jpg,.png,.pdf,.doc",
+    acceptedFiles: ".jpeg,.jpg,.png,.pdf,.doc,.docx,.xls,.xlsx",
     dictDefaultMessage: "Browse or Drag and Drop the File Here.",
     addRemoveLinks: addRemoveLink,
     maxFilesize: 250, //MB
