@@ -25,7 +25,7 @@
                         <h4 class="card-stats-number white-text">{{$variants->projects->count()}}</h4>
                         <p class="card-stats-compare dash-card">
                            <i class="material-icons">link</i> 
-                           <a href="{{url('projects')}}"><span class="cyan text text-lighten-5">View More</span></a>
+                           <a href="javascript:"><span class="cyan text text-lighten-5">View More</span></a>
                         </p>
                      </div>
                   </div>
@@ -37,7 +37,7 @@
                         <h4 class="card-stats-number white-text">{{$variants->eia->count()}}</h4>
                         <p class="card-stats-compare dash-card">
                            <i class="material-icons">link</i> 
-                           <a href="{{ url('eias') }}"><span class="text text-lighten-5">View More</span></a>
+                           <a href="javascript:"><span class="text text-lighten-5">View More</span></a>
                         </p>
                      </div>
                   </div>
@@ -49,7 +49,7 @@
                         <h4 class="card-stats-number white-text">{{$variants->documents->count()}}</h4>
                         <p class="card-stats-compare dash-card">
                            <i class="material-icons">link</i> 
-                           <a href="{{ url('documents') }}"><span class=" text text-lighten-5">View More</span></a>
+                           <a href="javascript:"><span class=" text text-lighten-5">View More</span></a>
                         </p>
                      </div>
                   </div>
@@ -61,7 +61,7 @@
                         <h4 class="card-stats-number white-text">0</h4>
                         <p class="card-stats-compare dash-card">
                            <i class="material-icons">link</i> 
-                           <a href="{{ url('permits') }}"><span class=" text text-lighten-5">View More</span></a>
+                           <a href="javascript:"><span class=" text text-lighten-5">View More</span></a>
                         </p>
                      </div>
                   </div>

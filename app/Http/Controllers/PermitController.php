@@ -93,9 +93,23 @@ class PermitController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function create()
+    public function createDocument($permitID)
     {
-        //
+        $permit                = Permit::find($permitID); 
+        if($permit) {
+            $page                       = collect();
+            $variants                   = collect();
+            $page->title                = $this->title;
+            $page->route                = url($this->route); 
+            $page->projectRoute         = url('projects/'.$permit->eia->project_id); 
+            $page->eiaRoute             = url('eias/'.$permit->eia->id); 
+            $user                       = auth()->user();
+            $variants->documentStatuses = DocumentStatus::pluck('name','id'); 
+            $variants->stages           = EiaStage::pluck('name','id'); 
+            $eia                        = Eia::find($permit->eia_id); 
+            return view($this->viewPath . '.create-document', compact('page', 'variants', 'permit', 'eia', 'user'));
+        }
+        abort(404);
     }
 
     /**
