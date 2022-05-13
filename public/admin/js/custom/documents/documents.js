@@ -4,6 +4,7 @@ let pageTitle 	  = $("#pageTitle").val();
 let pageRoute 	  = $("#pageRoute").val();
 let eiaRoute      = $("#eiaRoute").val();
 let documentId    = $("#documentId").val();
+let permitRoute   = $("#permitRoute").val();
 let table;
 let id;
 let postId;
@@ -127,7 +128,12 @@ if ($("#" + pageTitle + "Form").length > 0) {
           if (data.flagError == false) {
             showSuccessToaster(data.message);
             setTimeout(function () { 
-              window.location.href = eiaRoute;   
+              if(permitRoute != undefined) {
+                window.location.href = permitRoute;   
+              } else {
+                window.location.href = eiaRoute;
+              }
+                 
               // location.reload();             
             }, 2000);
           } else {

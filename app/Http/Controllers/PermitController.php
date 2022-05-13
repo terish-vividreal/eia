@@ -103,6 +103,8 @@ class PermitController extends Controller
             $page->route                = url($this->route); 
             $page->projectRoute         = url('projects/'.$permit->eia->project_id); 
             $page->eiaRoute             = url('eias/'.$permit->eia->id); 
+            $page->permitRoute          = url('permits/'.$permitID); 
+            $page->documentStoreRoute   = url('documents'); 
             $user                       = auth()->user();
             $variants->documentStatuses = DocumentStatus::pluck('name','id'); 
             $variants->stages           = EiaStage::pluck('name','id'); 
@@ -157,7 +159,13 @@ class PermitController extends Controller
                         ->whereHas('eia', function($q){
                             $q->where('is_permit', 1);                                
                         })->where('eia_id', $permit->eia_id)->where('parent_id', 0);
+                        
+        if (isset($request->form)) {
 
+        }
+        else {
+            $detail         = $detail->orderBy('id', 'DESC');
+        }
         return Datatables::eloquent($detail)
             ->addIndexColumn()
             ->editColumn('date_of_entry', function($detail) {

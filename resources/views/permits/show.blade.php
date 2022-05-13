@@ -37,6 +37,7 @@
           <div class="media-body">
             <h6 class="media-heading"><span>Project Title: </span><span class="users-view-name">{{ $permit->eia->project->name ?? ''}} </span></h6>
             <h6 class="media-heading"><span>Project ID: </span><span class="users-view-name">{{ $permit->eia->project->project_code_id ?? ''}} </span></h6>
+            <h6 class="media-heading"><span>Permit ID: </span><span class="users-view-name">{{ $permit->permit_code ?? ''}} </span></h6>
           </div>
         </div>
       </div>
