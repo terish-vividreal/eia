@@ -199,7 +199,7 @@ class ChildDocumentController extends Controller
                
                     $html .= '<div class="card animate fadeUp"><div class="card-content"><div class="row" id="product-four"><div class="col s12 m6">';
                     $html .= '<h5>' . HtmlHelper::statusText($child->stage_id, $child->status) . '</h5>';
-                    $html .= '<img src="'.$child->latestFile->file_name.'" class="responsive-img" style="max-width: 75% !important" alt=""></div>';
+                    $html .= '<img src="'.$child->latestFile->file_name.'" class="responsive-img" style="max-height: 400px;" alt=""></div>';
 
                     $html .= '<div class="col s12 m6"><p style="text-align: right;"></p><table class="striped"><tbody>';
                     $html .= '<tr><td width="30%">Date of Entry:</td><td>'.$child->date_of_entry.'</td></tr>' ;    
@@ -242,7 +242,7 @@ class ChildDocumentController extends Controller
 
                 $parentHTML .= '<div class="card animate fadeUp"><div class="card-content"><div class="row" id="product-four"><div class="col s12 m6">';
                 $parentHTML .= '<h5>' . HtmlHelper::statusText($document->stage_id, $document->status) . '</h5>';
-                $parentHTML .= '<img src="'.$document->latestFile->file_name.'" class="responsive-img" style="max-width: 75% !important" alt=""></div>';
+                $parentHTML .= '<img src="'.$document->latestFile->file_name.'" class="responsive-img" style="max-height: 400px;" alt=""></div>';
 
                 $parentHTML .= '<div class="col s12 m6"><p style="text-align: right;"></p><table class="striped"><tbody>';
                 $parentHTML .= '<tr><td width="30%">Date of Entry:</td><td>'.$document->date_of_entry.'</td></tr>' ;    
