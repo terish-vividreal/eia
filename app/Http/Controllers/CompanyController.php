@@ -15,6 +15,20 @@ class CompanyController extends Controller
     protected $route    = 'companies';
 
     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('permission:companies-list', ['only' => ['index', 'lists']]);
+        $this->middleware('permission:companies-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:companies-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:companies-delete', ['only' => ['destroy', 'restore']]);
+        $this->middleware('permission:companies-manage-status', ['only' => ['updateStatus']]);
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -103,10 +117,17 @@ class CompanyController extends Controller
             ->addColumn('action', function($detail) {
                 $action = '';
                 if ($detail->deleted_at == null) { 
-                    $action .= HtmlHelper::editButton(url($this->route.'/'.$detail->id.'/edit'), $detail->id);
-                    $action .= HtmlHelper::disableButton(url($this->route), $detail->id);
+                    if(auth()->user()->can('companies-edit')) {
+                        $action .= HtmlHelper::editButton(url($this->route.'/'.$detail->id.'/edit'), $detail->id);
+                    }
+                    if(auth()->user()->can('companies-delete')) {
+                        $action .= HtmlHelper::disableButton(url($this->route), $detail->id);
+                    }
+                    
                 } else {
-                    $action .= HtmlHelper::restoreButton(url($this->route.'/restore'), $detail->id);
+                    if(auth()->user()->can('companies-delete')) {
+                        $action .= HtmlHelper::restoreButton(url($this->route.'/restore'), $detail->id);
+                    } 
                 }
                 return $action;
             })
@@ -182,7 +203,6 @@ class CompanyController extends Controller
      */
     public function destroy(Company $company)
     {
-
         if (!$company->project->isEmpty()) {
             return ['flagError' => true, 'message' => "Cant Delete! Company has Projects "];
         } else {

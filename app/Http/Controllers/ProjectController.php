@@ -26,7 +26,11 @@ class ProjectController extends Controller
      */
     public function __construct()
     {
-        // $this->middleware('auth');
+        $this->middleware('permission:projects-list', ['only' => ['index', 'lists']]);
+        $this->middleware('permission:projects-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:projects-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:projects-delete', ['only' => ['destroy', 'restore']]);
+        $this->middleware('permission:projects-details', ['only' => ['show']]);
     }
 
     /**
@@ -143,8 +147,9 @@ class ProjectController extends Controller
         return Datatables::eloquent($detail)
             ->addIndexColumn()
             ->editColumn('project_code_id', function($detail) {
-                $link   = '';
-                $link   = '<a href="'.$this->route.'/'.$detail->id.'">'.$detail->project_code_id.'</a>';
+                $link           = '';
+                $projectRoute   = (auth()->user()->can('projects-details')) ? $this->route.'/'.$detail->id : 'javascript:';
+                $link           = '<a href="'.$projectRoute.'">'.$detail->project_code_id.'</a>';
                 return $link ;
             })
             ->editColumn('company_id', function($detail) {
@@ -181,10 +186,16 @@ class ProjectController extends Controller
             ->addColumn('action', function($detail) {
                 $action = '';
                 if ($detail->deleted_at == null) { 
-                    $action .= HtmlHelper::editButton(url($this->route.'/'.$detail->id.'/edit'), $detail->id);
-                    $action .= HtmlHelper::disableButton(url($this->route), $detail->id, 'Inactive');
+                    if(auth()->user()->can('projects-edit')) {
+                        $action .= HtmlHelper::editButton(url($this->route.'/'.$detail->id.'/edit'), $detail->id);
+                    }
+                    if(auth()->user()->can('projects-delete')) {
+                        $action .= HtmlHelper::disableButton(url($this->route), $detail->id, 'Inactive');
+                    }
                 } else {
-                    $action .= HtmlHelper::restoreButton(url($this->route.'/restore'), $detail->id);
+                    if(auth()->user()->can('projects-delete')) {
+                        $action .= HtmlHelper::restoreButton(url($this->route.'/restore'), $detail->id);
+                    }
                 }
                 return $action;
             })

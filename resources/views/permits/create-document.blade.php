@@ -72,14 +72,15 @@
                     {!! Form::open(['class'=>'ajax-submit','id'=> Str::camel($page->title).'Form', "enctype" => "multipart/form-data"]) !!}
                         {{ csrf_field() }}
                         {!! Form::hidden('pageTitle', Str::camel($page->title), ['id' => 'pageTitle']); !!} 
-                        {!! Form::hidden('pageRoute', $page->route, ['id' => 'pageRoute'] ); !!}
+                        {!! Form::hidden('pageRoute', $page->documentStoreRoute, ['id' => 'pageRoute'] ); !!}
                         {!! Form::hidden('eiaRoute', $page->eiaRoute, ['id' => 'eiaRoute'] ); !!}
                         {!! Form::hidden('projectId', $eia->project->id ?? '', ['id' => 'projectId']); !!}
                         {!! Form::hidden('eiaId', $eia->id ?? '', ['id' => 'eiaId'] ); !!}
                         {!! Form::hidden('documentId', $document->id ?? '', ['id' => 'documentId']); !!}
                         {!! Form::hidden('FileUploadRoute', url('documents/file/upload'), ['id' => 'FileUploadRoute'] ); !!}
                         {!! Form::hidden('FileListRoute', route('documents.file.list'), ['id' => 'FileListRoute'] ); !!}
-                        {!! Form::hidden('FileRemoveRoute', route('documents.file.remove'), ['id' => 'FileRemoveRoute'] ); !!}
+                        {!! Form::hidden('FileRemoveRoute', route('documents.file.remove'), ['id' => 'FileRemoveRoute'] ); !!}                        
+                        {!! Form::hidden('permitRoute', $page->permitRoute, ['id' => 'permitRoute'] ); !!}
                         {!! Form::hidden('documentFile', '', ['id' => 'documentFile'] ); !!}
                         <div class="row">
                             <div class="input-field col m6 s12">
