@@ -79,6 +79,7 @@ class CompanyController extends Controller
             $company->contact       = $request->contact;
             $company->address       = $request->address;
             $company->save();
+            // $company->save();
             return ['flagError' => false, 'message' => $this->title. " added successfully"];
         }
         return ['flagError' => true, 'message' => "Errors Occurred. Please check !",  'error' => $validator->errors()->all()];
