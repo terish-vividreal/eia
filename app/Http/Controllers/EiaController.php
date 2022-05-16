@@ -131,13 +131,15 @@ class EiaController extends Controller
         return Datatables::eloquent($detail)
             ->addIndexColumn()
             ->addColumn('project_id', function($detail) {
-                $link   = '';
-                $link   .= '<a href="projects/'. $detail->project->id.'">'.$detail->project->project_code_id.'</a>';
+                $link           = '';
+                $projectRoute   = (auth()->user()->can('projects-details')) ? 'projects/'. $detail->project->id : 'javascript:';
+                $link           .= '<a href="'. $projectRoute.'">'.$detail->project->project_code_id.'</a>';
                 return $link ;
             })
             ->editColumn('code_id', function($detail) {
-                $link   = '';
-                $link   .= '<a href="'.$this->route .'/'. $detail->id.'">'.$detail->code_id.'</a>';
+                $link           = '';
+                $eiaRoute       = (auth()->user()->can('eia-details')) ? $this->route.'/'.$detail->id : 'javascript:';
+                $link           .= '<a href="'.$eiaRoute.'">'.$detail->code_id.'</a>';
                 return $link ;
             })
             ->editColumn('gps_coordinates', function($detail) {
@@ -157,10 +159,16 @@ class EiaController extends Controller
             ->addColumn('action', function($detail) use ($projectId) {
                 $action = '';
                 if ($detail->deleted_at == null) { 
-                    $action .= HtmlHelper::editButton(url('/eias/'.$detail->id.'/edit'), $detail->id);
-                    $action .= HtmlHelper::disableButton(url($this->route), $detail->id, 'Inactive');
+                    if(auth()->user()->can('eia-edit')) {
+                        $action .= HtmlHelper::editButton(url('/eias/'.$detail->id.'/edit'), $detail->id);
+                    }
+                    if(auth()->user()->can('eia-delete')) {
+                        $action .= HtmlHelper::disableButton(url($this->route), $detail->id, 'Inactive');
+                    }
                 } else {
-                    $action .= HtmlHelper::restoreButton(url($this->route.'/restore'), $detail->id);
+                    if(auth()->user()->can('eia-delete')) {
+                        $action .= HtmlHelper::restoreButton(url($this->route.'/restore'), $detail->id);
+                    }
                 }
                 return $action;
             })

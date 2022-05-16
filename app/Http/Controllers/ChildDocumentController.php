@@ -199,7 +199,7 @@ class ChildDocumentController extends Controller
                
                     $html .= '<div class="card animate fadeUp"><div class="card-content"><div class="row" id="product-four"><div class="col s12 m6">';
                     $html .= '<h5>' . HtmlHelper::statusText($child->stage_id, $child->status) . '</h5>';
-                    $html .= '<img src="'.$child->latestFile->file_name.'" class="responsive-img" style="max-height: 400px;" alt=""></div>';
+                    $html .= '<img src="'.$child->latestFile->file_preview.'" class="responsive-img" style="max-height: 400px;" alt=""></div>';
 
                     $html .= '<div class="col s12 m6"><p style="text-align: right;"></p><table class="striped"><tbody>';
                     $html .= '<tr><td width="30%">Date of Entry:</td><td>'.$child->date_of_entry.'</td></tr>' ;    
@@ -215,16 +215,19 @@ class ChildDocumentController extends Controller
                     
                     $html .= '</td></tr>' ;    
                     $html .= '</tbody></table></div>';
+                    $html .= '<div class="col s12 m12">';
 
-                    $html .= '<div class="col s12 m12"><div class="row commentContainer" id="commentContainer'.$child->id.'">';
-                    $html .= '<div class="input-field col m10 s12 commentArea">';
-                    $html .= '<textarea id="comment" class="materialize-textarea commentField" name="comment" cols="50" rows="10" placeholder="Comments"></textarea>';
-                    // $html .= '<label for="comment" class="label-placeholder active">  </label>';
-                    $html .= '<div id="documentComment-error-'.$child->id.'" class="error documentComment-error" style="display:none;"></div></div>';
-                    $html .= '<div class="input-field col m2 s12" style="margin-top: 37px; ! important">';
-                    $html .= '<a href="javascript:" class="text-sub subDocument-save-comment-btn" data-id="'.$child->id.'"><i class="material-icons mr-2"> send </i></a></div> </div>';
-                    $html .= '<div class="app-email" id="latestComment'.$child->id.'"></div>';           
-                    
+                    if(auth()->user()->can('documents-comment-create')) {
+
+                        $html .= '<div class="row commentContainer" id="commentContainer'.$child->id.'">';
+                        $html .= '<div class="input-field col m10 s12 commentArea">';
+                        $html .= '<textarea id="comment" class="materialize-textarea commentField" name="comment" cols="50" rows="10" placeholder="Comments"></textarea>';
+                        // $html .= '<label for="comment" class="label-placeholder active">  </label>';
+                        $html .= '<div id="documentComment-error-'.$child->id.'" class="error documentComment-error" style="display:none;"></div></div>';
+                        $html .= '<div class="input-field col m2 s12" style="margin-top: 37px; ! important">';
+                        $html .= '<a href="javascript:" class="text-sub subDocument-save-comment-btn" data-id="'.$child->id.'"><i class="material-icons mr-2"> send </i></a></div> </div>';
+                        $html .= '<div class="app-email" id="latestComment'.$child->id.'"></div>';           
+                    }   
                     if(count($child->comments) > 0) {
                         foreach($child->comments as $comment) {
                             $html .= '<div class="app-email" id="docCommentsDiv'.$document->id.'"><div class="content-area"><div class="app-wrapper"><div class="card card card-default scrollspy border-radius-6 fixed-width">';
@@ -242,14 +245,11 @@ class ChildDocumentController extends Controller
 
                 $parentHTML .= '<div class="card animate fadeUp"><div class="card-content"><div class="row" id="product-four"><div class="col s12 m6">';
                 $parentHTML .= '<h5>' . HtmlHelper::statusText($document->stage_id, $document->status) . '</h5>';
-                $parentHTML .= '<img src="'.$document->latestFile->file_name.'" class="responsive-img" style="max-height: 400px;" alt=""></div>';
+                $parentHTML .= '<img src="'.$document->latestFile->file_preview.'" class="responsive-img" style="max-height: 400px;" alt=""></div>';
 
                 $parentHTML .= '<div class="col s12 m6"><p style="text-align: right;"></p><table class="striped"><tbody>';
                 $parentHTML .= '<tr><td width="30%">Date of Entry:</td><td>'.$document->date_of_entry.'</td></tr>' ;    
                 $parentHTML .= '<tr><td width="30%">Uploaded By:</td><td>'.$document->uploadedBy->name.'</td></tr>' ;   
-
-
-
 
                 $parentHTML .= '<tr><td width="30%">Description:</td><td>';
                 
@@ -261,15 +261,17 @@ class ChildDocumentController extends Controller
                 $parentHTML .='</td></tr>' ;    
                 $parentHTML .= '</tbody></table></div>';
 
-                $parentHTML .= '<div class="col s12 m12"><div class="row commentContainer" id="commentContainer'.$document->id.'">';
-                $parentHTML .= '<div class="input-field col m10 s12 commentArea">';
-                $parentHTML .= '<textarea id="comment" class="materialize-textarea commentField" name="comment" cols="50" rows="10" placeholder="Comments"></textarea>';
-                // $html .= '<label for="comment" class="label-placeholder active">  </label>';
-                $parentHTML .= '<div id="documentComment-error-'.$document->id.'" class="error documentComment-error" style="display:none;"></div></div>';
-                $parentHTML .= '<div class="input-field col m2 s12" style="margin-top: 37px; ! important">';
-                $parentHTML .= '<a href="javascript:" class="text-sub subDocument-save-comment-btn" data-id="'.$document->id.'"><i class="material-icons mr-2"> send </i></a></div> </div>';
+                $parentHTML .= '<div class="col s12 m12">';
+                if(auth()->user()->can('documents-comment-create')) {
+                    $parentHTML .= '<div class="row commentContainer" id="commentContainer'.$document->id.'">';
+                    $parentHTML .= '<div class="input-field col m10 s12 commentArea">';
+                    $parentHTML .= '<textarea id="comment" class="materialize-textarea commentField" name="comment" cols="50" rows="10" placeholder="Comments"></textarea>';
+                    // $html .= '<label for="comment" class="label-placeholder active">  </label>';
+                    $parentHTML .= '<div id="documentComment-error-'.$document->id.'" class="error documentComment-error" style="display:none;"></div></div>';
+                    $parentHTML .= '<div class="input-field col m2 s12" style="margin-top: 37px; ! important">';
+                    $parentHTML .= '<a href="javascript:" class="text-sub subDocument-save-comment-btn" data-id="'.$document->id.'"><i class="material-icons mr-2"> send </i></a></div> </div>';
+                }
                 $parentHTML .= '<div class="app-email" id="latestComment'.$document->id.'"></div>';           
-                
                 if(count($document->comments) > 0) {
                     foreach($document->comments as $comment) {
                         $parentHTML .= '<div class="app-email" id="docCommentsDiv'.$document->id.'"><div class="content-area"><div class="app-wrapper"><div class="card card card-default scrollspy border-radius-6 fixed-width">';
