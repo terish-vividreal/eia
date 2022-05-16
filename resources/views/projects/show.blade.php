@@ -111,6 +111,10 @@
                     <td>Contact Information:</td>
                     <td><span class="">{{ $project->company->contact ?? ''}}</span></td>
                 </tr>
+                <tr>
+                    <td>Map LInk:</td>
+                    <td><a href="{{$project->map_link ?? ''}}" target="_blank"> {{$project->map_link ?? ''}} </a></td>
+                </tr>
                 </tbody>
             </table>
         </div>
@@ -125,7 +129,9 @@
         <div class="card-title">
             <div class="row right">
               <div class="col s12 m12 ">
-                {!! App\Helpers\HtmlHelper::createLinkButton(url($page->route.'/'.$project->id.'/eias/create'), 'Add New EIA') !!}
+                @can('eia-create')
+                  {!! App\Helpers\HtmlHelper::createLinkButton(url($page->route.'/'.$project->id.'/eias/create'), 'Add New EIA') !!}
+                @endcan
               </div>
             </div>
         </div>
