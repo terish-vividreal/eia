@@ -157,15 +157,17 @@ class DocumentController extends Controller
                 return $detail->formatted_date_of_entry; 
             })
             ->editColumn('document_number', function($detail) {
-                $link       = '';
-                $link       .= '<a href="documents/'. $detail->id.'">'.$detail->document_number.'</a>';
+                $link           = '';
+                $documentRoute  = (auth()->user()->can('documents-details')) ? $this->route.'/'.$detail->id : 'javascript:';
+                $link           .= '<a href="'. $documentRoute.'">'.$detail->document_number.'</a>';
                 return $link ;
             })
             ->editColumn('title', function($detail) {
-                $title      = '';
-                $link       = '';
-                $title       = Str::limit(strip_tags($detail->title), 15);
-                $link       .= '<a href="documents/'. $detail->id.'">'.$title.'</a>';
+                $title          = '';
+                $link           = '';
+                $title          = Str::limit(strip_tags($detail->title), 15);
+                $documentRoute  = (auth()->user()->can('documents-details')) ? $this->route.'/'.$detail->id : 'javascript:';
+                $link           .= '<a href="'. $documentRoute.'">'.$title.'</a>';
                 return $link ;
             })
             ->editColumn('status', function($detail) {
@@ -246,8 +248,11 @@ class DocumentController extends Controller
                                                     })->get();
                         $assignedId             = $activeTask[0]->tasks->id;
                     } 
-                    $documentID = (count($document->children) > 0 ) ? $document->children[0]->id : $document->id;
 
+                    $documentID                 = (count($document->children) > 0 ) ? $document->children[0]->id : $document->id;
+                    // $page->documentName         = (count($document->children) > 0 ) ? $document->children[0]->latestFile->name : $document->latestFile->name;
+                    $page->documentViewURL      = (count($document->children) > 0 ) ? $document->children[0]->latestFile->file_view : $document->latestFile->file_view;
+                    $page->documentDownloadURL  = (count($document->children) > 0 ) ? $document->children[0]->latestFile->file_download : $document->latestFile->file_download;
                     return view($this->viewPath . '.show', compact('page', 'variants', 'document', 'user', 'activeTask', 'assignedId'));
                 }
                 abort(404);
@@ -402,10 +407,57 @@ class DocumentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    function downloadFile(Request $request, $document)
+    function downloadFile(Request $request, $file)
     {
-        $store_path = 'public/' . $this->uploadPath;
-        return Storage::download($store_path.'/'.$document);
+       
+        $img_extensions = ['jpg', 'jpeg', 'png'];
+        $doc_extensions = ['docx', 'doc'];
+        $xls_extensions = ['xls', 'xlsx'];
+
+        if(in_array(pathinfo($file, PATHINFO_EXTENSION), $img_extensions)) {
+
+            $path = storage_path('app/public/documents/'.$file);
+            return response()->download($path);
+
+        } elseif(in_array(pathinfo($file, PATHINFO_EXTENSION), $doc_extensions)) {
+
+            $path = storage_path('app/public/documents/'.$file);
+            return response()->download($path);
+
+        } elseif(in_array(pathinfo($file, PATHINFO_EXTENSION), $xls_extensions)) {
+
+            $path = storage_path('app/public/documents/'.$file);
+            return response()->download($path);
+
+        } elseif(pathinfo($file, PATHINFO_EXTENSION) == 'pdf') {
+
+            $path = storage_path('app/public/documents/'.$file);
+            $headers = ['Content-Type: application/pdf'];
+
+            return response()->download($path, $file, $headers);
+
+
+        } else {
+
+            $file_name = asset('admin/images/image-not-found.png');
+        }
+
+    }
+    
+    /**
+     * Download Document file.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    function downloadPDfFile(Request $request, $file)
+    {
+        $document =  asset('storage/documents/' . $file);
+ 
+        echo $document; exit;
+
+        $pdf = PDF::loadView($file);
+    
+        return $pdf->download('itsolutionstuff.pdf');
     }
     
     /**

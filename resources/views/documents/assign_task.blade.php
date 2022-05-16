@@ -15,15 +15,16 @@
           </div>
           <div class="input-field col s12">
             {!! Form::textarea('description', '', ['id' => 'description', 'class' => 'materialize-textarea task-store-input', 'placeholder' => 'Task Details']) !!}
-          </div>          
-          <div class="input-field col s12 task-complete-checkbox" style="display:none;">
-            <p class="mb-1"><label><input type="checkbox" id="taskCompleted" name="taskCompleted"> <span>Task Completed</span></label></p>
-            <p><label>Check to complete the task</label></p>
-          </div>
-          <div class="input-field col s12 task-completed-section" style="display:none;">
-            {!! Form::textarea('completedNote', '', ['id' => 'completedNote', 'class' => 'materialize-textarea', 'placeholder' => 'Please enter note']) !!}
-          </div>
-
+          </div>       
+          @can('documents-task-complete')   
+            <div class="input-field col s12 task-complete-checkbox" style="display:none;">
+              <p class="mb-1"><label><input type="checkbox" id="taskCompleted" name="taskCompleted"> <span>Task Completed</span></label></p>
+              <p><label>Check to complete the task</label></p>
+            </div>
+            <div class="input-field col s12 task-completed-section" style="display:none;">
+              {!! Form::textarea('completedNote', '', ['id' => 'completedNote', 'class' => 'materialize-textarea', 'placeholder' => 'Please enter note']) !!}
+            </div>
+          @endcan
         </div>
       </div>
     </div>

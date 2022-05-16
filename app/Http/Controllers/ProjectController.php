@@ -164,11 +164,12 @@ class ProjectController extends Controller
             ->editColumn('name', function($detail) {
                 $name   = '';
                 $link   = '';
-                $name   = Str::limit(strip_tags($detail->name), 40);
-                // if (strlen(strip_tags($detail->name)) > 50) {
-                //     $name .= "<a href='javascript:void(0);' onclick='showFullName(\"".$detail->name."\")'>View</a>";
+                $name   = Str::limit(strip_tags($detail->name), 25);
+                // if (strlen(strip_tags($detail->name)) > 25) {
+                //     $name .= "<a href='javascript:void(0);' onclick='showFullName(\"".$detail->name."\")z>View</a>";
                 // }
-                $link   .= '<a href="'.$this->route.'/'.$detail->id.'">'.$name.'</a>';
+                $nameRoute   = (auth()->user()->can('projects-details')) ? $this->route.'/'.$detail->id : 'javascript:';
+                $link   .= '<a href="'.$nameRoute.'">'.$name.'</a>';
                 return $link ;
             })
             ->editColumn('date_of_creation', function($detail) {

@@ -104,7 +104,7 @@
                   <div class="col m6 s12">
                     <h5>{{$document->stage->name}} </h5>
                     @isset($document->latestFile)
-                      <img src="{{$document->latestFile->file_name}}" class="responsive-img" style="max-width: 75% !important" alt="">
+                      <img src="{{$document->latestFile->file_preview}}" class="responsive-img" style="max-width: 75% !important" alt="">
                       <p><a class="waves-effect waves-light btn gradient-45deg-purple-deep-orange z-depth-4 mt-2" href="{{ route('document.file.download', ['document' => $document->latestFile->name])}}" style="margin-top: 10px; !important">Download</a></p>
                     @endisset
                   </div>

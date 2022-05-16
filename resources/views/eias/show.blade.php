@@ -38,32 +38,31 @@
             <h6 class="media-heading"><span>Project Title: </span><span class="users-view-name">{{ $eia->project->name ?? ''}} </span></h6>
             <h6 class="media-heading"><span>Project ID: </span><span class="users-view-name">{{ $eia->project->project_code_id ?? ''}} </span></h6>
             <h5 class="media-heading"><span>EIA ID: </span><span class="users-view-name">{{ $eia->code_id ?? ''}} </span></h5>
-
-
-              {!! Form::open(['method' => 'POST', 'url' => 'permits']) !!}
-              
-              {{ csrf_field() }}
-              {!! Form::hidden('eia_id', $eia->id ?? '', ['id' => 'eiaId'] ); !!}
-              <div class="row">
-                <div class="col s12 m12">
-                  <div class="input-field col s12">
-                    <p><label>
-                      <input type="checkbox" id="moveToPermit" name="moveToPermit" /> <span> Move to Permit </span>
-                      @error('moveToPermit')
-                        <div class="error">{{ $message }}</div>
-                      @enderror
-                    </label></p>
+              @can('eia-move-to-permit')
+                {!! Form::open(['method' => 'POST', 'url' => 'permits']) !!}
+                  {{ csrf_field() }}
+                  {!! Form::hidden('eia_id', $eia->id ?? '', ['id' => 'eiaId'] ); !!}
+                  <div class="row">
+                    <div class="col s12 m12">
+                      <div class="input-field col s12">
+                        <p><label>
+                          <input type="checkbox" id="moveToPermit" name="moveToPermit" /> <span> Move to Permit </span>
+                          @error('moveToPermit')
+                            <div class="error">{{ $message }}</div>
+                          @enderror
+                        </label></p>
+                      </div>
+                      <!-- <input type="checkbox" name="vehicle1" value="Bike">
+                      <label for="vehicle1"> I have a bike</label><br> -->
+                    </div>
                   </div>
-                  <!-- <input type="checkbox" name="vehicle1" value="Bike">
-                  <label for="vehicle1"> I have a bike</label><br> -->
-                </div>
-              </div>
-              <div class="row">
-                <div class="input-field col s12">
-                  {!! App\Helpers\HtmlHelper::submitButton('Submit', 'moveToPermitSubmitBtn') !!}
-                </div>
-              </div>
-              {{ Form::close() }}
+                  <div class="row">
+                    <div class="input-field col s12">
+                      {!! App\Helpers\HtmlHelper::submitButton('Submit', 'moveToPermitSubmitBtn') !!}
+                    </div>
+                  </div>
+                {{ Form::close() }}
+              @endcan
           </div>
         </div>
       </div>
@@ -84,7 +83,7 @@
             <tbody>
               <tr>
                 <td>EIA Id:</td>
-                <td><a href="{{ url($page->route.'/'.$eia->id.'/details')}}">{{ $eia->code_id ?? ''}}</a></td>
+                <td><a href="{{ url($page->route.'/'.$eia->id)}}">{{ $eia->code_id ?? ''}}</a></td>
               </tr>
               <tr>
                 <td>Date Of Creation:</td>
@@ -134,29 +133,33 @@
       <div class="card-title">
         <div class="row right">
           <div class="col s12 m12">
-            {!! App\Helpers\HtmlHelper::createLinkButton(url($page->route.'/'.$eia->id.'/documents/create'), 'Add New Document') !!}
+            @can('documents-create')
+              {!! App\Helpers\HtmlHelper::createLinkButton(url($page->route.'/'.$eia->id.'/documents/create'), 'Add New Document') !!}
+            @endcan
           </div>
         </div>
       </div>
       <div class="row">
-        <div class="col s12 m6 "><h4 class="card-title">Document Lists</h4></div>
-        <div class="col s12">
-          <table id="data-table-projects" class="display data-tables" data-url="{{ $page->route.'/'.$eia->id.'/documents/lists' }}" data-form="page" data-length="10">
-            <thead>
-              <tr>
-                <th width="20px" data-orderable="false" data-column="DT_RowIndex"> No </th>
-                <th width="250px" data-orderable="false" data-column="document_number"> Document Number </th>
-                <th width="250px" data-orderable="false" data-column="title"> Title </th>
-                <th width="200px" data-orderable="true" data-column="date_of_entry"> Date of Creation </th>
-                <th width="250px" data-orderable="false" data-column="status"> Status </th>
-                <th width="300px" data-orderable="true" data-column="brief_description"> Brief Description </th>
-                <!-- <th width="150px" data-orderable="false" data-column="document_type"> Document Type </th> -->
-                <th width="200px" data-orderable="false" data-column="comment"> Remarks/Comments </th>                            
-                <th width="250px" data-orderable="false" data-column="action"> Action </th>   
-              </tr>
-            </thead>
-          </table>
-        </div>
+        @can('documents-list')
+          <div class="col s12 m6 "><h4 class="card-title">Document Lists</h4></div>
+          <div class="col s12">
+            <table id="data-table-projects" class="display data-tables" data-url="{{ $page->route.'/'.$eia->id.'/documents/lists' }}" data-form="page" data-length="10">
+              <thead>
+                <tr>
+                  <th width="20px" data-orderable="false" data-column="DT_RowIndex"> No </th>
+                  <th width="250px" data-orderable="false" data-column="document_number"> Document Number </th>
+                  <th width="250px" data-orderable="false" data-column="title"> Title </th>
+                  <th width="200px" data-orderable="true" data-column="date_of_entry"> Date of Creation </th>
+                  <th width="250px" data-orderable="false" data-column="status"> Status </th>
+                  <th width="300px" data-orderable="true" data-column="brief_description"> Brief Description </th>
+                  <!-- <th width="150px" data-orderable="false" data-column="document_type"> Document Type </th> -->
+                  <th width="200px" data-orderable="false" data-column="comment"> Remarks/Comments </th>                            
+                  <th width="250px" data-orderable="false" data-column="action"> Action </th>   
+                </tr>
+              </thead>
+            </table>
+          </div>
+        @endcan  
        </div>
       <!-- </div> -->
     </div>

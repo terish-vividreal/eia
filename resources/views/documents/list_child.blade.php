@@ -25,14 +25,16 @@
             </table>
          </div>
          <div class="col s12 m12">
-            <div class="row commentContainer" id="commentContainer20">
-               <div class="input-field col m10 s12 commentArea">
-                  <textarea id="comment" class="materialize-textarea commentField" name="comment" cols="50" rows="10"></textarea>
-                  <label for="comment" class="label-placeholder active"> Comments </label>
-                  <div id="documentComment-error-20" class="error documentComment-error" style="display:none;"></div>
+            @can('documents-comment-create')
+               <div class="row commentContainer" id="commentContainer20">
+                  <div class="input-field col m10 s12 commentArea">
+                     <textarea id="comment" class="materialize-textarea commentField" name="comment" cols="50" rows="10"></textarea>
+                     <label for="comment" class="label-placeholder active"> Comments </label>
+                     <div id="documentComment-error-20" class="error documentComment-error" style="display:none;"></div>
+                  </div>
+                  <div class="input-field col m2 s12" style="margin-top: 37px; ! important"><a href="javascript:" class="text-sub save-comment-btn" data-id="11"><i class="material-icons mr-2"> send </i></a></div>
                </div>
-               <div class="input-field col m2 s12" style="margin-top: 37px; ! important"><a href="javascript:" class="text-sub save-comment-btn" data-id="11"><i class="material-icons mr-2"> send </i></a></div>
-            </div>
+            @endcan
             <div class="app-email" id="">
                <div class="content-area">
                   <div class="app-wrapper">

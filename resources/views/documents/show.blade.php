@@ -64,14 +64,32 @@
           @isset($document->latestFile)
             <h6 class="mb-4 mt-4"><i class="material-icons">info_outline</i> {{ Str::plural($page->title) ?? ''}} Details</h6>
             @if(count($document->children) > 0) 
-              <img src="{{$document->children[0]->latestFile->file_name}}" style="max-height: 400px;" class="responsive-img" alt="">
+              <img src="{{$document->children[0]->latestFile->file_preview}}" style="max-height: 400px;" class="responsive-img" alt="">
             @else
-              <img src="{{$document->latestFile->file_name}}" style="max-height: 400px;" class="responsive-img" alt="">
+              <img src="{{$document->latestFile->file_preview}}" style="max-height: 400px;" class="responsive-img" alt="">
             @endif
+
+            <div class="email-header">
+            <div class="left-icons">
+              <span class="action-icons">
+                <a href="{{$page->documentViewURL}}" target="_blank" ><i class="material-icons">remove_red_eye</i></a>
+                @if(count($document->children) > 0) 
+                  <a href="{{route('documents.download', $document->children[0]->latestFile->name)}}"><i class="material-icons">file_download</i></a>
+                @else
+                  <a href="{{route('documents.download', $document->latestFile->name)}}"><i class="material-icons">file_download</i></a>
+                @endif
+                
+                <!-- $page->documentDownloadURL -->
+              </span>
+            </div>
+          </div>
+
             <!-- <a class="waves-effect waves-light btn gradient-45deg-purple-deep-orange z-depth-4 mt-2" href="https://eia.vividreal.co.in/documents/file/download/MUSMHX0A0NXFG3FN4EPQ_1159079-immap-ihf_humanitarian_access_response_-_landmine_erw_contamination_areas_aug_2018.png" style="margin-top: 10px; !important">Download</a>  -->
           @endisset
           @if($document->is_assigned == 0)
-            <p id=""><a class="waves-effect waves-light btn gradient-45deg-purple-deep-orange z-depth-4 mt-2 assign-task" id="" data-id="{{$document->id}}" href="javascript:" style="margin-top: 10px; !important">Assign Task</a></p>                  
+            @can('documents-task-create')
+              <p id=""><a class="waves-effect waves-light btn gradient-45deg-purple-deep-orange z-depth-4 mt-2 assign-task" id="" data-id="{{$document->id}}" href="javascript:" style="margin-top: 10px; !important">Assign Task</a></p>                  
+            @endcan
             @if(!empty($document->completedTask))
               <div class="col s12 m12 card-details mt-2" id="taskDetailsDiv">
                 <h5><a href="javascript:" class="mt-8 blue-text">Completed Task Details</a></h5>
@@ -98,9 +116,11 @@
                     <div class="col s3 p-0 mt-1"><span class="pt-2">
                       {{ ($activeTask[0]->tasks->assigned_to == auth()->user()->id) ? 'You' : $activeTask[0]->tasks->assignedTo->name}}
                     </span></div>
-                    <div class="col s7 mt-1 right-align">
-                      <a href="javascript:" class="assign-task"><span class="material-icons"> edit </span></a>
-                    </div>
+                    @can('documents-task-edit')
+                      <div class="col s7 mt-1 right-align">
+                        <a href="javascript:" class="assign-task"><span class="material-icons"> edit </span></a>
+                      </div>
+                    @endcan
                   </div>
               </div>
             </div>
@@ -152,6 +172,7 @@
                   {!! Form::select('status', $variants->documentStatuses, $statusID ?? '', ['id' => 'status', 'class' => 'select2 browser-default', 'placeholder'=>'Please select Status']) !!}
                 </td>
               </tr>
+              @can('documents-manage-status')
               <tr>
                 <td></td>
                 <td style="text-align:right">
@@ -159,6 +180,7 @@
                   {!! App\Helpers\HtmlHelper::submitButton('Submit', 'documentStatusUpdateBtn') !!}
                 </td>
               </tr>
+              @endcan
               <tr>
                 <td>Brief Description: </td>
 
@@ -181,15 +203,18 @@
             </tbody>
           </table>
         </div>
+
         <div class="col s12 m12" style="margin-top: 10px">
           <div class="row commentContainer">  
-            <div class="input-field col m10 s12 commentArea">
-              <textarea id="documentComment" class="materialize-textarea commentField" name="comment" cols="50" rows="10" placeholder="Enter comment"></textarea>  
-              <div id="documentComment-error-{{$documentID}}" class="error documentComment-error" style="display:none;"></div>
-            </div>
-            <div class="input-field col m2 s12" style="margin-top: 37px; !important">
-              <a href="javascript:" class="text-sub save-comment-btn" data-id="{{$documentID}}"><i class="material-icons mr-2">send</i></a>
-            </div>
+            @can('documents-comment-create')
+              <div class="input-field col m10 s12 commentArea">
+                <textarea id="documentComment" class="materialize-textarea commentField" name="comment" cols="50" rows="10" placeholder="Enter comment"></textarea>  
+                <div id="documentComment-error-{{$documentID}}" class="error documentComment-error" style="display:none;"></div>
+              </div>
+              <div class="input-field col m2 s12" style="margin-top: 37px; !important">
+                <a href="javascript:" class="text-sub save-comment-btn" data-id="{{$documentID}}"><i class="material-icons mr-2">send</i></a>
+              </div>
+            @endcan
           </div>
           <!-- Content Area Starts -->
           <div class="app-email" id="latestComment{{$documentID}}"></div>

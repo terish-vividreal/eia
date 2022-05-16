@@ -87,9 +87,12 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('documents/file/upload', [DocumentController::class, 'uploadDocument'])->name('documents.file.upload');
     Route::post('documents/file/remove', [DocumentController::class, 'fileRemove'])->name('documents.file.remove');
     Route::get('documents/file/list', [DocumentController::class, 'fileList'])->name('documents.file.list');
-    Route::get('documents/file/download/{document}', [DocumentController::class, 'downloadFile'])->name('documents.file.download');
+    Route::get('documents/image-download/{file}', [DocumentController::class, 'downloadFile'])->name('documents.file.download');
+    Route::get('documents/pdf-download/{file}', [DocumentController::class, 'downloadPDfFile'])->name('documents.file.download');
     // Route::get('document/file/view/{document}', [DocumentController::class, 'viewDocumentFile'])->name('document.file.stream');
     // Route::get('document/autocomplete', [DocumentController::class, 'autocomplete'])->name('document.autocomplete');
+    
+    Route::get('documents/download/{file}', [DocumentController::class, 'downloadFile'])->name('documents.download');
     
     Route::resource('task-assign', TaskAssignController::class);
     // Route::post('documents/task/assign', [TaskAssignController::class, 'assign']);
