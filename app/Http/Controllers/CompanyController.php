@@ -74,7 +74,7 @@ class CompanyController extends Controller
             $company                = new Company();
             $company->name          = $request->name;
             $company->details       = $request->details;
-            $company->contactName   = $request->contact_name;
+            $company->contact_name   = $request->contact_name;
             $company->email         = $request->email;
             $company->contact       = $request->contact;
             $company->address       = $request->address;
@@ -109,8 +109,11 @@ class CompanyController extends Controller
             ->addIndexColumn()
             ->editColumn('status', function($detail) {
                 if($detail->deleted_at == null) {
+                    $html       = '';
                     $checked    = ($detail->status == 1) ? 'checked' : '';
-                    $html       = '<div class="switch"><label> <input type="checkbox" '.$checked.' id="' . $detail->id . '" data-url="'.url($this->route.'/update-status').'" class="manage-status" data-id="'.$detail->id.'"> <span class="lever"></span> </label> </div>';
+                    if(auth()->user()->can('manage-status')) {
+                        $html   .= '<div class="switch"><label> <input type="checkbox" '.$checked.' id="' . $detail->id . '" data-url="'.url($this->route.'/update-status').'" class="manage-status" data-id="'.$detail->id.'"> <span class="lever"></span> </label> </div>';
+                    }
                     return $html;
                 }  
             })
