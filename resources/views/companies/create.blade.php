@@ -64,8 +64,8 @@
                                 <label for="name" class="label-placeholder active"> Name <span class="red-text">*</span></label>
                             </div>
                             <div class="input-field col m6 s12">
-                                {!! Form::text('contactName', $company->contact_name ?? '', array('id' => 'contactName')) !!}
-                                <label for="contactName" class="label-placeholder active"> Contact Name <span class="red-text">*</span></label>
+                                {!! Form::text('contact_name', $company->contact_name ?? '', array('id' => 'contactName')) !!}
+                                <label for="contact_name" class="label-placeholder active"> Contact Name <span class="red-text">*</span></label>
                             </div>
                             <div class="input-field col m6 s12">
                                 {!! Form::text('email', $company->email ?? '', array('id' => 'email')) !!}
