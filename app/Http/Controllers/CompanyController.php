@@ -112,7 +112,7 @@ class CompanyController extends Controller
                 if($detail->deleted_at == null) {
                     $html       = '';
                     $checked    = ($detail->status == 1) ? 'checked' : '';
-                    if(auth()->user()->can('manage-status')) {
+                    if(auth()->user()->can('companies-manage-status')) {
                         $html   .= '<div class="switch"><label> <input type="checkbox" '.$checked.' id="' . $detail->id . '" data-url="'.url($this->route.'/update-status').'" class="manage-status" data-id="'.$detail->id.'"> <span class="lever"></span> </label> </div>';
                     }
                     return $html;

@@ -154,6 +154,10 @@ if (FileUploadRoute != undefined) {
     //   return newName;
     // },
     init:function() {
+      this.on("error", function (file, message) {
+        alert(message);
+          this.removeFile(file);
+      });
       // Get images
       // documentId    = $("#documentId").val();
       // var myDropzone = this;

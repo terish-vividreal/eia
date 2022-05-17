@@ -205,6 +205,10 @@ if (FileUploadRoute != undefined) {
           });
         }
       });
+      this.on("error", function (file, message) {
+        alert(message);
+          this.removeFile(file);
+      });
     },
     headers: { 'X-CSRF-TOKEN': csrfToken },
     removedfile: function(file) {
