@@ -92,7 +92,7 @@
                           <thead>
                             <tr>
                               <th width="20px" data-orderable="false" data-column="DT_RowIndex"> No </th>
-                              <th width="150px" data-orderable="false" data-column="project_code_id">Project ID</th>
+                              <th width="250px" data-orderable="false" data-column="project_code_id">Project ID</th>
                               <th width="400px" data-orderable="true" data-column="name"> Title </th>
                               <th width="200px" data-orderable="false" data-column="date_of_creation"> Date Of Creation </th>
                               <th width="80px" data-orderable="true" data-column="category_id"> Category </th>
