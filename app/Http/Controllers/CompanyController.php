@@ -79,8 +79,7 @@ class CompanyController extends Controller
             $company->contact       = $request->contact;
             $company->address       = $request->address;
             $company->save();
-            // $company->save();
-            return ['flagError' => false, 'message' => $this->title. " added successfully"];
+            return ['flagError' => false, 'message' => Str::singular($this->title). " added successfully"];
         }
         return ['flagError' => true, 'message' => "Errors Occurred. Please check !",  'error' => $validator->errors()->all()];
     }
@@ -91,7 +90,7 @@ class CompanyController extends Controller
      */
     public function lists(Request $request)
     {
-        $detail     =  Company::select(['name', 'contact_name', 'email', 'contact', 'status', 'deleted_at', 'id']);
+        $detail     =  Company::select(['name', 'contact_name', 'email', 'contact', 'status', 'deleted_at', 'id'])->orderBy('id', 'DESC');;
         if (isset($request->form)) {
             foreach ($request->form as $search) {
                 if ($search['value'] != NULL && $search['name'] == 'name') {
@@ -104,8 +103,7 @@ class CompanyController extends Controller
                     $detail         = $detail->onlyTrashed();
                 }
             }
-        }
-        
+        } 
         return Datatables::eloquent($detail)
             ->addIndexColumn()
             ->editColumn('status', function($detail) {

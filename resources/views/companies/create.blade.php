@@ -81,7 +81,7 @@
                             </div>
                             <div class="input-field col m12 s12">
                                 {!! Form::textarea('details', $company->details ?? '',  ['id' => 'details', 'class' => 'materialize-textarea']) !!}
-                                <label for="description" class="label-placeholder active"> More Details </label>
+                                <label for="details" class="label-placeholder active"> More Details </label>
                             </div>
                         </div>
                         <div class="row">
