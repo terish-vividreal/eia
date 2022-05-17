@@ -125,7 +125,7 @@ class PermitController extends Controller
         $input                      = $request->all();
         $input['created_by']        = auth()->user()->id;
         $permit                     = Permit::firstOrCreate(['eia_id' => $request->eia_id], $input );
-        return redirect('permits/'. $permit->id)->with('success', 'PLease enter permit details.');
+        return redirect('permits/'. $permit->id)->with('success', 'Please enter permit details.');
     }
 
     /**

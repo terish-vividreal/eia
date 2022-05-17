@@ -124,7 +124,7 @@
                                 <label for="comment" class="label-placeholder active"> Remarks / Comments </label>    
                             </div>
                         </div>
-                        @if($document->id == '')
+                        @if(isset($document) && ($document->id == '') )
                         <div class="row">  
                             <div class="input-field col m12 s12">
                                 <div class="dropzone" id="document-dropzone"></div>   

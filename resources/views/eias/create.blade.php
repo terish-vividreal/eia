@@ -99,7 +99,7 @@
                             </div>
                             <div class="input-field col m6 s12">
                                 {!! Form::textarea('address', $eia->address ?? '',  ['id' => 'address', 'class' => 'materialize-textarea']) !!}
-                                <label for="briefDescription" class="label-placeholder active"> Address </label>    
+                                <label for="address" class="label-placeholder active"> Address </label>    
                             </div>
                         </div>
                         <div class="row">
