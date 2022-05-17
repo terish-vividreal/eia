@@ -107,7 +107,8 @@ class ProjectController extends Controller
      */
     public function lists(Request $request)
     {
-        $detail     =  Project::with(['category', 'company'])->select(['project_code_id', 'name', 'date_of_creation', 'category_id', 'company_id', 'project_type', 'total_budget', 'location_name', 'deleted_at', 'id']);
+        $detail     =  Project::with(['category', 'company'])->select(['project_code_id', 'name', 'date_of_creation', 'category_id', 'company_id', 'project_type', 'total_budget', 'location_name', 'deleted_at', 'id'])->orderBy('id', 'DESC');
+        
         if (isset($request->form)) {
             foreach ($request->form as $search) {
                 if ($search['value'] != NULL && $search['name'] == 'searchTitle') {
@@ -138,12 +139,11 @@ class ProjectController extends Controller
 
                 if ($search['value'] != NULL && $search['name'] == 'sortBy') {
                     $orderBy    = $search['value'];
-                    $detail     = $detail->orderBy($orderBy, 'ASC');
-                }
+                    $detail     = $detail->reorder($orderBy, 'ASC');
+                } 
             }
-        } else {
-            $detail         = $detail->orderBy('id', 'DESC');
-        }
+        } 
+
         return Datatables::eloquent($detail)
             ->addIndexColumn()
             ->editColumn('project_code_id', function($detail) {
