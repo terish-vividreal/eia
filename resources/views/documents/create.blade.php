@@ -124,15 +124,14 @@
                                 <label for="comment" class="label-placeholder active"> Remarks / Comments </label>    
                             </div>
                         </div>
-                        @if(isset($document) && ($document->id == '') )
-                        <div class="row">  
-                            <div class="input-field col m12 s12">
-                                <div class="dropzone" id="document-dropzone"></div>   
-                            </div>
-                            <label for="dropzone" class="label-placeholder active"> Maximum:250 MB | Document Format: jpeg, jpg, png, pdf, doc, docx, xls, xlsx </label>
-                            <div id="file-error" class="error red-text"></div>
-                        </div>
-                        @endif
+                                <div class="row">  
+                                    <div class="input-field col m12 s12">
+                                        <div class="dropzone" id="document-dropzone"></div>   
+                                    </div>
+                                    <label for="dropzone" class="label-placeholder active"> Maximum:250 MB | Document Format: jpeg, jpg, png, pdf, doc, docx, xls, xlsx </label>
+                                    <div id="file-error" class="error red-text"></div>
+                                </div>
+                            
                         <div class="row">
                             <div class="input-field col s12">
                                 {!! App\Helpers\HtmlHelper::submitButton('Submit', 'formSubmitButton') !!}
