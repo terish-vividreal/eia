@@ -22,6 +22,7 @@ if ($("#" + pageTitle + "Form").length > 0) {
       },
       email: {
         required: true,
+        emailFormat: true,
       },
     },
     messages: { 
@@ -33,6 +34,7 @@ if ($("#" + pageTitle + "Form").length > 0) {
       },
       email: {
         required: "Please enter E-mail",
+        emailFormat: "Please enter a valid E-mail",
       },
     },
     submitHandler: function (form) {
@@ -61,12 +63,12 @@ if ($("#" + pageTitle + "Form").length > 0) {
   })
 }
 
+jQuery.validator.addMethod("emailFormat", function (value, element) {
+  return this.optional(element) || /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/igm.test(value);
+}, "Please enter a valid email address"); 
+
 function resetForm() {
 	validator.resetForm();
 	$('#' + pageTitle + 'Form').find("input[type=text]").val("");
 	$("#data_id").val('');
 }
-
-
-
-  
