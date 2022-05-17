@@ -137,7 +137,6 @@ class DocumentController extends Controller
                         $query->orWhere('title', 'LIKE', "{$name}%");
                     });
                 }
-
                 if ($search['value'] != NULL && $search['name'] == 'eia_id') {
                     $detail         = $detail->where('eia_id',  $search['value']);
                 }
@@ -146,11 +145,9 @@ class DocumentController extends Controller
         else {
             $detail         = $detail->orderBy('id', 'DESC');
         }
-
         if ($eiaId!= null) {
             $detail     = $detail->where('eia_id', $eiaId);
         }
-
         return Datatables::eloquent($detail)
             ->addIndexColumn()
             ->editColumn('date_of_entry', function($detail) {
@@ -200,8 +197,10 @@ class DocumentController extends Controller
             ->addColumn('action', function($detail) use ($eiaId) {
                 $action = '';
                 if ($detail->deleted_at == null) { 
-                    $action .= HtmlHelper::editButton(url('eias/'.$detail->eia->id.'/documents/'.$detail->id.'/edit'), $detail->id);
-                    $action .= HtmlHelper::disableButton(url($this->route), $detail->id, 'Inactive');
+                    if(auth()->user()->can('eia-edit')) {
+                        $action .= HtmlHelper::editButton(url('eias/'.$detail->eia->id.'/documents/'.$detail->id.'/edit'), $detail->id);
+                    }
+                        $action .= HtmlHelper::disableButton(url($this->route), $detail->id, 'Inactive');
                 } else {
                     $action .= HtmlHelper::restoreButton(url($this->route.'/restore'), $detail->id);
                 }

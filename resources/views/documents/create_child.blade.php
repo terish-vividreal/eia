@@ -71,7 +71,7 @@
                             </div>
                         </div>
                     </div>
-                    @include('layouts.error') 
+                    @include('layouts.error')
                     @include('layouts.success') 
                     {!! Form::open(['class'=>'ajax-submit','id'=> 'child'.Str::camel($page->title).'Form', "enctype" => "multipart/form-data"]) !!}
                         {{ csrf_field() }}
@@ -114,13 +114,11 @@
                             </div>
                         </div>
                         <div class="row">  
-                            
                             <div class="input-field col m12 s12">
                                 {!! Form::textarea('briefDescription', $childDocument->brief_description ?? '',  ['id' => 'briefDescription', 'class' => 'materialize-textarea']) !!}
                                 <label for="briefDescription" class="label-placeholder active"> Description </label>    
                             </div>
                         </div>
- 
                         <div class="row">  
                         </div>
                         <div class="row">  
@@ -158,4 +156,3 @@
 
 </script>
 @endpush
-

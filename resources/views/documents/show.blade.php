@@ -68,7 +68,6 @@
             @else
               <img src="{{$document->latestFile->file_preview}}" style="max-height: 400px;" class="responsive-img" alt="">
             @endif
-
             <div class="email-header">
             <div class="left-icons">
               <span class="action-icons">
@@ -78,12 +77,10 @@
                 @else
                   <a href="{{route('documents.download', $document->latestFile->name)}}"><i class="material-icons">file_download</i></a>
                 @endif
-                
                 <!-- $page->documentDownloadURL -->
               </span>
             </div>
           </div>
-
             <!-- <a class="waves-effect waves-light btn gradient-45deg-purple-deep-orange z-depth-4 mt-2" href="https://eia.vividreal.co.in/documents/file/download/MUSMHX0A0NXFG3FN4EPQ_1159079-immap-ihf_humanitarian_access_response_-_landmine_erw_contamination_areas_aug_2018.png" style="margin-top: 10px; !important">Download</a>  -->
           @endisset
           @if($document->is_assigned == 0)
@@ -183,7 +180,6 @@
               @endcan
               <tr>
                 <td>Brief Description: </td>
-
                 <td>  
                   {{ Str::limit(strip_tags($document->brief_description), 100)}}
                   @if(strlen(strip_tags($document->brief_description)) > 100)
@@ -203,7 +199,6 @@
             </tbody>
           </table>
         </div>
-
         <div class="col s12 m12" style="margin-top: 10px">
           <div class="row commentContainer">  
             @can('documents-comment-create')
