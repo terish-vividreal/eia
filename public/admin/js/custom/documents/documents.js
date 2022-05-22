@@ -233,7 +233,7 @@ if (FileUploadRoute != undefined) {
 // DataTable Initialization
 var columns;
 var formValue;
-table         = $('#data-table-projects');
+table         = $('#data-table-documents');
 var url       = table.data('url');
 var form      = table.data('form');
 var length    = table.data('length');
@@ -277,6 +277,7 @@ $('#' + form + '-filterFormClearButton').click(function () {
     $('#' + form + '-form').find("input[type=text]").val("");
     $('#' + form + '-form').find(".select2").val('').trigger("change");
     $('#' + form + '-form').trigger("reset");
+    $("#archiveStatus").val(0);
     formValue = $('#' + form + '-form').serializeArray();
     table.DataTable().draw();
 });
@@ -287,6 +288,14 @@ $(".listBtn").on("click", function()  {
     formValue = $('#' + form + '-form').serializeArray();
     table.DataTable().draw();
 });
+
+$(".archiveBtn").on("click", function()  {
+  $("#archiveStatus").val($(this).attr('data-type'));
+  formValue = $('#' + form + '-form').serializeArray();
+  table.DataTable().draw();
+});
+
+
 
 table.on('click', '.disable-item', function() {
     var postUrl = $(this).attr('data-url'); 
@@ -316,34 +325,61 @@ table.on('click', '.disable-item', function() {
     });
 });
 
+
+table.on('click', '.archive-item', function() {
+  var postUrl = $(this).attr('data-url'); 
+  var id      = $(this).attr('data-id');
+  var title   = $(this).attr('data-title');
+
+  swal({ title: "Are you sure?", text: "Document will move to Archive folder!", icon: 'warning', dangerMode: true, buttons: { cancel: 'No, Please!', delete: 'Yes, '+ title }
+  }).then(function (willDelete) {
+    if (willDelete) {
+      $.ajax({url: postUrl , type: "POST", dataType: "html"})
+        .done(function (a) {
+            var data = JSON.parse(a);
+            if (data.flagError == false) {
+              showSuccessToaster(data.message);          
+              setTimeout(function () {
+                table.DataTable().draw();
+              }, 2000);
+
+          } else {
+            showErrorToaster(data.message);
+            printErrorMsg(data.error);
+          }   
+      }).fail(function () {
+        showErrorToaster("Something went wrong!");
+      });
+    } 
+  });
+});
+
 table.on('click', '.restore-item', function() {
+  var postUrl = $(this).attr('data-url'); 
+  var id      = $(this).attr('data-id');
+  var title   = $(this).attr('data-title');
 
-    var postUrl = $(this).attr('data-url'); 
-    var id      = $(this).attr('data-id');
-    var title   = $(this).attr('data-title');
+  swal({ title: "Are you sure?",icon: 'warning', dangerMode: true, buttons: { cancel: 'No, Please!', delete: 'Yes, '+ title }
+  }).then(function (willDelete) {
+    if (willDelete) {
+      $.ajax({url: postUrl + "/" + id, type: "POST", dataType: "html"})
+        .done(function (a) {
+            var data = JSON.parse(a);
+            if (data.flagError == false) {
+              showSuccessToaster(data.message);          
+              setTimeout(function () {
+                table.DataTable().draw();
+              }, 2000);
 
-    swal({ title: "Are you sure?",icon: 'warning', dangerMode: true, buttons: { cancel: 'No, Please!', delete: 'Yes, '+ title }
-    }).then(function (willDelete) {
-      if (willDelete) {
-        $.ajax({url: postUrl + "/" + id, type: "POST", dataType: "html"})
-          .done(function (a) {
-              var data = JSON.parse(a);
-              if (data.flagError == false) {
-                showSuccessToaster(data.message);          
-                setTimeout(function () {
-                  table.DataTable().draw();
-                }, 2000);
-
-            } else {
-              showErrorToaster(data.message);
-              printErrorMsg(data.error);
-            }   
-        }).fail(function () {
-          showErrorToaster("Something went wrong!");
-        });
-      } 
-    });
-
+          } else {
+            showErrorToaster(data.message);
+            printErrorMsg(data.error);
+          }   
+      }).fail(function () {
+        showErrorToaster("Something went wrong!");
+      });
+    } 
+  });
 });
 
 table.on('click', '.view-more-details', function() {
@@ -577,4 +613,28 @@ function getFullComment(id) {
   }).fail(function () {
     showErrorToaster("Something went wrong!");
   });
+}
+
+function deleteDocument(dataDeleteID) {
+  swal({ title: "Are you sure?", icon: 'warning', dangerMode: true, buttons: { cancel: 'No, Please!', delete: 'Yes, Delete' }
+    }).then(function (willDelete) {
+      if (willDelete) {
+        $.ajax({url: "documents/delete-version/" + dataDeleteID, type: "POST", dataType: "html"})
+          .done(function (a) {
+              var data = JSON.parse(a);
+              if (data.flagError == false) {
+                showSuccessToaster(data.message);          
+                setTimeout(function () {
+                  location.reload();
+                }, 2000);
+
+            } else {
+              showErrorToaster(data.message);
+              printErrorMsg(data.error);
+            }   
+        }).fail(function () {
+          showErrorToaster("Something went wrong!");
+        });
+      } 
+    });
 }

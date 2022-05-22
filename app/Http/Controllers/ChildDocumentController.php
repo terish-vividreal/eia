@@ -28,20 +28,9 @@ class ChildDocumentController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-
-            // $posts = Post::with(['author' => function ($q){
-            //     $q->orderBy('name', 'DESC');
-            // }])
-        
             $document   = Document::find($request->documentId);
-            
-            
-            // ->with(['children' => function ($q){
-            //                     $q->orderBy('id', 'DESC');
-            //                 }]
             if ($document) {
-                $subDocumentsHTML       =  $this->loadSubDocumentsHTML($document);
-                // $subDocumentsHTML    = view($this->viewPath . '.list_child', compact('document'))->render();  
+                $subDocumentsHTML       =  $this->loadSubDocumentsHTML($document);  
                 return ['flagError' => false, 'document' => $document, 'html' => $subDocumentsHTML];
             } else {
                 return ['flagError' => true, 'message' => "Data not found, Try again! "];
@@ -83,7 +72,6 @@ class ChildDocumentController extends Controller
      */
     public function store(Request $request)
     {
-
         $document                       = new Document();
         $document->eia_id               = $request->eiaId;
         $document->document_number      = $request->documentNumber;
@@ -199,13 +187,20 @@ class ChildDocumentController extends Controller
                
                     $html .= '<div class="card animate fadeUp"><div class="card-content"><div class="row" id="product-four"><div class="col s12 m6">';
                     $html .= '<h5>' . HtmlHelper::statusText($child->stage_id, $child->status) . '</h5>';
-                    $html .= '<img src="'.$child->latestFile->file_preview.'" class="responsive-img" style="max-height: 400px;" alt=""></div>';
+                    $html .= '<img src="'.$child->latestFile->file_preview.'" class="responsive-img" style="max-height: 400px;" alt="">';
+
+
+                    $html .= '<div class="email-header"><div class="left-icons"><span class="action-icons">';
+                    $html .= '<a href="javascript:" data-id="'.$child->id.'" onclick="deleteDocument('.$child->id.')" class="delete-document-version"><i class="material-icons">delete</i></a>';
+                    $html .= '</span></div> </div></div>';
+            
+         
+
+
 
                     $html .= '<div class="col s12 m6"><p style="text-align: right;"></p><table class="striped"><tbody>';
                     $html .= '<tr><td width="30%">Date of Entry:</td><td>'.$child->date_of_entry.'</td></tr>' ;    
                     $html .= '<tr><td width="30%">Uploaded By:</td><td>'.$child->uploadedBy->name.'</td></tr>' ; 
-                    
-                    
                     $html .= '<tr><td width="30%">Description:</td><td>';
                     
                     $html .= Str::limit(strip_tags($child->brief_description), 100);
@@ -218,11 +213,9 @@ class ChildDocumentController extends Controller
                     $html .= '<div class="col s12 m12">';
 
                     if(auth()->user()->can('documents-comment-create')) {
-
                         $html .= '<div class="row commentContainer" id="commentContainer'.$child->id.'">';
                         $html .= '<div class="input-field col m10 s12 commentArea">';
                         $html .= '<textarea id="comment" class="materialize-textarea commentField" name="comment" cols="50" rows="10" placeholder="Comments"></textarea>';
-                        // $html .= '<label for="comment" class="label-placeholder active">  </label>';
                         $html .= '<div id="documentComment-error-'.$child->id.'" class="error documentComment-error" style="display:none;"></div></div>';
                         $html .= '<div class="input-field col m2 s12" style="margin-top: 37px; ! important">';
                         $html .= '<a href="javascript:" class="text-sub subDocument-save-comment-btn" data-id="'.$child->id.'"><i class="material-icons mr-2"> send </i></a></div> </div>';

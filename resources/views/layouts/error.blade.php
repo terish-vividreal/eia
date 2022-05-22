@@ -36,4 +36,16 @@
 @endif
 
 
+@if (Session::has('document-archived'))
+<div class="card-alert card orange">
+    <div class="card-content white-text">
+      <p><i class="material-icons">error</i> {!! Session::get('document-archived') !!}</p>
+    </div>
+    <button type="button" class="close white-text" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">×</span>
+    </button>
+  </div>
+  @endif
+
+
 

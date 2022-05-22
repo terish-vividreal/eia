@@ -78,6 +78,10 @@
                     <td>{{ $eia->project->project_code_id ?? ''}}</td>
                 </tr>
                 <tr>
+                    <td>Title:</td>
+                    <td class="">{{ $eia->project->name ?? ''}}</td>
+                </tr>
+                <tr>
                     <td>Date of Entry:</td>
                     <td>{{ $eia->formatted_date_of_entry ?? ''}}</td>
                 </tr>

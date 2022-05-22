@@ -5,11 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use \Venturecraft\Revisionable\RevisionableTrait;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Helpers\FunctionHelper;
 
 class Document extends Model
 {
-    use HasFactory, RevisionableTrait;
+    use HasFactory, SoftDeletes, RevisionableTrait;
 
     public function eia()
     {

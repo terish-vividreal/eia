@@ -67,6 +67,7 @@ class DocumentController extends Controller
             $page->eiaRoute             = url('eias/'.$eia->id); 
             $variants->documentStatuses = DocumentStatus::pluck('name','id'); 
             $variants->stages           = EiaStage::pluck('name','id'); 
+            $page->dropzoneActive       = true;
             return view($this->viewPath . '.create', compact('page', 'variants', 'eia', 'user'));
         }
         abort(404);
@@ -112,7 +113,7 @@ class DocumentController extends Controller
                     $docFile->save();
                 }
             }
-            return ['flagError' => false, 'message' => $this->title. " added successfully"];
+            return ['flagError' => false, 'message' => Str::singular($this->title). " added successfully"];
         }
         return ['flagError' => true, 'message' => "Errors Occurred. Please check !",  'error' => $validator->errors()->all()];
     }
@@ -126,7 +127,7 @@ class DocumentController extends Controller
         $detail     =  Document::select(['documents.*'])
                         ->whereHas('eia', function($q){
                             $q->where('is_permit', 0);                                
-                        })->where('parent_id', 0);
+                        })->where('parent_id', 0)->orderBy('id', 'DESC');
                         
         if (isset($request->form)) {
             foreach ($request->form as $search) {
@@ -140,14 +141,22 @@ class DocumentController extends Controller
                 if ($search['value'] != NULL && $search['name'] == 'eia_id') {
                     $detail         = $detail->where('eia_id',  $search['value']);
                 }
+
+                if ($search['value'] != NULL && $search['name'] == 'archiveStatus') {
+                    $detail     = $detail->where('is_archived', $search['value']);
+                } 
             }
+        } else {
+
+            $detail     = $detail->where('is_archived', 0);
         }
-        else {
-            $detail         = $detail->orderBy('id', 'DESC');
-        }
+        
         if ($eiaId!= null) {
             $detail     = $detail->where('eia_id', $eiaId);
         }
+
+
+
         return Datatables::eloquent($detail)
             ->addIndexColumn()
             ->editColumn('date_of_entry', function($detail) {
@@ -155,16 +164,27 @@ class DocumentController extends Controller
             })
             ->editColumn('document_number', function($detail) {
                 $link           = '';
-                $documentRoute  = (auth()->user()->can('documents-details')) ? $this->route.'/'.$detail->id : 'javascript:';
-                $link           .= '<a href="'. $documentRoute.'">'.$detail->document_number.'</a>';
-                return $link ;
+                if($detail->is_archived != 1) {
+                    $link           = '';
+                    $documentRoute  = (auth()->user()->can('documents-details')) ? $this->route.'/'.$detail->id : 'javascript:';
+                    $link           .= '<a href="'. $documentRoute.'">'.$detail->document_number.'</a>';
+                    return $link ;
+                } else {
+                    $link           .= '<a href="javascript:">'.$detail->document_number.'</a>';
+                    return $link ;
+                }
             })
             ->editColumn('title', function($detail) {
                 $title          = '';
                 $link           = '';
                 $title          = Str::limit(strip_tags($detail->title), 15);
                 $documentRoute  = (auth()->user()->can('documents-details')) ? $this->route.'/'.$detail->id : 'javascript:';
-                $link           .= '<a href="'. $documentRoute.'">'.$title.'</a>';
+                if($detail->is_archived != 1) {
+                    $link           .= '<a href="'. $documentRoute.'">'.$title.'</a>';
+                } else {
+                    $link           .= '<a href="javascript:">'.$title.'</a>';
+                }
+                
                 return $link ;
             })
             ->editColumn('status', function($detail) {
@@ -196,13 +216,16 @@ class DocumentController extends Controller
             })
             ->addColumn('action', function($detail) use ($eiaId) {
                 $action = '';
-                if ($detail->deleted_at == null) { 
+                if($detail->is_archived != 1)  { 
                     if(auth()->user()->can('eia-edit')) {
-                        $action .= HtmlHelper::editButton(url('eias/'.$detail->eia->id.'/documents/'.$detail->id.'/edit'), $detail->id);
-                    }
-                        $action .= HtmlHelper::disableButton(url($this->route), $detail->id, 'Inactive');
+                        $action .= HtmlHelper::editButton(url('documents/'.$detail->id.'/edit'), $detail->id);
+                    }   
+                        $action .= '<a href="javascript:void(0);" class="btn btn-danger btn-sm btn-icon mr-2 archive-item" data-title="Archive" data-tooltip="Archive" data-id="'.$detail->id.'" data-url="'.url($this->route.'/archive/'.$detail->id).'"><i class="material-icons">archive</i></a>';
+                        // $action .= HtmlHelper::disableButton(url($this->route), $detail->id, 'Inactive');
                 } else {
-                    $action .= HtmlHelper::restoreButton(url($this->route.'/restore'), $detail->id);
+                    $action .= '<a href="javascript:void(0);" class="btn btn-danger btn-sm btn-icon mr-2 gradient-45deg-green-teal archive-item" data-title="Unarchive" data-tooltip="Unarchive" data-id="'.$detail->id.'" data-url="'.url($this->route.'/archive/'.$detail->id).'"><i class="material-icons">restore</i></a>';
+                    $action .= '<a href="'.url($this->route.'/archived/'.$detail->id).'" target="_blank" class="btn btn-danger btn-sm btn-icon mr-2 gradient-45deg-light-blue-cyan" data-title="View" data-tooltip="View"><i class="material-icons">remove_red_eye</i></a>';
+
                 }
                 return $action;
             })
@@ -228,6 +251,11 @@ class DocumentController extends Controller
         } else {
             if ($document) {
                 if ($document) {
+
+                    if($document->is_archived == 1){
+                        return redirect('documents')->with('document-archived', 'Not found. Document moved to Archive!');
+                    }
+
                     $page                       = collect();
                     $variants                   = collect();
                     $user                       = auth()->user();
@@ -266,24 +294,21 @@ class DocumentController extends Controller
      * @param  \App\Models\Document  $document
      * @return \Illuminate\Http\Response
      */
-    public function edit(Request $request, $eiaId, $id)
+    public function edit(Document $document)
     {
-        $eia        = Eia::find($eiaId);
-        if ($eia) {
-            $document            = Document::find($id);
-            if ($document) {
-                $page                       = collect();
-                $variants                   = collect();
-                $user                       = auth()->user();
-                $page->title                = $this->title;
-                $page->route                = url($this->route);
-                $page->projectRoute         = url('projects/'.$eia->project_id); 
-                $page->eiaRoute             = url('eias/'.$eia->id); 
-                $variants->documentStatuses = DocumentStatus::pluck('name','id'); 
-                $variants->stages           = EiaStage::pluck('name','id'); 
-                return view($this->viewPath . '.create', compact('page', 'variants', 'eia', 'document', 'user'));
-            }
-            abort(404);
+        if ($document) {
+            $page                       = collect();
+            $variants                   = collect();
+            $user                       = auth()->user();
+            $page->title                = $this->title;
+            $page->route                = url($this->route);
+            $eia                        = Eia::find($document->eia_id);
+            $page->projectRoute         = url('projects/'.$eia->project_id); 
+            $page->eiaRoute             = url('eias/'.$eia->id); 
+            $variants->documentStatuses = DocumentStatus::pluck('name','id'); 
+            $variants->stages           = EiaStage::pluck('name','id');
+            $page->dropzoneActive       = false; 
+            return view($this->viewPath . '.create', compact('page', 'variants', 'eia', 'document', 'user'));
         }
         abort(404);
     }
@@ -312,7 +337,7 @@ class DocumentController extends Controller
             $document->stage_id             = $request->stage;
             $document->status               = $request->status;
             $document->save();
-            return ['flagError' => false, 'message' => $this->title. " updated successfully"];
+            return ['flagError' => false, 'message' => Str::singular($this->title). " updated successfully"];
         }
         return ['flagError' => true, 'message' => "Errors Occurred. Please check !",  'error' => $validator->errors()->all()];
     }
@@ -408,7 +433,6 @@ class DocumentController extends Controller
      */
     function downloadFile(Request $request, $file)
     {
-       
         $img_extensions = ['jpg', 'jpeg', 'png'];
         $doc_extensions = ['docx', 'doc'];
         $xls_extensions = ['xls', 'xlsx'];
@@ -435,7 +459,6 @@ class DocumentController extends Controller
 
             return response()->download($path, $file, $headers);
 
-
         } else {
 
             $file_name = asset('admin/images/image-not-found.png');
@@ -450,13 +473,9 @@ class DocumentController extends Controller
      */
     function downloadPDfFile(Request $request, $file)
     {
-        $document =  asset('storage/documents/' . $file);
- 
-        echo $document; exit;
-
-        $pdf = PDF::loadView($file);
-    
-        return $pdf->download('itsolutionstuff.pdf');
+        // $document =  asset('storage/documents/' . $file);
+        // $pdf = PDF::loadView($file);
+        // return $pdf->download('test.pdf');
     }
     
     /**
@@ -502,4 +521,99 @@ class DocumentController extends Controller
         }
         abort(404);
     }   
+
+    /**
+     * Remove Document file.
+     * 
+     * @return \Illuminate\Http\Response
+     */
+    public function archive(Request $request, $id)
+    {
+        $document            = Document::find($id);
+        if ($document) {
+            $archive_status         = ($document->is_archived == 0)?1:0;
+            $document->is_archived  = $archive_status;
+            $document->save();
+
+            $action     = ($document->is_archived == 1)? 'archived': 'unarchived';
+            return ['flagError' => false, 'message' => $this->title. " " .$action. " successfully", 'redirect' => $request->redirect];
+        }
+        $errors = array('Document Not found');
+        return ['flagError' => true, 'message' => "Errors Occurred. Please check !",  'error' => $errors];
+    }
+
+/**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\Document  $document
+     * @return \Illuminate\Http\Response
+     */
+    public function viewArchived(Request $request, $id)
+    {
+        $document = Document::find($id);
+        if ($document) {
+
+            if($document->is_archived == 0){
+                return redirect('documents')->with('document-archived', 'Not found. Document moved from Archive!');
+            }
+
+            $page                       = collect();
+            $variants                   = collect();
+            $user                       = auth()->user();
+            $assignedId                 = '';
+            $activeTask                 = array();
+            $completedTask              = array();
+            $page->title                = $this->title;
+            $page->route                = url($this->route);
+            $variants->users            = User::where([['status', '=', 1], ['is_admin', 0]])->pluck('name','id'); 
+            $page->projectRoute         = url('projects/'.$document->eia->project_id); 
+            $page->eiaRoute             = url('eias/'.$document->eia->id);  
+            $variants->documentStatuses = DocumentStatus::pluck('name','id'); 
+            $variants->stages           = EiaStage::pluck('name','id'); 
+            if($document->is_assigned != 0) {
+                $activeTask             = Document::with('tasks')->whereHas("tasks", function($query) use ($document) { 
+                                                    $query->where("status", 0)->where("document_id", $document->id); 
+                                            })->get();
+                $assignedId             = $activeTask[0]->tasks->id;
+            } 
+
+            $documentID                 = (count($document->children) > 0 ) ? $document->children[0]->id : $document->id;
+            $page->documentViewURL      = (count($document->children) > 0 ) ? $document->children[0]->latestFile->file_view : $document->latestFile->file_view;
+            $page->documentDownloadURL  = (count($document->children) > 0 ) ? $document->children[0]->latestFile->file_download : $document->latestFile->file_download;
+            return view($this->viewPath . '.show-archived', compact('page', 'variants', 'document', 'user', 'activeTask', 'assignedId', 'documentID'));
+        }
+        abort(404);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function deleteVersion(Request $request, $id)
+    {
+        $document = Document::find($id);
+        if ($document) {
+
+                $subDocument =  DocumentFile::where('document_id', $id)->first();
+
+                if($subDocument) {
+
+                    \Illuminate\Support\Facades\Storage::delete('public/' . $this->uploadPath . '/' . $subDocument->name);
+                    $subDocument->delete();
+
+                } else {
+                    $errors = array('Not found!, Document not found, Try again');
+                    return ['flagError' => true, 'message' => "Not found!, Document not found, Try again",  'error' => $errors];
+                }
+
+
+            $document->delete();
+            return ['flagError' => false, 'message' => $this->title. " deleted successfully"];
+        }
+        $errors = array('Not found!, Document not found, Try again');
+        return ['flagError' => true, 'message' => "Not found!, Document not found, Try again",  'error' => $errors];
+    }
+    
+    
 }

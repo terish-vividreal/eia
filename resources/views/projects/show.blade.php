@@ -148,8 +148,9 @@
                     <thead>
                       <tr>
                         <th width="20px" data-orderable="false" data-column="DT_RowIndex"> No </th>
-                        <th width="250px" data-orderable="false" data-column="code_id">EIA ID</th>
-                         <th width="150px" data-orderable="true" data-column="date_of_entry"> Date of Creation</th>
+                        <th width="300px" data-orderable="false" data-column="code_id">EIA ID</th>
+                        <th width="150px" data-orderable="false" data-column="project_id">Project ID</th>                      
+                        <th width="200px" data-orderable="true" data-column="date_of_entry"> Date of Creation</th>
                         <th width="250px" data-orderable="false" data-column="status"> Status </th>
                         <th width="200px" data-orderable="true" data-column="project_team_leader"> Project Team Leader </th>
                         <th width="150px" data-orderable="false" data-column="cost_of_develop"> Cost Of Proposed Development </th>  

@@ -58,7 +58,7 @@
                   <div class="card animate fadeRight">
                      <div class="card-content green lighten-1 white-text">
                         <p class="card-stats-title"><i class="material-icons">assessment</i> New Permits</p>
-                        <h4 class="card-stats-number white-text">0</h4>
+                        <h4 class="card-stats-number white-text">{{$variants->permits->count()}}</h4>
                         <p class="card-stats-compare dash-card">
                            <i class="material-icons">link</i> 
                            <a href="{{ url('permits') }}"><span class=" text text-lighten-5">View More</span></a>
@@ -312,5 +312,5 @@
 @endsection
 
 @push('page-scripts')
-<script src="{{ asset('admin/js/scripts/dashboard-analytics.js') }}"></script>
+<!-- <script src="{{ asset('admin/js/scripts/dashboard-analytics.js') }}"></script> -->
 @endpush

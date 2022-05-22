@@ -96,7 +96,7 @@ class ProjectController extends Controller
             $project->location_name     = $request->locationName;
             $project->map_link          = $request->mapLink;
             $project->save();
-            return ['flagError' => false, 'message' => Str::singular($this->title). " added successfully"];
+            return ['flagError' => false, 'message' => Str::singular($this->title). " added successfully", 'id' => $project->id];
         }
         return ['flagError' => true, 'message' => "Errors Occurred. Please check !",  'error' => $validator->errors()->all()];
     }
@@ -271,7 +271,7 @@ class ProjectController extends Controller
                 $project->location_name     = $request->locationName;
                 $project->map_link          = $request->mapLink;
                 $project->save();
-                return ['flagError' => false, 'message' =>  Str::singular($this->title). " details updated successfully"];
+                return ['flagError' => false, 'message' =>  Str::singular($this->title). " details updated successfully", 'id' => $project->id];
             }
         }
         return ['flagError' => true, 'message' => "Errors Occurred. Please check !",  'error' => $validator->errors()->all()];

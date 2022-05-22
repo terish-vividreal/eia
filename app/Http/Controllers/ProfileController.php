@@ -11,9 +11,10 @@ use Validator;
 
 class ProfileController extends Controller
 {
-    protected $title    = 'Profile';
-    protected $viewPath = 'profile';
-    protected $route    = 'profile';
+    protected $title        = 'Profile';
+    protected $viewPath     = 'profile';
+    protected $route        = 'profile';
+    protected $uploadPath   = 'users';
 
     /**
      * Create a new controller instance.
@@ -50,6 +51,50 @@ class ProfileController extends Controller
     public function create()
     {
         //
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function updateProfilePhoto(Request $request)
+    {
+        $validator = Validator::make($request->all(), 
+            [ 'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',],
+            [ 'image.required' => 'Please browse an Image',]);
+        
+        if ($validator->passes()) {
+
+            $oldProfileURL     =  (auth()->user()->profile != null) ? auth()->user()->profile_url : '';
+
+            if (auth()->user()->profile != null) {
+                \Illuminate\Support\Facades\Storage::delete('public/' . $this->uploadPath . '/' . auth()->user()->profile);
+            }
+            // Create storage folder if not exist
+            if(env('APP_ENV') == 'local') {
+                $path       = storage_path().'/app/public/'.$this->uploadPath;
+                $imageName  = time().'.'.$request->image->extension(); 
+
+                if (!file_exists($path)) {
+                    Storage::makeDirectory($path, 0755);
+                }
+
+                $request->image->storeAs($this->uploadPath, $imageName, 'public');
+
+                $user = \Auth::user();
+                $user->profile = $imageName;
+                $user->save();
+
+            } else {
+                // Store Image in S3
+                // $request->image->storeAs('images', $fileName, 's3');
+            }
+
+
+            return ['flagError' => false, 'url' => auth()->user()->profile_url,  'message' => "Photo updated successfully"];
+        }
+        return ['flagError' => true, 'message' => "Errors Occurred. Please check!",  'error'=>$validator->errors()->all()];
     }
 
     /**

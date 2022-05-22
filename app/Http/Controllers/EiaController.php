@@ -76,7 +76,7 @@ class EiaController extends Controller
         if ($validator->passes()) {
             $eia                        = new Eia();
             $eia->project_id            = $request->projectId;
-            $eia->code_id               = str_replace(' ', '', $request->codeId);
+            $eia->code_id               = $request->codeId; //str_replace(' ', '', $request->codeId);
             $eia->date_of_entry         = FunctionHelper::dateToUTC($request->dateOfEntry, 'Y-m-d H:i:s');
             $eia->code                  = FunctionHelper::EIACode(); 
             $eia->project_team_leader   = $request->projectTeamLeader;
@@ -88,7 +88,7 @@ class EiaController extends Controller
             $eia->latitude              = $request->latitude;
             $eia->longitude             = $request->longitude;
             $eia->save();
-            return ['flagError' => false, 'message' => $this->title. " added successfully"];
+            return ['flagError' => false, 'message' => $this->title. " added successfully", 'id' => $eia->id];
         }
         return ['flagError' => true, 'message' => "Errors Occurred. Please check !",  'error' => $validator->errors()->all()];
     }
@@ -99,7 +99,8 @@ class EiaController extends Controller
      */
     public function lists(Request $request, $projectId = null)
     {
-        $detail     =  Eia::with('project')->select(['code_id', 'status', 'date_of_entry', 'project_team_leader', 'cost_of_develop', 'stage_id', 'deleted_at', 'project_id', 'id'])->where('is_permit', 0);
+        $detail     =  Eia::with('project')->select(['code_id', 'status', 'date_of_entry', 'project_team_leader', 'cost_of_develop', 'stage_id', 'deleted_at', 'project_id', 'id'])
+                            ->where('is_permit', 0)->orderBy('id', 'DESC');
         
         if ($projectId!= null) {
             $detail     = $detail->where('project_id', $projectId);
@@ -282,7 +283,7 @@ class EiaController extends Controller
                             [ 'codeId.unique' => 'EIA ID is already used', 'codeId.required' => 'Please enter EIA ID']);
         if ($validator->passes()) {            
             $eia->project_id            = $request->projectId;
-            $eia->code_id               = str_replace(' ', '', $request->codeId);
+            $eia->code_id               = $request->codeId; //str_replace(' ', '', $request->codeId)
             $eia->date_of_entry         = FunctionHelper::dateToUTC($request->dateOfEntry, 'Y-m-d H:i:s');
             $eia->project_team_leader   = $request->projectTeamLeader;
             $eia->cost_of_develop       = $request->costOfDevelop;
@@ -292,7 +293,7 @@ class EiaController extends Controller
             $eia->latitude              = $request->latitude;
             $eia->longitude             = $request->longitude;
             $eia->save();
-            return ['flagError' => false, 'message' => $this->title. " updated successfully"];
+            return ['flagError' => false, 'message' => $this->title. " updated successfully", 'id' => $eia->id];
         }
         return ['flagError' => true, 'message' => "Errors Occurred. Please check !", 'error' => $validator->errors()->all()];
     }

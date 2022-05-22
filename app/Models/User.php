@@ -44,9 +44,9 @@ class User extends Authenticatable
     ];
 
     // Accessor with same filed name
-    public function getProfileAttribute($value)
+    public function getProfileUrlAttribute($value)
     {
-        return ($value != null) ? asset('storage/store/users/' . Auth::user()->profile) : asset('admin/images/user-icon.png');
+        return ($this->profile != null) ? asset('storage/users/' . auth()->user()->profile) : asset('admin/images/user-icon.png');
     }
     
     public function getFullNameAttribute()

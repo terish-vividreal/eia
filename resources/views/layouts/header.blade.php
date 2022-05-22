@@ -1,6 +1,6 @@
 <!-- BEGIN: Header-->
 @php
-$user_profile     = (Auth::user()->profile != null) ? asset('storage/store/users/' . Auth::user()->profile) : asset('admin/images/user-icon.png');
+    $user_profile     = (Auth::user()->profile != null) ? asset('storage/store/users/' . Auth::user()->profile) : asset('admin/images/user-icon.png');
 @endphp
 <header class="page-topbar" id="header">
         <div class="navbar navbar-fixed">
@@ -18,7 +18,7 @@ $user_profile     = (Auth::user()->profile != null) ? asset('storage/store/users
                         @if ( auth()->user()->notifications->count() > 0)
                             <li><a class="waves-effect waves-block waves-light notification-button" href="javascript:void(0);" data-target="notifications-dropdown"><i class="material-icons">notifications_none<small class="notification-badge orange accent-3">{{auth()->user()->notifications->count()}}</small></i></a></li>
                         @endif
-                        <li><a class="waves-effect waves-block waves-light profile-button" href="javascript:void(0);" data-target="profile-dropdown"><span class="avatar-status avatar-online"><img src="{{auth()->user()->profile}}" alt="Admin"><i></i></span></a></li>
+                        <li><a class="waves-effect waves-block waves-light profile-button" href="javascript:void(0);" data-target="profile-dropdown"><span class="avatar-status avatar-online"><img src="{{auth()->user()->profile_url}}" id="userProfileHeader" class="user-profile" alt="Admin"><i></i></span></a></li>
                     </ul>
                     <!-- translation-button-->
                     <ul class="dropdown-content" id="translation-dropdown">

@@ -105,8 +105,7 @@ if ($("#" + pageTitle + "Form").length > 0) {
         if (data.flagError == false) {
           showSuccessToaster(data.message);
           setTimeout(function () { 
-            // window.location.href = projectRoute;         
-            location.reload();       
+            window.location.href = pageRoute + '/' + data.id ; ;              
           }, 2000);
         } else {
           showErrorToaster(data.message);
