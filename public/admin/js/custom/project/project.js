@@ -26,23 +26,11 @@ $('input[name="dateOfCreated"]').daterangepicker({
   autoApply: true,
 });
 
-// $('input[name="billed_date"]').daterangepicker({
-//   singleDatePicker: true,
-//   startDate: new Date(),
-//   showDropdowns: true,
-//   autoApply: true,
-//   timePicker: true,
-//   timePicker24Hour: timePicker,
-//   locale: { format: 'DD-MM-YYYY '+timeFormat+':mm A' },
-// }, function(ev, picker) {
-//   // console.log(picker.format('DD-MM-YYYY'));
-// });
-
 // Form Validation with Ajax Submit
 if ($("#" + pageTitle + "Form").length > 0) {
   validator = $("#" + pageTitle + "Form").validate({ 
     rules: {
-      title: { 
+      name: { 
         required: true, 
       },
       dateOfCreated: { 
@@ -66,7 +54,7 @@ if ($("#" + pageTitle + "Form").length > 0) {
       },
     },
     messages: { 
-      title: {
+      name: {
         required: "Please enter project Title",
       },
       dateOfCreated: {
@@ -100,9 +88,10 @@ if ($("#" + pageTitle + "Form").length > 0) {
       }).done(function (data) {
         enableBtn("formSubmitButton");
         if (data.flagError == false) {
+          resetForm();
           showSuccessToaster(data.message);
           setTimeout(function () { 
-            window.location.href = pageRoute ;                
+            window.location.href = pageRoute + '/' + data.id ;                
           }, 2000);
         } else {
           showErrorToaster(data.message);

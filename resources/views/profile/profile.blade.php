@@ -51,15 +51,22 @@
                     <!-- users edit media object start -->
                     <div class="media display-flex align-items-center mb-2">
                         <a class="mr-2" href="#">
-                            {{ Auth::user()->profile_photo }}
-                            <img src="{{auth()->user()->profile}}" alt="users avatar" class="z-depth-4 circle" height="64" width="64">
+                            <img src="{{auth()->user()->profile_url}}" id="profilePhoto" alt="users avatar" class="z-depth-4 circle user-profile" height="64" width="64">
                         </a>
                         <div class="media-body">
-                            <h5 class="media-heading mt-0">Profile</h5>
+                            <form id="profilePhotoForm" name="profilePhotoForm" action="" method="POST" enctype="multipart/form-data" class="ajax-submit">
+                            {{ csrf_field() }}
+                            {!! Form::hidden('oldPhotoURL', auth()->user()->profile_url, ['id' => 'oldPhotoURL'] ); !!}
+                            <h5 class="media-heading mt-0">User Profile</h5>
                             <div class="user-edit-btns display-flex">
-                                <a href="#" class="btn-small indigo">Change</a>
-                                <a href="#" class="btn-small btn-light-pink">Reset</a>
+                                <a id="select-files" class="btn mr-2"><span>Browse</span></a>
+                                <button type="submit" class="btn indigo logo-action-btn" id="uploadLogoBtn">Submit</button>
                             </div>
+                            <small>Allowed JPG, JPEG or PNG extension only.</small>
+                            <div class="upfilewrapper" style="display:none;">
+                                <input id="profile" type="file" accept="image/png, image/gif, image/jpeg" name="image" class="image" />
+                            </div>
+                            </form>
                         </div>
                     </div>
                     <!-- users edit media object ends -->
@@ -293,6 +300,43 @@ function resetPasswordForm() {
     $("#updatePasswordForm label").removeClass("error");
     $("#updatePasswordForm .label-placeholder").addClass('active');
 }
+
+$("#select-files").on("click", function () {
+    $("#profile").click();
+})
+
+$('#profile').change(function() {   
+var ext = $('#profile').val().split('.').pop().toLowerCase();
+if ($.inArray(ext, ['png','jpg','jpeg']) == -1) {
+    showErrorToaster("Invalid format. Allowed JPG, JPEG or PNG.");
+} else {
+    let reader = new FileReader();
+    reader.onload = (e) => { 
+        $('#profilePhoto').attr('src', e.target.result); 
+    }
+    reader.readAsDataURL(this.files[0]); 
+}    
+});
+
+$('#profilePhotoForm').submit(function(e) {
+    disableBtn("uploadLogoBtn");
+    var formData = new FormData(this);
+    $.ajax({ type: "POST",url: "{{ url('update-profile-photo') }}", data: formData, cache:false, contentType: false, processData: false,
+      success: function(data) {
+        enableBtn("uploadLogoBtn");
+        if (data.flagError == false) {
+          showSuccessToaster(data.message);  
+          $(".user-profile").attr("src", data.url);
+          $(".print-error-msg").hide();
+        } else {
+          showErrorToaster(data.message);
+          printErrorMsg(data.error);
+        }
+      }
+    });
+  });
+
+
 </script>
 @endpush
 

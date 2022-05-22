@@ -84,9 +84,6 @@
             <!-- <a class="waves-effect waves-light btn gradient-45deg-purple-deep-orange z-depth-4 mt-2" href="https://eia.vividreal.co.in/documents/file/download/MUSMHX0A0NXFG3FN4EPQ_1159079-immap-ihf_humanitarian_access_response_-_landmine_erw_contamination_areas_aug_2018.png" style="margin-top: 10px; !important">Download</a>  -->
           @endisset
           @if($document->is_assigned == 0)
-            @can('documents-task-create')
-              <p id=""><a class="waves-effect waves-light btn gradient-45deg-purple-deep-orange z-depth-4 mt-2 assign-task" id="" data-id="{{$document->id}}" href="javascript:" style="margin-top: 10px; !important">Assign Task</a></p>                  
-            @endcan
             @if(!empty($document->completedTask))
               <div class="col s12 m12 card-details mt-2" id="taskDetailsDiv">
                 <h5><a href="javascript:" class="mt-8 blue-text">Completed Task Details</a></h5>
@@ -153,50 +150,12 @@
                 </td>
               </tr>
               <tr>
-                <td>Project stage: </td>
-                <td>
-                  @php 
-                    $stageID    = (count($document->children) > 0) ? $document->children[0]->stage_id : $document->stage_id;
-                    $statusID   = (count($document->children) > 0) ? $document->children[0]->status : $document->status;
-                    $documentID = (count($document->children) > 0) ? $document->children[0]->id : $document->id;                    
-                  @endphp 
-                  {!! Form::select('stage', $variants->stages, $stageID ?? '', ['id' => 'stage', 'class' => 'select2 browser-default document-stage', 'placeholder'=>'Please select Stage']) !!}
-                </td>
-              </tr>
-              <tr>
-                <td>Document status: </td>
-                <td>
-                  {!! Form::select('status', $variants->documentStatuses, $statusID ?? '', ['id' => 'status', 'class' => 'select2 browser-default', 'placeholder'=>'Please select Status']) !!}
-                </td>
-              </tr>
-              @can('documents-manage-status')
-              <tr>
-                <td></td>
-                <td style="text-align:right">
-                  {!! Form::hidden('documentStatusId', $documentID ?? '', ['id' => 'documentStatusId']); !!}
-                  {!! App\Helpers\HtmlHelper::submitButton('Submit', 'documentStatusUpdateBtn') !!}
-                </td>
-              </tr>
-              @endcan
-              <tr>
                 <td>Brief Description: </td>
                 <td>  
-
-                  @if(count($document->children) > 0) 
-                    {{ Str::limit(strip_tags($document->children[0]->brief_description), 100)}}
-                    @if(strlen(strip_tags($document->children[0]->brief_description)) > 100)
-                      <a href="javascript:void(0);" onclick="getFullDescription({{$document->id}})">View</a>
-                    @endif
-                  @else
-                    {{ Str::limit(strip_tags($document->brief_description), 100)}}
-                    @if(strlen(strip_tags($document->brief_description)) > 100)
-                      <a href="javascript:void(0);" onclick="getFullDescription({{$document->id}})">View</a>
-                    @endif
+                  {{ Str::limit(strip_tags($document->brief_description), 100)}}
+                  @if(strlen(strip_tags($document->brief_description)) > 100)
+                    <a href="javascript:void(0);" onclick="getFullDescription({{$document->id}})">View</a>
                   @endif
-
-
-
-                  
                 </td>
               </tr>
               <tr>
@@ -212,17 +171,6 @@
           </table>
         </div>
         <div class="col s12 m12" style="margin-top: 10px">
-          <div class="row commentContainer">  
-            @can('documents-comment-create')
-              <div class="input-field col m10 s12 commentArea">
-                <textarea id="documentComment" class="materialize-textarea commentField" name="comment" cols="50" rows="10" placeholder="Enter comment"></textarea>  
-                <div id="documentComment-error-{{$documentID}}" class="error documentComment-error" style="display:none;"></div>
-              </div>
-              <div class="input-field col m2 s12" style="margin-top: 37px; !important">
-                <a href="javascript:" class="text-sub save-comment-btn" data-id="{{$documentID}}"><i class="material-icons mr-2">send</i></a>
-              </div>
-            @endcan
-          </div>
           <!-- Content Area Starts -->
           <div class="app-email" id="latestComment{{$documentID}}"></div>
           @if(count($document->children) > 0) 
@@ -299,20 +247,6 @@
   <div class="card">
     <div class="card-content">
       <div class="card-title">
-        <div class="row right">
-          <div class="col s12 m12 ">
-            <!-- <a class="dropdown-settings btn mb-1 waves-effect waves-light cyan" href="#!" data-target="dropdown1" id="customerListBtn">
-              <i class="material-icons hide-on-med-and-up">settings</i>
-              <span class="hide-on-small-onl">Order By</span>
-              <i class="material-icons right">arrow_drop_down</i></a>
-              <ul class="dropdown-content" id="dropdown1" tabindex="0">
-                <li tabindex="0"><a class="grey-text text-darken-2 listBtn" data-type="active" href="javascript:" > Latest </a></li>
-                <li tabindex="0"><a class="grey-text text-darken-2 listBtn" data-type="inactive" href="javascript:"> Last Commented </a></li>
-              </ul>
-            </a> -->
-            {!! App\Helpers\HtmlHelper::createLinkButton(url($page->route.'/'.$document->id.'/create'), 'Add New Document') !!}
-          </div>
-        </div>
         <div class="row">
           <div class="col s12 m6 ">
             <h4 class="card-title"> Documents List</h4>

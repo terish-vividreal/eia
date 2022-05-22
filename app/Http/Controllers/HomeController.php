@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Project;
 use App\Models\Document;
+use App\Models\Permit;
 use App\Models\User;
 use App\Models\Eia;
 use DB;
@@ -40,6 +41,7 @@ class HomeController extends Controller
         $variants->projects     = Project::get();
         $variants->eia          = Eia::get();
         $variants->documents    = Document::get();
+        $variants->permits      = Permit::whereActive(1)->get();
         return view('home', compact('page', 'variants', 'user'));
     }
 }

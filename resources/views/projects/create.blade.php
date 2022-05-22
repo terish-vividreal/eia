@@ -65,6 +65,16 @@
                                 <label for="name" class="label-placeholder active"> Title <span class="red-text">*</span></label>
                             </div>
                         </div>
+
+
+                        <div class="row">
+                            <div class="input-field col m12 s12">
+                                {!! Form::text('project_code_id', $project->project_code_id ?? '', array('id' => 'project_code_id')) !!}
+                                <label for="project_code_id" class="label-placeholder active"> Project ID <span class="red-text">*</span></label>
+                            </div>  
+                        </div>
+
+
                         <div class="row">
                             <div class="input-field col m6 s12">
                                 {!! Form::text('dateOfCreated', $project->date_of_created ?? '', array('id' => 'dateOfCreated')) !!}
@@ -86,18 +96,15 @@
                             <div class="input-field col m6 s12">
                                 {!! Form::text('totalBudget', $project->total_budget ?? '', array('id' => 'totalBudget')) !!}
                                 <label for="totalBudget" class="label-placeholder active"> Total Budget <span class="red-text">*</span></label>
-                            </div>  
-                            <div class="input-field col m6 s12">
-                                {!! Form::text('project_code_id', $project->project_code_id ?? '', array('id' => 'project_code_id')) !!}
-                                <label for="project_code_id" class="label-placeholder active"> Project ID <span class="red-text">*</span></label>
-                            </div>  
-                        </div>
-                        <div class="row">
+                            </div> 
                             <div class="input-field col m6 s12">
                                 {!! Form::text('locationName', $project->location_name ?? '', array('id' => 'locationName')) !!}
                                 <label for="locationName" class="label-placeholder active"> Location </label>
                             </div>  
-                            <div class="input-field col m6 s12">
+                            
+                        </div>
+                        <div class="row">
+                            <div class="input-field col m12 s12">
                                 {!! Form::text('mapLink', $project->map_link ?? '', array('id' => 'mapLink')) !!}
                                 <label for="mapLink" class="label-placeholder active"> Map Link </label>
                             </div>  

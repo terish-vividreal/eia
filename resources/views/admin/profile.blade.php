@@ -52,7 +52,7 @@
                     <div class="media display-flex align-items-center mb-2">
                         <a class="mr-2" href="#">
                             {{ Auth::user()->profile_photo }}
-                            <img src="{{auth()->user()->profile}}" alt="users avatar" class="z-depth-4 circle" height="64" width="64">
+                            <img src="{{auth()->user()->profile_url}}" alt="users avatar" class="z-depth-4 circle" height="64" width="64">
                         </a>
                         <div class="media-body">
                             <h5 class="media-heading mt-0">Profile</h5>

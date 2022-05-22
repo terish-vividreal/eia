@@ -120,6 +120,23 @@
                 <td>Project Title:</td>
                 <td>{{ $eia->project->name ?? ''}}</td>
               </tr>
+              <tr>
+                <td>Category:</td>
+                <td class="">{{ $eia->project->category->name ?? ''}}</td>
+              </tr>
+              <tr>
+                <td>Type:</td>
+                <td><span class="">{{ $eia->project->projectType->name ?? ''}}</span></td>
+              </tr>
+              <tr>
+                <td>Total EIAs:</td>
+                <td><span class="">{{count($eia->project->eias)}}</span></td>
+              </tr>
+              <tr>
+                <td>Total Budget:</td>
+                <td><span class="">{{ App\Helpers\FunctionHelper::currency() . ' ' . number_format($eia->project->total_budget) ?? ''}}</span></td>
+              </tr>
+
             </tbody>
           </table>
         </div>
@@ -136,14 +153,26 @@
             @can('documents-create')
               {!! App\Helpers\HtmlHelper::createLinkButton(url($page->route.'/'.$eia->id.'/documents/create'), 'Add New Document') !!}
             @endcan
+            <a class="dropdown-settings btn mb-1 waves-effect waves-light cyan" href="#!" data-target="dropdown1" id="customerListBtn"><i class="material-icons hide-on-med-and-up">settings</i><span class="hide-on-small-onl">List Documents</span><i class="material-icons right">arrow_drop_down</i></a>
+            <ul class="dropdown-content" id="dropdown1" tabindex="0">
+              <li tabindex="0"><a class="grey-text text-darken-2 archiveBtn" data-type="active" href="javascript:" > Active </a></li>
+              <li tabindex="0"><a class="grey-text text-darken-2 archiveBtn" data-type="1" href="javascript:"> Archived </a></li>
+            </ul>
           </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="data-table-container">
+          <form id="page-form" name="page-form">
+            {!! Form::hidden('archiveStatus', 0, ['id' => 'archiveStatus'] ); !!}
+          </form>
         </div>
       </div>
       <div class="row">
         @can('documents-list')
           <div class="col s12 m6 "><h4 class="card-title">Document Lists</h4></div>
           <div class="col s12">
-            <table id="data-table-projects" class="display data-tables" data-url="{{ $page->route.'/'.$eia->id.'/documents/lists' }}" data-form="page" data-length="10">
+            <table id="data-table-documents" class="display data-tables" data-url="{{ $page->route.'/'.$eia->id.'/documents/lists' }}" data-form="page" data-length="10">
               <thead>
                 <tr>
                   <th width="20px" data-orderable="false" data-column="DT_RowIndex"> No </th>
@@ -177,6 +206,6 @@
 @push('page-scripts')
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-<script src="{{asset('admin/js/custom/project/project.js')}}"></script>
+<script src="{{asset('admin/js/custom/documents/documents.js')}}"></script>
 <script></script>
 @endpush

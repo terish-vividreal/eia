@@ -58,6 +58,7 @@ Route::group(['middleware' => ['auth']], function () {
     // User Profile
     Route::resource('profile', ProfileController::class);
     Route::post('update-password', [ProfileController::class, 'updatePassword']);
+    Route::post('update-profile-photo', [ProfileController::class, 'updateProfilePhoto']);
 
     // Companies Routes
     $companies = 'companies';
@@ -84,18 +85,19 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('eias/{eiaId}/documents/create', [DocumentController::class, 'create']);
     Route::get('eias/{eiaId}/documents/lists', [DocumentController::class, 'lists']);
     Route::get('eias/{eiaId}/documents/{id}/edit', [DocumentController::class, 'edit']);
+    Route::post('documents/archive/{id}', [DocumentController::class, 'archive']);
+    Route::get('documents/archived/{id}', [DocumentController::class, 'viewArchived']);
+    Route::post('documents/delete-version/{id}', [DocumentController::class, 'deleteVersion']);
     Route::post('documents/file/upload', [DocumentController::class, 'uploadDocument'])->name('documents.file.upload');
     Route::post('documents/file/remove', [DocumentController::class, 'fileRemove'])->name('documents.file.remove');
     Route::get('documents/file/list', [DocumentController::class, 'fileList'])->name('documents.file.list');
     Route::get('documents/image-download/{file}', [DocumentController::class, 'downloadFile'])->name('documents.file.download');
     Route::get('documents/pdf-download/{file}', [DocumentController::class, 'downloadPDfFile'])->name('documents.file.download');
-    // Route::get('document/file/view/{document}', [DocumentController::class, 'viewDocumentFile'])->name('document.file.stream');
-    // Route::get('document/autocomplete', [DocumentController::class, 'autocomplete'])->name('document.autocomplete');
-    
     Route::get('documents/download/{file}', [DocumentController::class, 'downloadFile'])->name('documents.download');
-    
     Route::resource('task-assign', TaskAssignController::class);
     // Route::post('documents/task/assign', [TaskAssignController::class, 'assign']);
+    // Route::get('document/file/view/{document}', [DocumentController::class, 'viewDocumentFile'])->name('document.file.stream');
+    // Route::get('document/autocomplete', [DocumentController::class, 'autocomplete'])->name('document.autocomplete');
 
     // Child document routes
     // Route::resource('documents', DocumentController::class);

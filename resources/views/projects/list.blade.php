@@ -63,29 +63,30 @@
                             <h4 class="card-title">{{ Str::singular($page->title) ?? ''}} List</h4>
                         </div>
                       </div>
-                      <div class="row">
-                        <div class="card-content data-table-container">
-                          <form id="page-form" name="page-form">
-                            {!! Form::hidden('status', '', ['id' => 'status'] ); !!}
-                            <div class="row">
-                              <div class="input-field col m3 s12">
-                                  {!! Form::text('searchTitle', '', array('id' => 'searchTitle', 'placeholder' => 'Enter search text...')) !!}
-                              </div>
-                              <div class="input-field col m3 s12">
-                                  {!! Form::select('sortBy', ['name' => 'Title', 'date_of_creation' => 'Date Of Creation'], '', ['id' => 'sortBy', 'class' => 'select2 browser-default', 'placeholder'=>'Sort By']) !!}
-                              </div>
-                              <div class="input-field col m3 s12">
-                                <div style="margin-top: 10px;">
-                                  <button type="button" class="btn mr-2 cyan" id="page-show-result-button" >Show Result</button>
-                                  <button type="button" class="btn" id="page-filterFormClearButton">Clear Filter </button>
-                                </div>
-                              </div>
-                            </div>
-                          </form>
-                        </div>
-                      </div>
                   </div>
                   <div id="view-borderless-table">
+                    <div class="row">
+                      <div class="card-content data-table-container">
+                        <form id="page-form" name="page-form">
+                          {!! Form::hidden('status', '', ['id' => 'status'] ); !!}
+                          <div class="row">
+                            <div class="input-field col m3 s12">
+                                {!! Form::text('searchTitle', '', array('id' => 'searchTitle', 'placeholder' => 'Enter search keyword...')) !!}
+                                <span class="helper-text" data-error="wrong" data-success="right">Search by Project ID, Title, Project Type, Company and Location</span>
+                            </div>
+                            <div class="input-field col m3 s12">
+                                {!! Form::select('sortBy', ['name' => 'Title', 'date_of_creation' => 'Date Of Creation'], '', ['id' => 'sortBy', 'class' => 'select2 browser-default', 'placeholder'=>'Sort By']) !!}
+                            </div>
+                            <div class="input-field col m3 s12">
+                              <div style="margin-top: 10px;">
+                                <button type="button" class="btn mr-2 cyan" id="page-show-result-button" >Show Result</button>
+                                <button type="button" class="btn" id="page-filterFormClearButton">Clear Filter </button>
+                              </div>
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
                     <div class="row">
                       <div class="col s12">
                         <table id="data-table-projects" class="display data-tables" data-url="{{ $page->link }}" data-form="page" data-length="10">
